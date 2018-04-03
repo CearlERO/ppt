@@ -80,6 +80,7 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{xeCJK}
+\usepackage{color}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -116,7 +117,7 @@ Guizhou University \\ % Your institution for the title page
 %------------------------------------------------
 \begin{frame}
 \frametitle{System Programming}
-System programming is the art of writing system software.System software lives at a low level, interfacing directly with the kernel and core system libraries.
+System programming is the art of writing system software.System software lives at a low level, interfacing directly with the \textcolor{red}{kernel and core system libraries}.
 
 There are three cornerstones to system programming in Linux: 
 \begin{enumerate}
@@ -129,16 +130,18 @@ There are three cornerstones to system programming in Linux:
 
 \begin{frame}
 \frametitle{System Calls}
-System programming starts with system calls.System calls (often shorted to syscalls) are function invocations made from user space—your text editor, favorite game, and so on—into the kernel (the core internals of the system) in order to request some service or resource from the operating system. 
+System programming starts with system calls.System calls (often shorted to syscalls) are \textcolor{red}{function invocations} made from \textcolor{red}{user space}—your text editor, favorite game, and so on—\textcolor{red}{into the kernel} (the core internals of the system) in order to request some service or resource from the operating system. 
 \end{frame}
 \begin{frame}
 \frametitle{Invoke system calls}
 It is not possible to directly link user-space applications with kernel space. For reasons of security and reliability, user-space applications must not be allowed to directly execute kernel code or manipulate kernel data. Instead, the kernel must provide a mechanism by which a user-space application can "signal" the kernel that it wishes to invoke a system call. The application can then trap into the kernel through this well-defined mechanism, and execute only code that the kernel allows it to execute. The exact mechanism varies from architecture to architecture.
 \end{frame}
+
+
 %------------------------------------------------
 \begin{frame}
 \frametitle{The C Library}
-The C library (libc) is at the heart of Unix applications. Even when you're programming in another language, the C library is most likely in play, wrapped by the higher-level libraries, providing core services, and facilitating system call invocation. On modern Linux systems, the C library is provided by GNU libc, abbreviated glibc, and pronounced gee-lib-see or, less commonly, glib-see.
+The C library (\textcolor{red}{libc}) is at the heart of Unix applications. Even when you're programming in another language, the C library is most likely in play, wrapped by the higher-level libraries, providing core services, and facilitating system call invocation. On modern Linux systems, the C library is provided by GNU libc, abbreviated \textcolor{red}{glibc}, and pronounced gee-lib-see or, less commonly, glib-see.
 
 The GNU C library provides more than its name suggests. In addition to implementing the standard C library, glibc provides wrappers for system calls, threading support, and basic application facilities.
 \end{frame}
@@ -146,16 +149,24 @@ The GNU C library provides more than its name suggests. In addition to implement
 %-------------------------------------------------
 \begin{frame}
 \frametitle{The C Compiler}
-In Linux, the standard C compiler is provided by the GNU Compiler Collection (gcc). Originally, gcc was GNU's version of cc, the C Compiler. Thus, gcc stood for GNU C Compiler. Over time, support was added for more and more languages. Consequently, nowadays gcc is used as the generic name for the family of GNU compilers. However, gcc is also the binary used to invoke the C compiler. In this course, when we talk of gcc, we typically mean the program gcc, unless context suggests otherwise.
+In Linux, the standard C compiler is provided by the \textcolor{red}{GNU Compiler Collection (gcc)}. Originally, gcc was GNU's version of cc, the C Compiler. Thus, gcc stood for \textcolor{red}{GNU C Compiler}. Over time, support was added for more and more languages. Consequently, nowadays gcc is used as the generic name for the family of GNU compilers. However, gcc is also the binary used to invoke the C compiler. In this course, when we talk of gcc, we typically mean the program gcc, unless context suggests otherwise.
 
 \end{frame}
 
+%------------------------------------------------
 
+\begin{frame}
+\frametitle{用户程序vs库函数vs系统调用}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{601}
+\end{figure}
+\end{frame}
 %------------------------------------------------
 \section{GCC}
 \begin{frame}
 \frametitle{GCC}
-The original GNU C Compiler (GCC) is developed by Richard Stallman, the founder of the GNU Project. Richard Stallman founded the GNU project in 1984 to create a complete Unix-like operating system as free software, to promote freedom and cooperation among computer users and programmers.
+The GNU Compiler Collection includes front ends for C, C++, Objective-C, Fortran, Ada, and Go, as well as libraries for these languages (libstdc++,...). GCC was originally written as the compiler for the GNU operating system. The GNU system was developed to be 100\% free software, free in the sense that it respects the user's freedom.
 
 GCC, formerly for "GNU C Compiler", has grown over times to support many languages such as C (gcc), C++ (g++), Objective-C, Objective-C++, Java (gcj), Fortran (gfortran), Ada (gnat), Go (gccgo), OpenMP, Cilk Plus, and OpenAcc. It is now referred to as "GNU Compiler Collection". The mother site for GCC is http://gcc.gnu.org/. The current version is GCC 7.3, released on 2018-01-25.
 \end{frame}
@@ -202,9 +213,33 @@ $ gcc --help
 
 \subsection{Using GCC}
 \begin{frame}
-\frametitle{开始编写程序}
-C语言
+\frametitle{编写c程序的流程}
+\begin{figure}
+\includegraphics[width=1\linewidth]{602}
+\end{figure}
 \end{frame}
+\begin{frame}
+\frametitle{编写c程序的流程}
+\begin{figure}
+\includegraphics[width=1\linewidth]{603}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{hello.c}
+\begin{example}
+\begin{verbatim}
+// hello.c
+#include <stdio.h>
+
+int main(){
+        printf("Hello, C.\n");
+        return 0;
+}
+\end{verbatim}
+\end{example}
+\end{frame}
+
 %------------------------------------------
 \begin{frame}
 \frametitle{Blocks of Highlighted Text}
@@ -223,18 +258,23 @@ Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenati
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Multiple Columns}
 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 
 \column{.45\textwidth} % Left column and width
 \textbf{Heading}
-\begin{enumerate}
-\item Statement
-\item Explanation
-\item Example
-\end{enumerate}
+\begin{example}[hello.c]
+\begin{verbatim}
+// hello.c
+#include <stdio.h>
 
+int main(){
+        printf("Hello, C.\n");
+        return 0;
+}
+\end{verbatim}
+\end{example}
 \column{.5\textwidth} % Right column and width
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
 
@@ -290,9 +330,9 @@ $E = mc^2$
 \begin{frame}
 \frametitle{Figure}
 Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{601}
+\end{figure}
 \end{frame}
 
 %------------------------------------------------
