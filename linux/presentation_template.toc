@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{System Programming}{3}{0}{1}
+\beamer@sectionintoc {2}{GCC}{8}{0}{2}
+\beamer@subsectionintoc {2}{1}{Using GCC}{13}{0}{2}
+\beamer@sectionintoc {3}{Second Section}{16}{0}{3}

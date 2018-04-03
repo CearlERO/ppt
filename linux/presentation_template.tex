@@ -1,3 +1,4 @@
+% !TEX encoding = UTF-8 Unicode
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Beamer Presentation
 % LaTeX Template
@@ -78,19 +79,20 @@
 
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Short title]{Full Title of the Talk} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Linux System Programming]{Linux System Programming} % The short title appears at the bottom of every slide, the full title is only on the title page
 
-\author{John Smith} % Your name
-\institute[UCLA] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\author{Zhang Haining} % Your name
+\institute[cs.gzu] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
-University of California \\ % Your institution for the title page
+Guizhou University \\ % Your institution for the title page
 \medskip
-\textit{john@smith.com} % Your email address
+\textit{hnzhang1@gzu.edu.cn} % Your email address
 }
 \date{\today} % Date, can be changed to a custom date
 
@@ -110,33 +112,100 @@ University of California \\ % Your institution for the title page
 %----------------------------------------------------------------------------------------
 
 %------------------------------------------------
-\section{First Section} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+\section{System Programming} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
 %------------------------------------------------
+\begin{frame}
+\frametitle{System Programming}
+System programming is the art of writing system software.System software lives at a low level, interfacing directly with the kernel and core system libraries.
 
-\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+There are three cornerstones to system programming in Linux: 
+\begin{enumerate}
+\item system calls
+\item the C library
+\item the C compiler
+\end{enumerate} 
+\end{frame}
+%\subsection{System Calls} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
 
 \begin{frame}
-\frametitle{Paragraphs of Text}
-Sed iaculis dapibus gravida. Morbi sed tortor erat, nec interdum arcu. Sed id lorem lectus. Quisque viverra augue id sem ornare non aliquam nibh tristique. Aenean in ligula nisl. Nulla sed tellus ipsum. Donec vestibulum ligula non lorem vulputate fermentum accumsan neque mollis.\\~\\
+\frametitle{System Calls}
+System programming starts with system calls.System calls (often shorted to syscalls) are function invocations made from user space—your text editor, favorite game, and so on—into the kernel (the core internals of the system) in order to request some service or resource from the operating system. 
+\end{frame}
+\begin{frame}
+\frametitle{Invoke system calls}
+It is not possible to directly link user-space applications with kernel space. For reasons of security and reliability, user-space applications must not be allowed to directly execute kernel code or manipulate kernel data. Instead, the kernel must provide a mechanism by which a user-space application can "signal" the kernel that it wishes to invoke a system call. The application can then trap into the kernel through this well-defined mechanism, and execute only code that the kernel allows it to execute. The exact mechanism varies from architecture to architecture.
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{The C Library}
+The C library (libc) is at the heart of Unix applications. Even when you're programming in another language, the C library is most likely in play, wrapped by the higher-level libraries, providing core services, and facilitating system call invocation. On modern Linux systems, the C library is provided by GNU libc, abbreviated glibc, and pronounced gee-lib-see or, less commonly, glib-see.
 
-Sed diam enim, sagittis nec condimentum sit amet, ullamcorper sit amet libero. Aliquam vel dui orci, a porta odio. Nullam id suscipit ipsum. Aenean lobortis commodo sem, ut commodo leo gravida vitae. Pellentesque vehicula ante iaculis arcu pretium rutrum eget sit amet purus. Integer ornare nulla quis neque ultrices lobortis. Vestibulum ultrices tincidunt libero, quis commodo erat ullamcorper id.
+The GNU C library provides more than its name suggests. In addition to implementing the standard C library, glibc provides wrappers for system calls, threading support, and basic application facilities.
 \end{frame}
 
-%------------------------------------------------
-
+%-------------------------------------------------
 \begin{frame}
-\frametitle{Bullet Points}
+\frametitle{The C Compiler}
+In Linux, the standard C compiler is provided by the GNU Compiler Collection (gcc). Originally, gcc was GNU's version of cc, the C Compiler. Thus, gcc stood for GNU C Compiler. Over time, support was added for more and more languages. Consequently, nowadays gcc is used as the generic name for the family of GNU compilers. However, gcc is also the binary used to invoke the C compiler. In this course, when we talk of gcc, we typically mean the program gcc, unless context suggests otherwise.
+
+\end{frame}
+
+
+%------------------------------------------------
+\section{GCC}
+\begin{frame}
+\frametitle{GCC}
+The original GNU C Compiler (GCC) is developed by Richard Stallman, the founder of the GNU Project. Richard Stallman founded the GNU project in 1984 to create a complete Unix-like operating system as free software, to promote freedom and cooperation among computer users and programmers.
+
+GCC, formerly for "GNU C Compiler", has grown over times to support many languages such as C (gcc), C++ (g++), Objective-C, Objective-C++, Java (gcj), Fortran (gfortran), Ada (gnat), Go (gccgo), OpenMP, Cilk Plus, and OpenAcc. It is now referred to as "GNU Compiler Collection". The mother site for GCC is http://gcc.gnu.org/. The current version is GCC 7.3, released on 2018-01-25.
+\end{frame}
+%---------------------------------------------
+\begin{frame}
+\frametitle{GNU Toolchain}
+GCC is a key component of "GNU Toolchain", for developing applications, as well as operating systems. The GNU Toolchain includes:
 \begin{itemize}
-\item Lorem ipsum dolor sit amet, consectetur adipiscing elit
-\item Aliquam blandit faucibus nisi, sit amet dapibus enim tempus eu
-\item Nulla commodo, erat quis gravida posuere, elit lacus lobortis est, quis porttitor odio mauris at libero
-\item Nam cursus est eget velit posuere pellentesque
-\item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
+\item GNU Compiler Collection (GCC): a compiler suit that supports many languages, such as C/C++ and Objective-C/C++
+\item GNU Make: an automation tool for compiling and building applications
+\item GNU Binutils: a suit of binary utility tools, including linker and assembler
+\item GNU Debugger (GDB)
+\item GNU Autotools: A build system including Autoconf, Autoheader, Automake and Libtool
+\item GNU Bison: a parser generator (similar to lex and yacc)
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Platform}
+GCC is portable and run in many operating platforms. GCC (and GNU Toolchain) is currently available on all Unixes. They are also ported to Windows (by MinGW and Cygwin). GCC is also a cross-compiler, for producing executables on different platform.
+\end{frame}
+\begin{frame}
+\frametitle{Install gcc}
+\begin{itemize}
+\item Unix/Linux/Mac GCC(GNU Toolchain) is included.
+\item Windows
+\begin{itemize}
+\item Cygwin GCC: Cygwin is a Unix-like environment and command-line interface for Microsoft Windows. Cygwin is huge and includes most of the Unix tools and utilities. It also included the commonly-used Bash shell.
+\item MinGW: MinGW (Minimalist GNU for Windows) is a port of the GNU Compiler Collection (GCC) and GNU Binutils for use in Windows. It also included MSYS (Minimal System), which is basically a Bourne shell (bash).
+\end{itemize}
 \end{itemize}
 \end{frame}
 
-%------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versions and Help}
+We can display the version of GCC with --version/-v option, and get help with --help option:
+\begin{example}[show version and help of GCC]
+\begin{verbatim}
+$ gcc -v
+$ gcc --version
+$ gcc --help
+\end{verbatim}
+\end{example}
+\end{frame}
 
+\subsection{Using GCC}
+\begin{frame}
+\frametitle{开始编写程序}
+C语言
+\end{frame}
+%------------------------------------------
 \begin{frame}
 \frametitle{Blocks of Highlighted Text}
 \begin{block}{Block 1}
