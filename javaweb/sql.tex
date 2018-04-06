@@ -316,6 +316,109 @@ try{
 \end{frame}
 %---------------------------------------
 \section{实例}
+\begin{frame}
+\frametitle{建表}
+接下来本ppt参照以下ER图建立数据库及表以进行演示。
+\begin{figure}
+\includegraphics[height=27cm]{sql2.pdf}
+\end{figure}
+\end{frame}
+\subsection{写数据到数据库}
+\begin{frame}
+\frametitle{信息录入页面}
+\begin{figure}
+\includegraphics[width=1\linewidth]{sql3.png}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{信息录入界面关键代码}
+\begin{lstlisting}
+<form action="teacher_add.jsp" method="post">
+<table>
+<tr><td>姓名：<input type="text" name="nm"></td></tr>
+<tr><td>
+职工号：<input type="number" name="staffid" min=20060001 >
+</td></tr>
+<tr><td><input type="submit"></td>
+<td><input type="reset"></td></tr>
+</table>
+</form>
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{写入数据库代码1/2}
+\begin{lstlisting}
+String teacher_name = 
+    request.getParameter("nm");
+int teacher_id = 
+  Integer.parseInt(request.getParameter("staffid"));
+Calendar c = Calendar.getInstance();
+String d = c.get(Calendar.YEAR)+"-"+
+    (c.get(Calendar.MONTH)+1)+"-"+
+    c.get(Calendar.DATE)+" "+
+    c.get(Calendar.HOUR_OF_DAY)+":"+
+    c.get(Calendar.MINUTE)+":"+
+    c.get(Calendar.SECOND);
+
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{写入数据库代码2/2}
+\begin{lstlisting}
+String sql = 
+ "insert into teachers (id,name,logDate) values(?,?,?)";
+int rz=0;
+try{		
+  Class.forName("com.mysql.jdbc.Driver");
+  Connection conn = DriverManager.getConnection(
+   "jdbc:mysql://localhost/lab","root","password");
+  PreparedStatement prep = conn.prepareStatement(sql);
+  prep.setInt(1, teacher_id);
+  prep.setString(2,teacher_name);
+  prep.setString(3, d);
+  rz = prep.executeUpdate();
+  System.out.println(rz);
+  conn.close();
+  if(rz==1){	
+    response.sendRedirect("teacher.jsp");
+  }
+}catch(Exception e){ e.printStackTrace();}
+\end{lstlisting}
+\end{frame}
+\subsection{查询数据}
+\begin{frame}
+\frametitle{查询数据结果}
+\begin{figure}
+\includegraphics[width=1\linewidth]{sql4.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{查询数据关键代码}
+\begin{lstlisting}
+<table>
+<tr><td>id</td><td>name</td><td>记载日期</td></tr>
+<%	
+ Class.forName("com.mysql.jdbc.Driver");
+ Connection conn = DriverManager.getConnection(
+  "jdbc:mysql://localhost/lab","root","password");
+ Statement st = conn.createStatement();
+ String sql = "select * from teachers;";
+ ResultSet rs = st.executeQuery(sql);
+ while(rs.next()){
+ out.print("<tr><td>"); out.print(rs.getInt(2));
+ out.print("</td><td>"); out.print(rs.getString(3));
+ out.print("</td><td>"); out.print(rs.getString(4));
+ out.print("</td></tr>");
+%>
+</table>
+\end{lstlisting}
+\end{frame}
+
 %---------------------------------------
 \begin{frame}
 \frametitle{目录}
