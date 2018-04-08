@@ -496,6 +496,46 @@ after login:
 \end{frame}
 
 %------------------------------------------------
+\section{解决中文乱码问题}
+\begin{frame}[fragile]
+\frametitle{页面显示和页面间传递中文乱码问题}
+\begin{lstlisting}
+<%@ page language="java" 
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+\end{lstlisting}
+\begin{itemize}
+\item
+charset
+
+用于设定服务器响应的编码格式，即tomcat会根据此字符集对响应进行编码
+\item
+pageEncoding
+
+JSP文件会以此编码进行保存
+\end{itemize}
+\begin{lstlisting}
+request.setCharacterEncoding("UTF-8");
+String teacher_name = request.getParameter("nm");
+\end{lstlisting}
+\begin{itemize}
+\item
+request.setCharacterEncoding("UTF-8")
+
+用于设置表单部分数据的编码格式，本条语句必须在 request.getParameter()前调用
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{JSP写中文到MySQL的乱码问题}
+\begin{lstlisting}
+conn = DriverManager.getConnection(
+    "jdbc:mysql://localhost/lab?
+    useUnicode=true&characterEncoding=UTF-8",
+    "root","password");
+\end{lstlisting}
+在连接数据库时，指定编码格式。				
+\end{frame}
+%------------------------------------------------
 \begin{frame}
 \frametitle{作业}
 
