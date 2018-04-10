@@ -213,8 +213,7 @@ read
 open
 \item
 close
-\item
-ioctl
+
 
 \end{enumerate}
 
@@ -483,9 +482,24 @@ int close(int fildes);
 
 
 \end{frame}
-\begin{frame}
+\subsection{使用系统调用拷贝文件}
+\begin{frame}[fragile]
 \frametitle{实验：拷贝文件}
 使用open,read,write这三个系统调用，编写一个程序simple\_copy.c，将一个文件逐个字符(\textcolor{red}{或多个字符})地拷贝到另外一个文件中去。
+
+以下的系统调用原型供参考：
+\begin{lstlisting}
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int open(const char *path, int oflags);
+int open(const char *path, int oflags, mode_t mode);
+size_t read(int fildes, void *buf, size_t nbytes);
+size_t write(int fildes, 
+        const void *buf, size_t nbytes);
+\end{lstlisting}
+
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{实验：拷贝文件代码}
@@ -536,60 +550,67 @@ printf		fprintf	sprintf
 \item
 scanf	fscanf	sscanf
 \end{enumerate}
-
+参考资料：\url{https://www.tutorialspoint.com/c_standard_library/index.htm}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fopen}
-fopen函数类似系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fopen函数类似系统调用open。主要用于文件和终端的输入输出。
+\begin{example}[fopen函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+FILE *fopen(const char *filename, const char *mode);
 \end{verbatim}
 \end{example}
+fopen打开由filename参数指定的文件，并将其与一个文件流关联起来，此文件流被实现为指向结构FILE的指针。
 
+mode参数指定文件的打开方式，它是下列字符串中的一个：
+\begin{table}
+\begin{tabular}{cccc}
+\toprule
+\textbf{模式} & \textbf{说明} & \textbf{模式} & \textbf{说明} \\
+\midrule
+"r" & 只读 & "r+" & 打开文件进行读和写） \\
+"w" & 创建文件（写，截断文件） & "w+"& 创建文件（读写，截断文件） \\
+"a" & 写（追加文件） & "a+"& 打开文件进行读或追加 \\
+\bottomrule
+\end{tabular}
+\end{table}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fread}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fread函数会从\textcolor{red}{指定的文件流}中，读取\textcolor{red}{指定数量}的\textcolor{red}{指定长度}的数据到\textcolor{red}{指定的位置/缓冲区}，其返回值为本次读取记录的个数。
+
+fwrite函数与fread相反（\textcolor{red}{源和目的地反转}）。
+\begin{example}[fread、fwrite函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+size_t fread(const void *ptr, size_t size, size_t nitems, 
+               FILE *stream);
+size_t fwrite(const void *ptr, size_t size, size_t nitems, 
+               FILE *stream);
 \end{verbatim}
 \end{example}
 
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{fwrite}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
-\begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
-\end{verbatim}
-\end{example}
-
-\end{frame}
 \begin{frame}[fragile]
 \frametitle{fclose}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fclose函数关闭指定的文件流，并使所有尚未写出的数据（\textcolor{red}{一般是指缓冲区}）写出。
+\begin{example}[fclose函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+inf fclose(FILE *stream);
 \end{verbatim}
 \end{example}
 
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fflush}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fflush函数把指定的文件流所有尚未写出的数据（\textcolor{red}{一般是指缓冲区}）写出。
+\begin{example}[fflush函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+inf fflush(FILE *stream);
 \end{verbatim}
 \end{example}
 
@@ -597,44 +618,74 @@ size_t read(int fildes, void *buf, size_t nbytes);
 
 \begin{frame}[fragile]
 \frametitle{fseek}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fseek函数为下一次的读写操作指定位置。
+\begin{example}[fseek函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+int fseek(FILE *stream, long int offset, int whence);
 \end{verbatim}
 \end{example}
+offset参数用来指定位置，whence参数指定该偏移值的用法。
+\begin{table}
+\begin{tabular}{cc}
+\toprule
+\textbf{模式} & \textbf{说明} \\
+\midrule
+SEEK\_SET & offset是一个绝对位置\\
+SEEK\_CUR & offset是相对于当前位置的一个相对值\\
+SEEK\_END & offset是一个相对文件尾的一个相对值\\
+\bottomrule
+\end{tabular}
 
+\end{table}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fgetc,getc,getchar}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fgetc函数从文件流里取出下一个字节并把它做为一个字符返回，并向前移动位置。当它到达文件末尾或出现错误时，会返回EOF，这时个需要通过ferror或feof来区分具体错误。
+
+getc函数作用基本与fgetc一样，但是不能使用getc的地址作为一个函数指针。fgetc的优化比getc好。
+
+getchar函数相当于getc(stdin)，它从标准输入里读取下一个字符。
+\begin{example}[fegtc,getc,getchar函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+
+int fgetc(FILE *stream);
+int getc(FILE *stream);
+int getchar();
 \end{verbatim}
 \end{example}
 
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fputc,putc,putchar}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fputc函数把一个字符写到一个输出流中。它返回写入的值，若失败则返回EOF。
+
+putc与fputc的关系类似于getc与fgetc的关系。
+
+putchar函数相当于putc(c, stdout)。
+\begin{example}[fputc,putc,putchar函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+
+int fputc(int c, FILE *stream);
+int putc(int c, FILE *stream);
+int putchar(int c);
 \end{verbatim}
 \end{example}
 
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{fgets,gets}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+fgets函数从输入文件流里读取一个字符串，并写到指定的字符串里面去。结合下面的函数原型，每次最多传输n-1个字符，fgets会向接收字符串里加上一个表示结尾的空字节\ 0。
+
+gets函数类似于fgets，只不过它从标准输入读取数据并丢弃遇到的换行符。
+\begin{example}[fgets,gets函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+
+char *fgets(char *s, int n, FILE *stream);
+char *gets(char *s);
 \end{verbatim}
 \end{example}
 
@@ -642,26 +693,127 @@ size_t read(int fildes, void *buf, size_t nbytes);
 \begin{frame}[fragile]
 \frametitle{printf,fprintf,sprintf}
 系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+\begin{example}[printf,fprintf,sprintf函数原型]
+这几个函数都会按照format格式指定的形式进行输出。
+
+printf会将自己的输出送到标准输出。
+
+fprintf把自己的输出送到一个指定的文件流。
+
+sprintf把自己的输出和一个结尾空字符写到一个字符串中。
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+
+int printf(const char *format, ...);
+int sprintf(char *s, const char *format, ...);
+int fprintf(FILE *stream, const char *format, ...);
 \end{verbatim}
 \end{example}
 
+\end{frame}
+\begin{frame}
+\frametitle{转换控制符}
+\begin{table}
+\begin{tabular}{cccc}
+\toprule
+\textbf{格式} & \textbf{说明} & \textbf{格式} & \textbf{说明} \\
+\midrule
+\%d  \%i& 输出十进制数 & \%o \%x & 输出八、十六进制数 \\
+\%c & 输出一个字符 & \%s & 输出一个字符串） \\
+\%f & 输出单精度符点数 & \%g & 输出双精度浮点数 \\
+\bottomrule
+\end{tabular}
+\caption{常用转换控制符表}
+\end{table}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{scanf,fscanf,sscanf}
-系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
-\begin{example}[read系统调用的原型]
+scanf系列函数的工作方式与printf系列函数很相似，只是scanf系列的函数是用来把读到的数存入到一个指针参数指向的变量中。
+\begin{example}[scanf,fscanf,sscanf函数原型]
 \begin{verbatim}
-#include <unistd.h>
-size_t read(int fildes, void *buf, size_t nbytes);
+#include <stdio.h>
+
+int scanf(const char *format, ...);
+int fscanf(FILE *stream, const char *format, ...);
+int sscanf(const char *s, const char *format, ...);
 \end{verbatim}
 \end{example}
 
+由于历史原因（有漏洞等），建议使用fread或fgets来读取输入。
 \end{frame}
+\subsection{使用标准I/O库函数拷贝文件}
+\begin{frame}[fragile]
+\frametitle{实验：使用标准库函数拷贝文件}
+本实验通过使用标准I/O库里的函数来实现文件的拷贝。
+以下库函数及其函数原型供参考：
+\begin{lstlisting}
+#include <stdio.h>
+FILE *fopen(const char *filename, const char *mode);
+size_t fread(const void *ptr, size_t size, 
+        size_t nitems, FILE *stream);
+size_t fwrite(const void *ptr, size_t size, 
+        size_t nitems, FILE *stream);
 
+\end{lstlisting}
+\begin{table}
+\begin{tabular}{cccc}
+\toprule
+\textbf{模式} & \textbf{说明} & \textbf{模式} & \textbf{说明} \\
+\midrule
+"r" & 只读 & "r+" & 打开文件进行读和写） \\
+"w" & 创建文件（写，截断文件） & "w+"& 创建文件（读写，截断文件） \\
+"a" & 写（追加文件） & "a+"& 打开文件进行读或追加 \\
+\bottomrule
+\end{tabular}
+\caption{open函数mode参数}
+\end{table}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{实验：使用标准库函数拷贝文件}
+使用getc,putc函数进行读写。
+\begin{lstlisting}
+#include <stdio.h>
+FILE *fopen(const char *filename, const char *mode);
+int fgetc(FILE *stream);
+int fputc(int c, FILE *stream);
+
+\end{lstlisting}
+\begin{table}
+\begin{tabular}{cccc}
+\toprule
+\textbf{模式} & \textbf{说明} & \textbf{模式} & \textbf{说明} \\
+\midrule
+"r" & 只读 & "r+" & 打开文件进行读和写） \\
+"w" & 创建文件（写，截断文件） & "w+"& 创建文件（读写，截断文件） \\
+"a" & 写（追加文件） & "a+"& 打开文件进行读或追加 \\
+\bottomrule
+\end{tabular}
+\caption{open函数mode参数}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{实验：使用标准库函数拷贝文件参考代码}
+\begin{lstlisting}
+     1 #include <stdio.h>
+     2 #include <stdlib.h>
+     3 int main(){
+     4 int c;
+     5 FILE *in;
+     6 FILE *out;
+     7
+     8 in=fopen("simple_read.c","r");
+     9 out=fopen("io_copy_getcputc","w");
+    10 while((c=fgetc(in))!=EOF){
+    11    fputc(c,out);
+    12 }
+    13 fclose(in);
+    14 fclose(out);
+    15 exit(0);
+    16 }
+\end{lstlisting}
+\end{frame}
+\section{文件和目录的维护}
 \begin{frame}
 \frametitle{文件和目录的维护}
 标准库和系统调用为文件和目录的创建和维护提供了全面的支持。
@@ -697,36 +849,209 @@ seekdir
 \end{enumerate}
 \end{columns}
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{chmod}
+可以通过chmod系统调用来改变文件或目录的访问权限。\textcolor{red}{这构成了shell程序chmod的基础}。
+\begin{example}[chmod系统调用的原型]
+\begin{verbatim}
+#include <sys/stat.h>
+int chmod(const char *path, mode_t mode);
+\end{verbatim}
+\end{example}
+这里的mode类似于open里的mode。
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{chown}
+超级用户可以通过chown系统调用来改变文件或目录的属主。
+\begin{example}[chown系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+int chown(const char *path, uid_t owner, gid_t group);
+\end{verbatim}
+\end{example}
+这里的uid,gid是使用的数字值。
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{unlink,link,symlink}
+可以用unlink系统调用来删除一个文件。unlink系统调用删除一个文件的目录项并减少它的链接数，成功时返回0,失败返回
+-1 。前提是\textcolor{red}{要拥有该文件所属目录的写和执行权限}。
+\begin{example}[unlink,link,symlink系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+int unlink(const char *path);
+int link(const char *path, const char *path2);
+int symlink(const char *path, const char *path2);
+\end{verbatim}
+\end{example}
+link是用来创建文件链接的（硬 ln），symlink是用来创建符号链接的（软 ln -s）。
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{mkdir,rmdir}
+用来创建或删除目录的系统调用。
+\begin{example}[mkdir,rmdir系统调用的原型]
+\begin{verbatim}
+#include <sys/stat.h>
+int mkdir(const char *path, mode_t mode);
+
+#include <unistd.h>
+int rmdir(const char *path);
+\end{verbatim}
+\end{example}
+使用rmdir时要注意，\textcolor{red}{目录为空时才可以}。
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{chdir, getcwd}
+系统调用chdir可以用来功换目录。getcwd函数可以用来确定自己当前的工作目录。
+\begin{example}[chdir, getcwd的原型]
+\begin{verbatim}
+#include <unistd.h>
+int chdir(const char *path);
+
+
+char *getcwd(char *buf, size_t size);
+\end{verbatim}
+\end{example}
+getcwd将当前目录名写到缓冲区buf中，若目录名的长度超过了size，则返回NULL，否则返回指针buf。
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{目录扫描}
+与文件操作中的文件流（FILE *）结构类似，目录流被封装成了（DIR *）结构。目录项本身被封装在dirent结构中。
+
+dirent结构中包含的目录项内容包括以下部分：
+\begin{itemize}
+\item
+ino\_t d\_ino
+
+文件的inode号
+\item
+char d\_name[]
+
+文件的名字
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{opendir函数}
+opendir函数的作用是打开并建立一个目录。
+\begin{example}[opendir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+
+DIR *opendir(const char *name);
+\end{verbatim}
+\end{example}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{readdir函数}
+readdir函数将返回一个指针，指针指向的结构里保存着目录流中下一个目录项的有关资料。
+\begin{example}[readdir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+struct dirent *readdir(DIR *dirp);
+\end{verbatim}
+\end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{telldir函数}
+telldir函数返回值记录着一个目录流里的当前位置。
+\begin{example}[telldir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+
+long int telldir(DIR *dirp);
+\end{verbatim}
+\end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{seekdir函数}
+seekdir函数返的作用是设置目录流dirp的目录项指针，loc用来设置指针的位置，loc应该通过telldir函数获得。
+\begin{example}[seekdir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+
+void seekdir(DIR *dirp, long int loc);
+\end{verbatim}
+\end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{closedir函数}
+closedir函数关闭一个目录流，并释放与之关联的资源。其执行成功返回0, 否则返回-1.
+\begin{example}[closedir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+
+int closedir(DIR *dirp);
+\end{verbatim}
+\end{example}
+\end{frame}
+\subsection{目录列表功能}
+\begin{frame}
+\frametitle{实验：实现目录列表功能}
+使用目录操作相关的函数、系统调用来实现目录列表功能。
+
+要求：
+\begin{itemize}
+\item
+每个目录或文件独占一行
+\item
+每个目录名字后面加上一个"/"符号
+\item
+每个目录下面的文件或子目录比目录缩进4个空格
+\end{itemize}
+\end{frame}
 %------------------------------------------------
 \section{/proc文件系统}
 %-----------------------------------------------
 \begin{frame}
+\frametitle{/proc文件系统}
+Linux将一切事物看作文件，硬件设备在文件系统中也有相应的条目。/dev目录中的文件使用底层系统调用这种特殊方式来访问硬件。要访问硬件必然要通过驱动程序，而为了访问驱动程序，Linux提供了一个特殊的文件系统procs，其通常表现为/proc目录。该目录包含了许多特殊文件，以允许对驱动和内核信息进行高层访问。
 
-\frametitle{用户程序vs库函数vs系统调用}
+比较常用的一些文件有：
+\begin{enumerate}
+\item
+cat /proc/cpuinfo
 
-\begin{figure}
-\includegraphics[width=1\linewidth]{601}
-\end{figure}
+查看cpu信息
+\item
+cat /proc/meminfo
+
+查看内存信息
+\item
+cat /proc/sys/fs/file-max
+
+查看内核允许程序同时打开多少个文件
+\end{enumerate}
 \end{frame}
 %------------------------------------------------
 
 %------------------------------------------------
 \begin{frame}
 \frametitle{作业}
-按以下要求进行编程练习：
+完成以下作业：
 \begin{enumerate}
 \item
-2个cpp文件：prog.cpp， aux.cpp
+文件拷贝
 \item
-1个h文件：aux.h
-\item
-aux.h头文件定义函数Max和Min，它们分别计算四个数（参数）的最大值和最小值；aux.cpp实现这两个函数
-\item
-prog.c中定义主函数，循环输入4个随机数，输出他们的最大和最小值
-\item
-编译该项目，调试、跟踪程序执行过程；并在控制台界面运行编译的可执行文件。
-\item
-\textcolor{red}{编写类似功能的c语言程序也可。}
+目录列表
 \end{enumerate}
 \end{frame}
 
@@ -738,5 +1063,13 @@ prog.c中定义主函数，循环输入4个随机数，输出他们的最大和�
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\begin{frame}
+
+\frametitle{用户程序vs库函数vs系统调用}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{601}
+\end{figure}
+\end{frame}
 
 \end{document} 
