@@ -1062,6 +1062,9 @@ cat /proc/sys/fs/file-max
 \Huge{\centerline{The End}}
 \end{frame}
 
+
+
+\section{附录}
 %----------------------------------------------------------------------------------------
 \begin{frame}
 
@@ -1070,6 +1073,29 @@ cat /proc/sys/fs/file-max
 \begin{figure}
 \includegraphics[width=1\linewidth]{601}
 \end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{about man page}
+The manual is generally split into eight numbered sections, organized as follows (on Research Unix, BSD, macOS and Linux):
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{section} & \textbf{description} \\
+\midrule
+1 & General commands\\
+ 2 & System calls\\
+ 3& Library function(C standard library)\\
+ 4 & Special files(devices) and drivers\\
+  5 & File formats and conventions\\
+  6  & Games and screensavers\\
+   7  & Miscellanea\\
+   8   & System administration commands and daemons\\  
+\bottomrule
+\end{tabular}
+\caption{man page}
+\end{table}
+
+在终端中运行man read 与 man 2 read ，观察其输出的区别。
 \end{frame}
 
 \end{document} 
