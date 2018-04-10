@@ -139,36 +139,13 @@ Linux系统是通过inode来识别文件的，文件名只是为了用户的使�
 \frametitle{inode}
 inode是linux系统中的一种数据结构。它存储了文件系统对象（包括文件、目录、设备文件、socket、管道, 等等）的元信息数据，但不包括数据内容或者文件名。
 
-文件系统创建（格式化）时，就把存储区域分为两大连续的存储区域。一个用来保存文件系统对象的元信息数据，这是由inode组成的表，每个inode默认是256字节或者128字节。另一个用来保存“文件系统对象”的内容数据，划分为512字节的扇区，以及由8个扇区组成的4K字节的块。块是读写时的基本单位。一个文件系统的inode的总数是固定的。这限制了该文件系统所能存储的文件系统对象的总数目。典型的实现下，所有inode占用了文件系统1%左右的存储容量。
 
-文件系统中每个“文件系统对象”对应一个“inode”数据，并用一个整数值来辨识。这个整数常被称为inode号码（“i-number”或“inode number”）。由于文件系统的inode表的存储位置、总条目数量都是固定的，因此可以用inode号码去索引查找inode表。
+文件系统中每个“文件系统对象”对应一个“inode”数据，并用一个整数值来辨识。这个整数常被称为inode号码（“i-number”或“inode number”）。
 
-Inode存储了文件系统对象的一些元信息，如所有者、访问权限（读、写、执行）、类型（是文件还是目录）、内容修改时间、inode修改时间、上次访问时间、对应的文件系统存储块的地址，等等。知道了1个文件的inode号码，就可以在inode元数据中查出文件内容数据的存储地址。
+Inode存储了文件系统对象的一些元信息，如所有者、访问权限（读、写、执行）、类型（是文件还是目录）、内容修改时间、inode修改时间、上次访问时间、对应的文件系统存储块的地址，等等。
 
-文件名与目录名是“文件系统对象”便于使用的别名。一个文件系统对象可以有多个别名，但只能有一个inode，并用这个inode来索引文件系统对象的存储位置。
+\textcolor{red}{一个文件系统对象可以有多个别名，但只能有一个inode}，并用这个inode来索引文件系统对象的存储位置。
 
-
-inode不包含文件名或目录名的字符串，只包含文件或目录的“元信息”。
-Unix的文件系统的目录也是一种文件。打开目录，实际上就是读取“目录文件”。目录文件的结构是一系列目录项（dirent）的列表。每个目录项，由两部分组成：所包含文件或目录的名字，以及该文件或目录名对应的inode号码。
-文件系统中的一个文件是指存放在其所属目录的“目录文件”中的一个目录项，其所对应的inode的类别为“文件”；文件系统中的一个目录是指存放在其“父目录文件”中的一个目录项，其所对应的inode的类别为“目录”。可见，多个“文件”可以对应同一个inode;多个“目录”可以对应同一个inode。
-文件系统中如果两个文件或者两个目录具有相同的inode号码，那么就称它们是“硬链接”关系。实际上都是这个inode的别名。换句话说，一个inode对应的所有文件（或目录）中的每一个，都对应着文件系统某个“目录文件”中唯一的一个目录项。
-创建一个目录时，实际做了3件事：在其“父目录文件”中增加一个条目；分配一个inode；再分配一个存储块，用来保存当前被创建目录包含的文件与子目录。被创建的“目录文件”中自动生成两个子目录的条目，名称分别是：“.”和“..”。前者与该目录具有相同的inode号码，因此是该目录的一个“硬链接”。后者的inode号码就是该目录的父目录的inode号码。所以，任何一个目录的"硬链接"总数，总是等于它的子目录总数（含隐藏目录）加2。即每个“子目录文件”中的“..”条目，加上它自身的“目录文件”中的“.”条目，再加上“父目录文件”中的对应该目录的条目。
-通过文件名打开文件，实际上是分成三步实现：首先，操作系统找到这个文件名对应的inode号码；其次，通过inode号码，获取inode信息；最后，根据inode信息，找到文件数据所在的block，读出数据。
-Linux系统使用struct inode作为数据结构名称。BSD派生的系统，使用vnode名称，其中v表示“virtual file system”。
-
-
-OSIX inode
-POSIX标准强制规范了文件系统的行为。每个“文件系统对象”必须具有：
-
-以字节为单位表示的文件大小。
-设备ID，标识容纳该文件的设备。
-文件所有者的User ID。
-文件的Group ID
-文件的模式（mode），确定了文件的类型，以及它的所有者、它的group、其它用户访问此文件的权限。
-额外的系统与用户标志（flag），用来保护该文件。
-3个时间戳，记录了inode自身被修改（ctime, inode change time）、文件内容被修改（mtime, modification time）、最后一次访问（atime, access time）的时间。
-1个链接数，表示有多少个硬链接指向此inode。
-到文件系统存储位置的指针。通常是1K字节或者2K字节的存储容量为基本单位。
 使用stat系统调用可以查询一个文件的inode号码及一些元信息。
 \end{frame}
 %\subsection{System Calls} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
@@ -199,29 +176,532 @@ POSIX标准强制规范了文件系统的行为。每个“文件系统对象”
 \end{tikzpicture}
 \end{frame}
 \begin{frame}
-\frametitle{Invoke system calls}
-It is not possible to directly link user-space applications with kernel space. For reasons of security and reliability, user-space applications must not be allowed to directly execute kernel code or manipulate kernel data. Instead, the kernel must provide a mechanism by which a user-space application can "signal" the kernel that it wishes to invoke a system call. The application can then trap into the kernel through this well-defined mechanism, and execute only code that the kernel allows it to execute. The exact mechanism varies from architecture to architecture.
+\frametitle{文件和设备}
+硬件设备在Linux系统中也通常被映射为文件，比如U盘，会被Linux系统自动挂载到一个目录下面。
+
+Linux系统中，比较重要的设备文件有：
+\begin{itemize}
+\item
+/dev/console
+
+这个设备代表系统控制台，通常是指“活跃的虚拟控制台”，或者是一个特殊的控制台窗口。
+\item
+/dev/tty
+
+如果一个进程有控制终端的话，那么，特殊文件/dev/tty就是这个控制终端的别名。
+\item
+/dev/null
+
+这是空设备，任何写向这个设备（文件）的输出都将被丢弃。
+\end{itemize}
 \end{frame}
 
 
 %------------------------------------------------
+\section{底层文件访问}
 \begin{frame}
-\frametitle{The C Library}
-The C library (\textcolor{red}{libc}) is at the heart of Unix applications. Even when you're programming in another language, the C library is most likely in play, wrapped by the higher-level libraries, providing core services, and facilitating system call invocation. On modern Linux systems, the C library is provided by GNU libc, abbreviated \textcolor{red}{glibc}, and pronounced gee-lib-see or, less commonly, glib-see.
+\frametitle{与底层文件访问有关的几个重要的系统调用}
+每个运行中的程序被称为进程，它有一些与之相关的文件描述符，可以通过这些文件描述符来访问打开的文件或设备。在运行程序时，一般有很3个已经打开的文件描述符：0,1,2.（各是什么意思？）
 
-The GNU C library provides more than its name suggests. In addition to implementing the standard C library, glibc provides wrappers for system calls, threading support, and basic application facilities.
+下面列出几个常用的与文件访问有关的系统调用：
+\begin{enumerate}
+\item
+write
+\item
+read
+\item
+open
+\item
+close
+\item
+ioctl
+
+\end{enumerate}
+
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{write}
+系统调用write的作用是把缓冲区buf的前nbyte写入与文件描述符相关联的文件中去，会返回实际写入的字节数，若未写入任何数据则返回0,返回-1表示出现了错误，对应的错误代码会保存在全局变量errno中。
+\begin{example}[write系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t write(int fildes, const void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{write}
+\begin{example}[write系统调用的使用实例]
+\begin{verbatim}
+     1  #include<unistd.h>
+     2  #include<stdlib.h>
+     3  #include<stdio.h>
+     4
+     5  int main(){
+     6    if((write(1,"Here is some data.\n",18)!=18)){
+     7      write(2,"A write error has occurred!\n",46);
+     8    }
+     9   printf("continue?");
+    10  exit(0);
+    11 }
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{read}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{read}
+\begin{example}[read系统调用的使用实例]
+\begin{verbatim}
+     1  #include<unistd.h>
+     2  #include<stdlib.h>
+     3
+     4  int main(){
+     5  char buffer[128];
+     6  int nread;
+     7 nread = read(0,buffer,128);
+     8  if(nread==-1){
+     9   write(2,"A read error has occurred.\n",27);
+    10  }
+    11  if((write(1,buffer,nread))!=nread){
+    12    write(2,"A write error has occurred.\n",27);
+    13  }
+    14  exit(0);
+    15  }
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{运行read程序的方法}
+\begin{columns}
+\column{.45\textwidth}
+\begin{enumerate}
+\item
+使用管道输入
+\item
+使用输入重定向进行输入
+\item
+直接运行程序，从终端输入
+\end{enumerate}
+\column{.5\textwidth}
+\begin{lstlisting}
+cat simple_read.c | ./read
+./read < simple_read.c
+./read
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{open}
+系统调用open的作用是\textcolor{red}{创建文件描述符}。这个文件描述符可以提供给read或write系统调用使用。
+
+两个程序打开\textcolor{red}{同一个文件}会得到\textcolor{red}{两个不同的文件描述符}，后写入的内容会\textcolor{red}{覆盖}之前写入的内容！
+\begin{example}[open系统调用的原型]
+\begin{verbatim}
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int open(const char *path, int oflags);
+int open(const char *path, int oflags, mode_t mode);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{oflags}
+oflags是用来指定打开文件方式的参数。open调用必须指定表\ref{主要文件访问模式}中所示的文件访问模式之一。
+\begin{table}
+\begin{tabular}{cc}
+\toprule
+\textbf{模式} & \textbf{说明} \\
+\midrule
+O\_RDONLY & 以只读方式打开\\
+O\_WRONLY & 以只写方式打开\\
+O\_RDWR & 以读写方式打开\\
+\bottomrule
+\end{tabular}
+\caption{主要文件访问模式}
+\label{主要文件访问模式}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{oflags-II}
+oflags参数还可以包含以下可选模式的组合（按位或）。
+\begin{table}
+\begin{tabular}{cc}
+\toprule
+\textbf{模式} & \textbf{说明} \\
+\midrule
+O\_APPEND & 追加数据在文件末尾\\
+O\_TRUNC & 丢弃文件原有内容\\
+O\_CREAT & 如果需要，就按照mode中给出的访问模式创建文件\\
+\bottomrule
+\end{tabular}
+\caption{可选文件访问模式}
+\label{可选文件访问模式}
+\end{table}
+\textcolor{red}{按位或}
+\begin{lstlisting}
+/usr/include/sys/fcntl.h
+#define O_CREAT  0x0200  /* create if nonexistant */
+#define O_TRUNC 0x0400  /* truncate to zero length */
+#define O_EXCL  0x0800  /* error if already exists */
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{O\_CREAT}
+当使用带有O\_CREAT标志的open来创建文件时，必须使用带有三个参数格式的open调用。第三个参数mode是几个标志按位或得到的。
+\begin{lstlisting}
+cat /usr/include/sys/_types/_s_ifmt.h
+#define S_IRWXU  0000700  /* [XSI] RWX mask for owner */
+#define S_IRUSR  0000400  /* [XSI] R for owner */
+#define S_IWUSR  0000200  /* [XSI] W for owner */
+#define S_IXUSR  0000100  /* [XSI] X for owner */
+#define S_IRWXG  0000070  /* [XSI] RWX mask for group */
+#define S_IRGRP  0000040  /* [XSI] R for group */
+#define S_IWGRP  0000020  /* [XSI] W for group */
+#define S_IXGRP  0000010  /* [XSI] X for group */
+#define S_IRWXO  0000007  /* [XSI] RWX mask for other */
+#define S_IROTH  0000004  /* [XSI] R for other */
+#define S_IWOTH  0000002  /* [XSI] W for other */
+#define S_IXOTH  0000001  /* [XSI] X for other */
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{open}
+\begin{example}[open系统调用的使用实例]
+\begin{verbatim}
+     1 #include <fcntl.h>
+     2 #include <sys/types.h>
+     3 #include <sys/stat.h>
+     4 #include <stdlib.h>
+     5
+     6 int main(){
+     7 open("myfile",O_CREAT,S_IRUSR|S_IWUSR);
+     8 exit(0);
+     9 }
+\end{verbatim}
+\end{example}
+
+\begin{lstlisting}
+ls -al myfile 
+-rw-------  1 hnz  staff  0 Apr 10 00:34 myfile
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{umask}
+文件被创建时，会指定访问权限，比如open使用带有O\_CREAT标志的参数来创建文件时，会指定权限。但最终的文件权限还是要结合umask（\textcolor{red}{也叫用户掩码}，是8进制数）码来确定。
+
+\textcolor{red}{open的权限位会与umask的反码做AND操作}。
+\begin{lstlisting}
+$ umask         # display current value (as octal)
+0022
+$ umask -S      # display current value symbolically
+u=rwx,g=rx,o=rx
+\end{lstlisting}
+\end{frame}
+\begin{frame}
+\frametitle{umask值的说明}
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{umask } & \textbf{Permissions}\\
+\midrule
+0 & any permission may be set (read, write, execute)\\
+1 & setting of execute permission is prohibited (read and write)\\
+2 & setting of write permission is prohibited (read and execute)\\
+3 & setting of write and execute permission is prohibited (read only)\\
+4 & setting of read permission is prohibited (write and execute)\\
+5 & setting of read and execute permission is prohibited (write only)\\
+6 & setting of read and write permission is prohibited (execute only)\\
+7 & all permissions are prohibited from being set (no permissions)\\
+\bottomrule
+\end{tabular}
+\caption{umask值说明}
+\end{table}
+\end{frame}
+\begin{frame}
+\frametitle{umask}
+\begin{tikzpicture}
+\node () at (3,10) {umask};
+\node (U1) at (4.5,10) {0};
+\node (U2) at (5,10) {0};
+\node (U3) at (5.5,10) {2};
+\node (U4) at (6,10) {2};
+\node (S) at (0.5,8) {special(setuid,setgid,sticky)};
+\node (Usr) at (4,8) {user/owner};
+\node (G) at (6,8) {group};
+\node (O) at (8,8) {other};
+\draw (U1) -- (S);
+\draw (U2) -- (Usr);
+\draw (U3) -- (G);
+\draw (U4) -- (O);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}
+\frametitle{special bit in umask}
+\textcolor{red}{setuid and setgid} (short for "set user ID upon execution" and "set group ID upon execution", respectively) are Unix access rights flags that allow users to /textcolor{red}{run an executable with the permissions of the executable's owner or group respectively} and to change behaviour in directories. They are often used to allow users on a computer system to run programs with temporarily elevated privileges in order to \textcolor{red}{perform a specific task}. While the assumed user id or group id privileges provided are not always elevated, at a minimum they are specific.
+
+When \textcolor{red}{a directory's sticky bit} is set, the filesystem treats the files in such directories in a special way so \textcolor{red}{only the file's owner, the directory's owner, or root user can rename or delete the file}. Without the sticky bit set, any user with write and execute permissions for the directory can rename or delete contained files, regardless of the file's owner. Typically this is set on the /tmp directory to prevent ordinary users from deleting or moving other users' files.
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{close系统调用}
+close系统调用是用来终止一个文件描述符与其对应文件之间关联的，这个文件描述符会被释放并能被重新使用。其返回值为0或-1 。
+\begin{example}[close系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+int close(int fildes);
+\end{verbatim}
+\end{example}
+
+
+\end{frame}
+\begin{frame}
+\frametitle{实验：拷贝文件}
+使用open,read,write这三个系统调用，编写一个程序simple\_copy.c，将一个文件逐个字符(\textcolor{red}{或多个字符})地拷贝到另外一个文件中去。
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{实验：拷贝文件代码}
+\begin{lstlisting}
+     1 #include <unistd.h>
+     2 #include <sys/stat.h>
+     3 #include <fcntl.h>
+     4 #include <stdlib.h>
+     5 int main(){
+     6 char c;
+     7 int in,out;
+     8 in = open("simple_read.c",O_RDONLY);
+     9 out = open("copy_example",
+              O_WRONLY|O_CREAT,S_IRWXU);
+    10 while(read(in,&c,1) ==1 ){
+    11 write(out,&c,1);
+    12 write(1,&c,1);}
+    13 close(in); close(out);
+    14 exit(0);
+    15 }
+\end{lstlisting}
 \end{frame}
 
 %-------------------------------------------------
+\section{标准I/O库}
 \begin{frame}
-\frametitle{The C Compiler}
-In Linux, the standard C compiler is provided by the \textcolor{red}{GNU Compiler Collection (gcc)}. Originally, gcc was GNU's version of cc, the C Compiler. Thus, gcc stood for \textcolor{red}{GNU C Compiler}. Over time, support was added for more and more languages. Consequently, nowadays gcc is used as the generic name for the family of GNU compilers. However, gcc is also the binary used to invoke the C compiler. In this course, when we talk of gcc, we typically mean the program gcc, unless context suggests otherwise.
+\frametitle{标准I/O库}
+标准I/O库及其头文件stdio.h为底层I/O系统调用提供了一个通用的接口。标准I/O库提供了许多复杂的函数，用于格式化输出和扫描输入，并且具有缓冲功能。
+
+标准I/O库与底层文件描述符很类似，在启到一个程序时，也是有三个流是自动打开的，分别是stdin,stdout,stderr与0,1,2对应。
+
+标准I/O库中的常用文件操作库函数：
+\begin{enumerate}
+\item
+fopen	fclose
+\item
+fread		fwrite
+\item
+fflush
+\item
+fgetc		getc		getchar
+\item
+fputc		putc		putchar
+\item
+fgets		gets
+\item
+printf		fprintf	sprintf
+\item
+scanf	fscanf	sscanf
+\end{enumerate}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fopen}
+fopen函数类似系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fread}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
 
 \end{frame}
 
-%------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{fwrite}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fclose}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fflush}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{fseek}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fgetc,getc,getchar}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fputc,putc,putchar}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{fgets,gets}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{printf,fprintf,sprintf}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{scanf,fscanf,sscanf}
+系统调用read的作用是从与文件描述符相关联的文件中读出前nbyte写入到缓冲区buf里，会返回实际读出的字节数，若返回0则表示读到了文件的末尾,返回-1表示出现了错误。
+\begin{example}[read系统调用的原型]
+\begin{verbatim}
+#include <unistd.h>
+size_t read(int fildes, void *buf, size_t nbytes);
+\end{verbatim}
+\end{example}
+
+\end{frame}
 
 \begin{frame}
+\frametitle{文件和目录的维护}
+标准库和系统调用为文件和目录的创建和维护提供了全面的支持。
+\begin{columns}
+
+\column{.45\textwidth}
+
+\textbf{常用的一些系统调用有：}
+\begin{enumerate}
+\item
+chmod
+\item
+chown
+\item
+unlink	 link 		symlink
+\item
+mkdir	rmdir
+\item
+chdir
+\end{enumerate}
+
+\column{.45\textwidth}
+\textbf{常用的一些库函数有：}
+\begin{enumerate}
+\item
+opendir	closedir
+\item
+readdir
+\item
+telldir
+\item
+seekdir
+\end{enumerate}
+\end{columns}
+\end{frame}
+%------------------------------------------------
+\section{/proc文件系统}
+%-----------------------------------------------
+\begin{frame}
+
 \frametitle{用户程序vs库函数vs系统调用}
 
 \begin{figure}
@@ -229,321 +709,6 @@ In Linux, the standard C compiler is provided by the \textcolor{red}{GNU Compile
 \end{figure}
 \end{frame}
 %------------------------------------------------
-\section{GCC}
-\begin{frame}
-\frametitle{GCC}
-The \textcolor{red}{GNU Compiler Collection} includes front ends for C, C++, Objective-C, Fortran, Ada, and Go, as well as libraries for these languages (libstdc++,...). GCC was originally written as the compiler for the GNU operating system. 
-
-The GNU system was developed to be 100\% free software, free in the sense that it respects the \textcolor{red}{user's freedom}.
-
-\end{frame}
-\begin{frame}
-\frametitle{The four essential freedoms}
-A program is free software if the program's users have the four essential freedoms:
-\begin{itemize}
-\item
-The freedom to \textcolor{red}{run} the program as you wish, for any purpose (freedom 0).
-\item
-The freedom to \textcolor{red}{study} how the program works, and \textcolor{red}{change} it so it does your computing as you wish (freedom 1). Access to the source code is a precondition for this.
-\item
-The freedom to \textcolor{red}{redistribute} copies so you can help others (freedom 2).
-\item
-The freedom to \textcolor{red}{distribute copies of your modified versions} to others (freedom 3). By doing this you can give the whole community a chance to benefit from your changes. Access to the source code is a precondition for this.
-\end{itemize}
-\url{https://www.gnu.org/philosophy/free-sw.html}
-
-\end{frame}
-%---------------------------------------------
-\begin{frame}
-\frametitle{GNU Toolchain}
-GCC is a key component of "GNU Toolchain", for developing applications, as well as operating systems. The GNU Toolchain includes:
-\begin{itemize}
-\item GNU Compiler Collection (GCC): a compiler suit that supports many languages, such as C/C++ and Objective-C/C++
-\item GNU Make: an automation tool for compiling and building applications
-\item GNU Binutils: a suit of binary utility tools, including linker and assembler
-\item GNU Debugger (GDB)
-\item GNU Autotools: A build system including Autoconf, Autoheader, Automake and Libtool
-\item GNU Bison: a parser generator (similar to lex and yacc)
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Platform}
-GCC is portable and run in many operating platforms.
-
- GCC (and GNU Toolchain) is currently available on all \textcolor{red}{Unixes}. They are also ported to \textcolor{red}{Windows} (by MinGW and Cygwin). GCC is also a cross-compiler, for producing executables on different platform.
-\end{frame}
-\begin{frame}
-\frametitle{Install gcc}
-\begin{itemize}
-\item Unix/Linux/Mac GCC(GNU Toolchain) is included.
-\item Windows
-\begin{itemize}
-\item Cygwin GCC: Cygwin is a Unix-like environment and command-line interface for Microsoft Windows. Cygwin is huge and includes most of the Unix tools and utilities. It also included the commonly-used Bash shell.
-\item MinGW: MinGW (Minimalist GNU for Windows) is a port of the GNU Compiler Collection (GCC) and GNU Binutils for use in Windows. It also included MSYS (Minimal System), which is basically a Bourne shell (bash).
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Versions and Help}
-We can display the version of GCC with --version/-v option, and get help with --help option:
-\begin{example}[show version and help of GCC]
-\begin{verbatim}
-$ gcc -v
-$ gcc --version
-$ gcc --help
-\end{verbatim}
-\end{example}
-\end{frame}
-
-\subsection{Using GCC}
-\begin{frame}
-\frametitle{编写c程序的流程}
-\begin{figure}
-\includegraphics[width=1\linewidth]{602}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{编写c程序的流程}
-\begin{figure}
-\includegraphics[width=1\linewidth]{603}
-\end{figure}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{hello.c}
-\begin{example}
-\begin{verbatim}
-// hello.c
-#include <stdio.h>
-
-int main(){
-        printf("Hello, C.\n");
-        return 0;
-}
-\end{verbatim}
-\end{example}
-\end{frame}
-
-
-
-%------------------------------------------
-\begin{frame}
-\frametitle{从.c文件到可执行文件}
-\begin{block}{预处理}
-gcc -E hello.c -o hello.i
-\end{block}
-
-\begin{block}{编译}
-gcc -S hello.i
-
-\end{block}
-
-\begin{block}{汇编}
-gcc -c hello.s -o hello.o
-
-\end{block}
-\begin{block}{链接}
-gcc hello.o -o hello.out
-\end{block}
-
-\begin{block}{all in one}
-gcc hello.c -o hello.out
-\end{block}
-\end{frame}
-
-%-------------------------------------------------
-\subsection{库文件}
-\begin{frame}
-\frametitle{静态库和动态库}
-库文件是一组被预先编译的目标文件的集合，可以被链接到用户所编写的程序中。
-\begin{itemize}
-\item 静态库
-
-通常以“.a”结尾(archive file)，静态库的代码在编译时就会连接到用户的程序中
-\item 动态库
-
-通常以“.so”结尾(shared objects)，用户的程序在运行时，按需要载入
-\end{itemize}
-
-\end{frame}
-\subsection{补充工具}
-\begin{frame}
-\frametitle{几个有用的工具}
-\begin{enumerate}
-\item file
-
-判断文件的类型
-\item nm
-
-显示目标文件的符号表，通常用于查看目标文件中是否定义了某个特定的函数
-
-\item ldd
-
-检查一个可执行文件并显示出其需要的动态库文件
-
-\item
-mtrace
-
-内存溢出检测
-
-\end{enumerate}
-\end{frame}
-%-----------------------------------------------
-\section{make}
-\begin{frame}
-\frametitle{make}
-依照makefile文件，make程序可以自动确定一个软件包的哪些部分需要重新编译。
-
-makefile文件描述了建立可执行程序的一些规则。
-\end{frame}
-%------------------------------------------------
-
-\begin{frame}[fragile]
-\frametitle{makefile}
-\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-
-\column{.45\textwidth} % Left column and width
-\textbf{hello.c}
-\lstset{language=C}
-\begin{lstlisting}
-
-// hello.c
-#include <stdio.h>
-
-int main(){
-    printf("Hello,C.\n");
-    return 0;
-}
-
-\end{lstlisting}
-\column{.5\textwidth} % Right column and width
-\textbf{makefile}
-\begin{lstlisting}
-all:hello
-
-hello:hello.o
-        gcc -o hello hello.o
-
-hello.o:hello.c
-        gcc -c hello.c
-clean:
-        rm hello.o
-\end{lstlisting}
-
-\end{columns}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{makefile的规则}
-\begin{lstlisting}
-target: pre-req-1 pre-req-2 ...
-	command
-\end{lstlisting}
-The target and pre-requisites are separated by a colon (:). The command must be preceded by a tab (NOT spaces).
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{make和makefile}
-\begin{lstlisting}
-$ make
-gcc -c hello.c
-gcc -o hello hello.o
-$ make clean
-rm hello.o
-$ ls
-hello  hello.c  makefile
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{修改源文件与make的关系}
-\begin{lstlisting}
-$ make
-gcc -c hello.c
-gcc -o hello hello.o
-$ make
-make: Nothing to be done for 'all'.
-$ vim hello.c
-$ make
-gcc -c hello.c
-gcc -o hello hello.o
-$ ./hello
-Hello, C.
-test make.
-\end{lstlisting}
-\end{frame}
-%------------------------------------------------
-\section{GDB}
-%------------------------------------------------
-\begin{frame}
-\frametitle{GDB}
-GDB(GNU Source-Level Debugger)，是GNU的一个\textcolor{red}{命令行调试工具}。它主要可以完成以下功能：
-\begin{itemize}
-\item
-设置运行环境和参数运行指定程序
-\item
-让程序在指定的条件下停止
-\item
-当程序停止时，检查发生了什么
-\item
-改变正在调试的程序，以修正某个bug，然后继续调试
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{gdb部分命令}
-\begin{table}
-\begin{tabular}{l l l l }
-\toprule
-\textbf{命令} & \textbf{作用} & \textbf{命令} & \textbf{作用}\\
-\midrule
-file & 载入可执行文件 & list & 显示源代码 \\
-run & 执行 & info local & 显示当前函数中变量值 \\
-kill & 停止执行 & info break & 显示断点列表 \\
-break & 设置断点 & info func & 显示所有函数名 \\
-delete & 删除断点 & watch & 监视表达式的变化 \\
-print & 显示表达式的值 & next & 执行下一条代码，但不进入 \\
-shell命令 & 执行shell命令 & step & 执行下一条代码，进入函数 \\
-\bottomrule
-\end{tabular}
-\caption{GDB部分命令}
-\end{table}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{gdb示例}
-\begin{lstlisting}
-$ vim gdb.c
-$ cat gdb.c
-#include <stdio.h>
-int main(){
-        int i=0;
-        for(i=0;i<=15;i++){
-                printf("the number is %d",i);
-        }
-}
-$ gcc -ggdb -o gdbTest gdb.c
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}
-\frametitle{gdb示例}
-\includegraphics[width=0.8\linewidth]{605}
-
-\end{frame}
-%------------------------------------------------
-\begin{frame}
-\Huge{\centerline{总结}}
-\begin{enumerate}
-\item
-System Call,C Compiler,C Library
-\item
-GCC
-\item
-make,makefile
-\item
-GDB
-\end{enumerate}
-
-\end{frame}
 
 %------------------------------------------------
 \begin{frame}

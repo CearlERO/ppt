@@ -550,31 +550,7 @@ conn = DriverManager.getConnection(
 \end{frame}
 
 %---------------------------------------
-\begin{frame}
-\frametitle{目录}
-\begin{tikzpicture}
-\node(/) at (7,10) {/};
-\node(bin) at (5,8) {bin};
-\node(home) at (7,8) {home};
-\node(dev) at (9,8) {dev};
-\draw (bin) -- (/) -- (dev);
-\draw (/) -- (home);
-\node (zhn) at (5,6) {zhn};
-\node (wys) at (7,6) {wys};
-\node (students) at (9,6) {students};
-\draw (home) -- (zhn);  
-\draw (home) -- (wys); 
-\draw (home) -- (students); 
-%\node (public\_html) at (3,4) {public\_html};
-\node (linux) at (2,4) {linux};
-\node (javaweb) at (7,4) {javaweb};
-%\draw (zhn) -- (public\_html);
-\draw (zhn) -- (linux);
-\draw (zhn) -- (javaweb);
 
-
-\end{tikzpicture}
-\end{frame}
 
 
 %----------------------------------------------------------------------------------------
