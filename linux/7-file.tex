@@ -201,7 +201,7 @@ Linux系统中，比较重要的设备文件有：
 \section{底层文件访问}
 \begin{frame}
 \frametitle{与底层文件访问有关的几个重要的系统调用}
-每个运行中的程序被称为进程，它有一些与之相关的文件描述符，可以通过这些文件描述符来访问打开的文件或设备。在运行程序时，一般有很3个已经打开的文件描述符：0,1,2.（各是什么意思？）
+每个运行中的程序被称为进程，它有一些与之相关的文件描述符，可以通过这些文件描述符来访问打开的文件或设备。在运行程序时，一般有这3个已经打开的文件描述符：0,1,2.（各是什么意思？）
 
 下面列出几个常用的与文件访问有关的系统调用：
 \begin{enumerate}
@@ -466,7 +466,7 @@ u=rwx,g=rx,o=rx
 \end{frame}
 \begin{frame}
 \frametitle{special bit in umask}
-\textcolor{red}{setuid and setgid} (short for "set user ID upon execution" and "set group ID upon execution", respectively) are Unix access rights flags that allow users to /textcolor{red}{run an executable with the permissions of the executable's owner or group respectively} and to change behaviour in directories. They are often used to allow users on a computer system to run programs with temporarily elevated privileges in order to \textcolor{red}{perform a specific task}. While the assumed user id or group id privileges provided are not always elevated, at a minimum they are specific.
+\textcolor{red}{setuid and setgid} (short for "set user ID upon execution" and "set group ID upon execution", respectively) are Unix access rights flags that allow users to \textcolor{red}{run an executable with the permissions of the executable's owner or group respectively} and to change behaviour in directories. They are often used to allow users on a computer system to run programs with temporarily elevated privileges in order to \textcolor{red}{perform a specific task}. While the assumed user id or group id privileges provided are not always elevated, at a minimum they are specific.
 
 When \textcolor{red}{a directory's sticky bit} is set, the filesystem treats the files in such directories in a special way so \textcolor{red}{only the file's owner, the directory's owner, or root user can rename or delete the file}. Without the sticky bit set, any user with write and execute permissions for the directory can rename or delete contained files, regardless of the file's owner. Typically this is set on the /tmp directory to prevent ordinary users from deleting or moving other users' files.
 \end{frame}
