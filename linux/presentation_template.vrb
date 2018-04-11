@@ -1,9 +1,0 @@
-\frametitle{Versions and Help}
-We can display the version of GCC with --version/-v option, and get help with --help option:
-\begin{code}[show version and help of GCC]
-\begin{verbatim}
-$ gcc -v
-$ gcc --version
-$ gcc --help
-\end{verbatim}
-\end{code}
