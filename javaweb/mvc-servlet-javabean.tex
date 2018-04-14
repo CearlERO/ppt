@@ -83,6 +83,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{tikz}
+\usepackage{multirow}
 
 
 %----------------------------------------------------------------------------------------
@@ -198,10 +199,21 @@ servlet是\textcolor{red}{运行在web服务器端的java程序}。
 \end{enumerate}
 
 
-servlet先于jsp产生，便是其代码组织形式是\textcolor{red}{将html代码混杂在java代码中}，给web程序设计带来了很多不便，比如负责网页设计的\textcolor{red}{美工人员也需要学习java知识}，从而进行页面的设计，在程序设计中，servlet产生的动态网页又需要在代码中\textcolor{red}{编写大量输出html标签的语句}。
+servlet先于jsp产生，但是其代码组织形式是\textcolor{red}{将html代码混杂在java代码中}，给web程序设计带来了很多不便，比如负责网页设计的\textcolor{red}{美工人员也需要学习java知识}，才能进行页面的设计，在程序设计中，servlet产生的动态网页又需要在代码中\textcolor{red}{编写大量输出html标签的语句}。
 
 基于以上原因，Sun公司提出了jsp技术。jsp是一种在servlet规范之上的动态网页技术，jsp文件在第一次被请求时，会被编译成servlet文件，再通过容器调用servlet进行处理。
 
+\end{frame}
+\begin{frame}
+\frametitle{为什么使用servlet}
+由于以下两个特点，
+\begin{enumerate}
+\item
+servlet由java语言编写，因此其可获得java语言的所有功能支持
+\item
+servlet对web应用进行了封装，可对http请求进行相应的处理
+\end{enumerate}
+再加上jsp承担了原来servlet中的负责页面显示的部分，因此现在的servlet就比较适合用来处理web系统的业务逻辑。
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{servlet代码片断}
@@ -220,10 +232,213 @@ servlet先于jsp产生，便是其代码组织形式是\textcolor{red}{将html�
 10 }
 \end{lstlisting}
 \end{frame}
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{servlet代码结构}
 
+ 在eclipse中，右键点击项目，选择新建，servlet，即可建立一个servlet.
+\begin{lstlisting}
+@WebServlet("/Reg")
+public class Reg extends HttpServlet {
+private static final long serialVersionUID = 1L;    
+  public Reg() {
+        super();
+    }
+ protected void doGet(HttpServletRequest req, 
+     HttpServletResponse resp) 
+     throws ServletException, IOException {
+ }
+  protected void doPost(HttpServletRequest req, 
+     HttpServletResponse resp) 
+     throws ServletException, IOException {
+  }
+}
+\end{lstlisting}
 \end{frame}
+
+\begin{frame}
+\frametitle{servlet使用示例}
+以注册为例，展示servlet的使用方法。
+原来的注册功能是通过teacher\_add.jsp页面来实现的。
+
+接下来将采用Reg这个servlet来实现相同的功能，主要步骤为：
+
+\begin{enumerate}
+\item
+更改form的action地址为Reg这个servlet
+\item
+完善Reg这个servlet里的doPost()方法，以处理表单通过post提交过来的数据
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{更改form的action}
+\begin{lstlisting}
+<form action="Reg" method="post">
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{完成Reg里的doPost()方法}
+\begin{lstlisting}
+protected void doPost(... , ...)... {
+// 设置request传递过来值的编码，并获取传递值
+request.setCharacterEncoding("utf-8");
+String id = request.getParameter("staffid");
+String name = request.getParameter("nm");
+//get current date and time
+LabDate ld = new LabDate();  
+String time = ld.getDtTm();
+//write to database
+String[] fields= {"id","name","logDate"};
+String[] values= new String[3];
+values[0]=id; values[1]=name; values[2]=time;
+Db db = new Db();
+int i = db.writeDb("teachers", fields, values);
+db.getClose();
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{完成Reg里的doPost()方法-II}
+\begin{lstlisting}
+protected void doPost(... , ...)... {
+// 设置request传递过来值的编码，并获取传递值
+//get current date and time
+//write to database
+int i = db.writeDb("teachers", fields, values);
+db.getClose();
+String rz="";
+if(i==1) {
+  rz = "Done! Will return  in 3 seconds.";
+}else {
+  rz = "Sth wrong! Will return  in 3 seconds.";
+}
+response.getWriter().print(rz);
+response.setHeader("refresh","3,URL=teacher.jsp");
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{servlet过滤器}
+先观察下图：
+\begin{figure}
+\begin{tikzpicture}
+\node (c) at (1,5) [circle,draw] {client};
+
+\node (f) at (6,5) [rectangle,draw,minimum height=20mm] {\textcolor{red}{filter}};
+\node (s) at (8,5) [circle,draw] {server};
+\draw [dashed,label=above:webserver] (5,3) rectangle (9,7) ;
+\draw [->,line width=1.5pt] (1.5,5.5) -- (5.5,5.5); 
+\draw [<-,line width=1.5pt] (1.5,4.5) -- (5.5,4.5); 
+\draw [->,line width=1.5pt] (6.5,5.5) -- (7.5,5.5); 
+\draw [<-,line width=1.5pt] (6.5,4.5) -- (7.5,4.5); 
+
+\end{tikzpicture}
+\caption{the position and function of a filter}
+\end{figure}
+可以看出，filter是介于client和server端的一个“关卡”，其负责“过滤”信息流（这个过滤器可以有多个，形成过滤器链）。
+\end{frame}
+\begin{frame}[fragile]{创建一个filter}
+创建一个filter，禁止特定id的用户注册(\textcolor{red}{chain.doFilter()})。
+
+创建过程与创建servlet类似。
+
+FilterReg.java的主要代码如下所示：
+\begin{lstlisting}
+@WebFilter(filterName = "/FilterReg",
+      urlPatterns = "/Reg")
+public class FilterReg implements Filter {
+  public void doFilter(ServletRequest request, 
+  ServletResponse response, FilterChain chain)  {
+  HttpServletRequest req = 
+      (HttpServletRequest) request; 
+  String id = request.getParameter("staffid");
+  System.out.println("staffid is: "+id);
+  // pass the request along the filter chain
+  chain.doFilter(request, response);
+  }
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{chain.doFilter()}
+Pay attention to 
+\textcolor{red}{chain.doFilter()}.
+\begin{lstlisting}
+public void doFilter(ServletRequest request, 
+    ServletResponse response, FilterChain chain)  {
+// place your code here
+HttpServletRequest req = (HttpServletRequest) request; 
+String id = request.getParameter("staffid");
+System.out.println("staffid is: "+id);
+	
+// pass the request along the filter chain
+chain.doFilter(request, response);
+		
+HttpServletResponse resp = 
+    (HttpServletResponse) response;
+resp.getWriter().print("add is done. Stay here.");
+//resp.setHeader("refresh", "3,URL=index.jsp");
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}{监听器}
+\textcolor{red}{监听}是对\textcolor{red}{特定事件}进行关注。
+
+所谓监听器就是对特定事件的发生做出反应，比如你点击了什么按钮等等。
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{Listener接口}&\textbf{Event类}\\
+\midrule
+ServletContextListener&ServletContextEvent\\
+ServletContexAttributeListener&ServletContextAttributeEvent\\
+HttpSessionListener&\multirow{2}{*}{HttpSeesionEvent}\\
+HttpSessionActivationListener&\\
+HttpSessionAttributeListener&\multirow{2}{*}{HttpSessionBindingEvent}\\
+HttpSessionBindingListener&\\
+ServletRequestListener&ServletRequestEvent\\
+ServletRequestAttributeListener&ServletRequestAttributeEvent\\
+\bottomrule
+\end{tabular}
+\caption{Listener接口与Event类}
+\end{table}
+\end{frame}
+
+
+\begin{frame}[fragile]{使用servlet处理文件上传I}
+form的主要代码为（class\_apply.jsp）：
+\begin{lstlisting}
+<form action="ServletClassArrange" 
+  enctype="multipart/form-data" method="post">
+<table>
+<tr><td>
+上传实验指导书：<input type="file" name="guideBook" >
+   </td></tr>
+<tr><td>
+<button type="submit">submit</button>
+   </td></tr>
+</table>
+</form>
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{使用servlet处理文件上传II}
+Servlet的主要代码为（ServletClassArrange.java）：
+\begin{lstlisting}
+@WebServlet("/ServletClassArrange")
+@MultipartConfig
+public class ServletClassArrange extends HttpServlet {
+protected void doPost(......){
+  request.setCharacterEncoding("utf-8");
+  Part pt = request.getPart("guideBook");
+  String fName = pt.getSubmittedFileName();
+  System.out.println("the file is:"+fName);
+  System.out.println(
+     this.getServletContext().getRealPath("/")+fName);
+  pt.write("/Users/hainingzhang/Downloads/"+fName);
+  System.out.println("success uploaded!");
+}
+}
+\end{lstlisting}
+\end{frame}
+%---------------------------------------------
 \section{java bean}
 \begin{frame}
 \Huge{\centerline{java bean}}
@@ -237,8 +452,30 @@ servlet先于jsp产生，便是其代码组织形式是\textcolor{red}{将html�
 \end{frame}
 
 %---------------------------------------
+\section{Appendix}
 
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+\begin{frame}{Appendix}
+\begin{block}{ppt、项目源代码及实验指导书的地址}
+\begin{enumerate}
+\item
+ppt
 
+\url{https://github.com/gmsft/ppt/tree/master/javaweb}
+\item
+lab-java项目
+
+\url{https://github.com/gmsft/javaweb}
+
+\item
+实验指导书
+
+暂无，拟放在ppt的仓库里
+\end{enumerate}
+\end{block}
+\end{frame}
 
 %----------------------------------------------------------------------------------------
 
