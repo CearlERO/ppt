@@ -84,7 +84,7 @@
 \usepackage{listings}
 \usepackage{tikz}
 \usepackage{multirow}
-
+\lstset{numbers=left,xleftmargin=10pt,xrightmargin=10pt}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -189,7 +189,7 @@ M & java bean\\
 \Huge{\centerline{servlet}}
 \end{frame}
 \begin{frame}
-\frametitle{servlet是什么}
+\frametitle{什么是servlet}
 servlet是\textcolor{red}{运行在web服务器端的java程序}。
 \begin{enumerate}
 \item
@@ -213,23 +213,23 @@ servlet由java语言编写，因此其可获得java语言的所有功能支持
 \item
 servlet对web应用进行了封装，可对http请求进行相应的处理
 \end{enumerate}
-再加上jsp承担了原来servlet中的负责页面显示的部分，因此现在的servlet就比较适合用来处理web系统的业务逻辑。
+再加上\textcolor{red}{jsp}承担了原来servlet中的\textcolor{red}{负责页面显示}的部分，因此现在的\textcolor{red}{servlet}就比较适合用来\textcolor{red}{处理web系统的业务逻辑}。
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{servlet代码片断}
 \begin{lstlisting}
-1 while(enu.hasMoreElements()){
-2 String attr = enu.nextElement();
-3  if(attr.equals("user")){
-4    user = (String)session.getAttribute("user");
-5    out.print("你好，"+user+"。");
-6    out.print("<form action=\"logout.jsp\"
+ while(enu.hasMoreElements()){
+ String attr = enu.nextElement();
+  if(attr.equals("user")){
+    user = (String)session.getAttribute("user");
+    out.print("你好，"+user+"。");
+    out.print("<form action=\"logout.jsp\"
         method=\"post\">");
-7    out.print("<input type=\"submit\" 
+    out.print("<input type=\"submit\" 
         value=\"logout\"></form>");
-8    break;
-9  }
-10 }
+    break;
+  }
+}
 \end{lstlisting}
 \end{frame}
 \begin{frame}[fragile]
@@ -363,9 +363,9 @@ Pay attention to
 \textcolor{red}{chain.doFilter()}.
 \begin{lstlisting}
 public void doFilter(ServletRequest request, 
-    ServletResponse response, FilterChain chain)  {
-// place your code here
-HttpServletRequest req = (HttpServletRequest) request; 
+    ServletResponse response, FilterChain chain){
+HttpServletRequest req = 
+  (HttpServletRequest) request; 
 String id = request.getParameter("staffid");
 System.out.println("staffid is: "+id);
 	
@@ -379,6 +379,7 @@ resp.getWriter().print("add is done. Stay here.");
 }
 \end{lstlisting}
 \end{frame}
+
 \begin{frame}{监听器}
 \textcolor{red}{监听}是对\textcolor{red}{特定事件}进行关注。
 
@@ -410,7 +411,7 @@ form的主要代码为（class\_apply.jsp）：
   enctype="multipart/form-data" method="post">
 <table>
 <tr><td>
-上传实验指导书：<input type="file" name="guideBook" >
+上传实验指导书:<input type="file" name="guideBook" >
    </td></tr>
 <tr><td>
 <button type="submit">submit</button>
@@ -424,27 +425,133 @@ Servlet的主要代码为（ServletClassArrange.java）：
 \begin{lstlisting}
 @WebServlet("/ServletClassArrange")
 @MultipartConfig
-public class ServletClassArrange extends HttpServlet {
-protected void doPost(......){
+public class ServletClassArrange 
+   extends HttpServlet {
+ protected void doPost(......){
   request.setCharacterEncoding("utf-8");
   Part pt = request.getPart("guideBook");
   String fName = pt.getSubmittedFileName();
   System.out.println("the file is:"+fName);
   System.out.println(
-     this.getServletContext().getRealPath("/")+fName);
+   this.getServletContext().getRealPath("/")+fName);
   pt.write("/Users/hainingzhang/Downloads/"+fName);
   System.out.println("success uploaded!");
-}
+ }
 }
 \end{lstlisting}
 \end{frame}
 %---------------------------------------------
-\section{java bean}
+\section{javabean}
 \begin{frame}
-\Huge{\centerline{java bean}}
+\Huge{\centerline{javabean}}
+\end{frame}
+\begin{frame}{什么是javabean}
+如果一个类满足以下条件：
+\begin{enumerate}
+\item
+All properties private (use getters/setters)
+\item
+A public no-argument constructor
+\item
+Implements Serializable
+\end{enumerate}
+则就称这个类是一个javabean。
+\end{frame}
+\begin{frame}[fragile]{serializable}
+如果想将一个java对象保存到文件中，那么这个对象必须是可序列化的（serializable）,也就是说这个对象的类需要是可序列化的。
+\begin{block}{Teacher类实现序列化}
+\begin{lstlisting}
+import java.io.Serializable;
+
+public class Teacher implements Serializable{
+   private static final long serialVersionUID = 1L;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{为什么要使用javabean}
+使用javabean可以使html代码和java代码尽可能的分离，将java代码单独封装成为一个处理某种业务逻辑的类，然后在jsp页面中调用此类。以\textcolor{red}{简化jsp页面和提高java程序代码的重用性}。
+\end{frame}
+\begin{frame}[fragile]{Teacher}
+定义Teacher类，该类为封装教师对象的javabean。
+\begin{lstlisting}
+//Teacher.java
+package bean;
+import java.io.Serializable;
+public class Teacher implements Serializable{
+ private static final long serialVersionUID = 1L;
+ private String staffid,nm,logDate;	
+ public Teacher() {}
+ public void setstaffid(String id){this.staffid=id;}
+ public void setnm(String name) {this.nm=name;}
+ public void setlogDate(String logDate) {
+   this.logDate=logDate;}
+ public String getstaffid() { return staffid; }
+ public String getnm() { return nm;  }
+ public String getlogDate() { return logDate;  }
+}
+\end{lstlisting}
+
+\end{frame}
+\begin{frame}[fragile]{与javabean相关的几个jsp标签}
+\begin{enumerate}
+\item
+jsp:useBean
+
+实例化一个对象
+\item
+jsp:setProperty
+
+为一个属性赋值
+\item
+jsp:getProperty
+
+获取一个属性值
+\end{enumerate}
+\begin{lstlisting}
+//teacher_add.jsp
+<jsp:useBean id="teacher" class="bean.Teacher">
+ </jsp:useBean>
+<jsp:setProperty name="teacher" property="nm"
+ value="贵州大学" />
+<jsp:getProperty property="nm" name="teacher"/>
+
+\end{lstlisting}
+
 \end{frame}
 
+\begin{frame}[fragile]{对javabean属性赋值与获取javabean属性}
+在jsp页面中，对javabean属性赋值与获取javabean属性。
+\begin{lstlisting}
+//teacher_add.jsp
+<% request.setCharacterEncoding("utf-8"); %>
+<jsp:useBean id="teacher" class="bean.Teacher">
+ </jsp:useBean>
+<jsp:setProperty name="teacher" property="*" />
+<table>  <tr> <th>staffid</th> <th>nm</th> 
+      <th>logDate</th> </tr>  <tr> <td>
+<jsp:getProperty property="staffid" name="teacher"/>
+</td><td>
+<jsp:getProperty property="nm" name="teacher"/>
+</td><td>
+<jsp:getProperty property="logDate" name="teacher"/>
+</td></tr></table>
+\end{lstlisting}
 
+\end{frame}
+
+\begin{frame}{作业}
+\begin{enumerate}
+\item
+使用session记录登陆状态
+\item
+练习servlet和javabean的使用
+\item
+学习jsp+servlet+javabean联合使用
+
+\url{https://github.com/danielniko/SimpleJspServletDB}
+\end{enumerate}
+\end{frame}
 %------------------------------------------------
 
 \begin{frame}
@@ -475,6 +582,12 @@ lab-java项目
 暂无，拟放在ppt的仓库里
 \end{enumerate}
 \end{block}
+\end{frame}
+
+\begin{frame}{ServletRequest和HttpServletRequest}
+public interface HttpServletRequest\\
+extends ServletRequest\\
+Extends the ServletRequest interface to provide request information for HTTP servlets.
 \end{frame}
 
 %----------------------------------------------------------------------------------------
