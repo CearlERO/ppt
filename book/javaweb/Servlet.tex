@@ -84,6 +84,7 @@ throws ServletException, IOException {
 \end{figure}
 
 \section{filter}
+filter是servlet规范中定义的一种特殊类。
 filter可以理解成介于客房端和目标资源之间的一个过滤器，即它会对客户端的请示进行过滤后才可以到达服务器上的目标资源，或者访问到目标资源后，对服务器端产生的响应进行处理后才送回客户端（这两个活动可以在一个过滤器中同时进行，即双向过滤）。
 filter的示意图如Figure \ref{filter}所示。
 \begin{figure}
@@ -181,3 +182,39 @@ import javax.servlet.http.HttpServletResponse;
 \end{figure}
 
 \section{listener}
+listener是servlet规范中定义的一种特殊类。listener是监听器，其作用就是用来监听servlet容器中一些事件(event)的发生。从大的分类上来说，listener可以监听以下三个对象的事件：\begin{enumerate}
+\item
+ServletContex
+\item
+HttpSession
+\item
+ServletRequest
+\end{enumerate}
+listener和event的对应关系，如Table \ref{le}所示。
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{Listener接口}&\textbf{Event类}\\
+\midrule
+ServletContextListener&ServletContextEvent\\
+ServletContexAttributeListener&ServletContextAttributeEvent\\
+HttpSessionListener&\multirow{2}{*}{HttpSeesionEvent}\\
+HttpSessionActivationListener&\\
+HttpSessionAttributeListener&\multirow{2}{*}{HttpSessionBindingEvent}\\
+HttpSessionBindingListener&\\
+ServletRequestListener&ServletRequestEvent\\
+ServletRequestAttributeListener&ServletRequestAttributeEvent\\
+\bottomrule
+\end{tabular}
+\caption{Listener接口与Event类}
+\label{le}
+\end{table}
+
+监听器通常可以被用来统计在线人数。接下来以此为例展示监听器的使用方法。
+\subsection{新建listener}
+与servlet和filter的新建方式一样，新建一个listener。这里需要注意的是，在下一步选择监听事件的时候，选择HttpSessionEvent里面的lifecycle，如Figure \ref{listener}所示，因为这里统计在线人数是通过统计当前活动的session来计数的。
+\begin{figure}
+\includegraphics[width=1\linewidth]{servletListener.png}
+\caption{选择listener监听事件}
+\label{listener}
+\end{figure}
