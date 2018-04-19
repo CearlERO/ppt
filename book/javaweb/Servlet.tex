@@ -106,7 +106,7 @@ filter的示意图如Figure \ref{filter}所示。
 在用户注册的时候，如果想禁止某个姓名被使用，可以通过部署一个filter介于注册页面和业务逻辑处理模块之间。接下来的例子中，注册页面为teacher.jsp，业务逻辑处理模块为Reg.java（\textcolor{red}{请注意这是一个servlet}）。
 
 \subsection{建立filter}
-与建立一个servlet的方法类似，可以建立一个filter，将其命名为FilterReg.java。可以看到这个新建的java文件中，有若干个方法，其中的doFilter方法是我们需要关注的，因为过滤功能就是在此处实现的。Filter文件FilterReg.java中的关键代码如Figure \ref{filterReg}所示。Figure \ref{filterReg}中的代码会判断用户提交的姓名，如果姓名为“zq”，则会截断请求，使得用户请求不能到达Reg这个servlet，从而不能完成注册，达到了禁止特定用户名注册的目的。
+与建立一个servlet的方法类似，可以建立一个filter，将其命名为FilterReg.java。可以看到这个新建的java文件中，有若干个方法，其中的doFilter方法是我们需要关注的，因为过滤功能就是在此处实现的。Filter文件FilterReg.java的代码如Figure \ref{filterReg}所示。Figure \ref{filterReg}中的代码会判断用户提交的姓名，如果姓名为“zq”，则会截断请求，使得用户请求不能到达Reg这个servlet，从而不能完成注册，达到了禁止特定用户名注册的目的。
 \begin{figure}
 \begin{lstlisting}
 public void doFilter(ServletRequest request, 
@@ -218,5 +218,73 @@ ServletRequestAttributeListener&ServletRequestAttributeEvent\\
 \caption{选择listener监听事件}
 \label{listener}
 
-其代码如Figure 所示。
 \end{figure}
+
+其代码如Figure \ref{listenercode}所示。
+\begin{figure}
+\begin{lstlisting}
+package listener;
+
+import javax.servlet.annotation.WebListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+import cs.LabDate;
+/**
+ * Application Lifecycle Listener implementation class OnlineNum
+ *
+ */
+@WebListener
+public class OnlineNum implements HttpSessionListener {
+	private int count;
+	
+	public int getNum() {
+		return count;
+	}
+	
+	public synchronized void setCount(int c) {
+		count+=c;
+	}
+
+    /**
+     * Default constructor. 
+     */
+    public OnlineNum() {
+        // TODO Auto-generated constructor stub
+    	count=0;
+    	System.out.println("当前在线人数被初始化为0");
+    }
+
+	/**
+     * @see HttpSessionListener#sessionCreated(HttpSessionEvent)
+     */
+    public void sessionCreated(HttpSessionEvent arg0)  { 
+         // TODO Auto-generated method stub
+    	String dt = new LabDate().getDtTm();
+    	String sid = arg0.getSession().getId();
+//    	count++;
+    	setCount(1);
+    	System.out.println("at "+dt+","+sid+" coming, 当前在线人数为："+count);
+    }
+
+	/**
+     * @see HttpSessionListener#sessionDestroyed(HttpSessionEvent)
+     */
+    public void sessionDestroyed(HttpSessionEvent arg0)  { 
+         // TODO Auto-generated method stub
+//    	count--;
+    	setCount(-1);
+    	String dt = new LabDate().getDtTm();
+    	String sid = arg0.getSession().getId();
+    	System.out.println("at "+dt+","+sid+" leave, 当前在线人数为："+count);
+    }	
+}
+\end{lstlisting}
+\caption{listener代码}
+\label{listenercode}
+\end{figure}
+\subsection{部署listener}
+listener的部署很简单，不需要另外配置，在创建listener的时候eclipse会自动帮助创建一条注释：\textcolor{red}{@WebListener}，这条注释就完成了listener的部署。
+
+通常，每个http请求都会与一个session关联在一起。如果该请求没有与之相关联的session，那么服务器会为其创建一个session，此时会触发sessionCreated事件；该session会在用户不再活动的一定时间之后失效，或者用户主动注销（调用session.invalidate()方法），此时会触发sessionDestoryed事件，这两个事件会被监听器监听到。
+
