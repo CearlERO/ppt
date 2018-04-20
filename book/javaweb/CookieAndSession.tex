@@ -1,6 +1,156 @@
+% !TEX encoding = UTF-8 Unicode
 \chapter{cookie and session}
+
 在计算机领域，如果一个程序如果能够记忆用户的操作历史或者用户的交互历史，那么这个程序就是有状态的。这些被记住的信息就称为系统的状态。
 
-Http协议是\underline{无状态}的，每次的客户端请求都会被当做一个新的请求，服务端不会记住你曾经访问过。为了实现有状态的通信，人们提出了cookie和session技术。
+Http协议是\underline{无状态}的，每次的客户端请求都会被当做一个新的请求，服务端不会记住你曾经访问过，那么就无法追踪用户\footnote{一个比较典型的场景就是电商网站的购物车}。为了实现有状态的通信，人们提出了cookie和session技术\footnote{\url{https://tools.ietf.org/html/rfc6265}}。这两种技术都是用来保存与用户有关的信息的。
+
 \section{cookie}
-Cookie是由服务器端生成并发送给客户端保存的一小段文本数据\footnote{https://en.wikipedia.org/wiki/HTTP_cookie}。
+\label{ck}
+Cookie\footnote{\url{https://en.wikipedia.org/wiki/HTTP_cookie}}是由服务器端生成并发送给\textcolor{red}{客户端保存}的一小段文本数据。Cookie中不能包含空格，值的存储形式是一系列的“属性-值”。
+
+以下为两次请求同一个jsp网站，抓取到的相关http请求信息。可以看到:
+\begin{enumerate}
+\item
+第一次请求的request header中并无cookie相关信息，但是response header中有一个set-cookie，也就是说，服务器看到请求中没有cookie，那么就自动创建了一个cookie给客户端（这个和具体的web容器有关）；
+\item
+第二次请求的时候，request header直接带上了这个cookie去访问服务器，服务器看到这个cookie就知道是这个特定的用户又来访问了。
+\end{enumerate}
+\textbf{第一次访问网站}：\\
+%\paragraph{
+\textbf{General}\\
+Request URL: http://localhost:8080/lab-java/\\
+Request Method: GET\\
+Status Code: 200 \\
+Remote Address: [::1]:8080\\
+Referrer Policy: no-referrer-when-downgrade\\
+\textbf{Response Headers}\\
+HTTP/1.1 200\\
+Set-Cookie: JSESSIONID=8DF2DE79C1951FF63FAC3B89D47FD44F; Path=/lab-java; HttpOnly\\
+Content-Type: text/html;charset=UTF-8\\
+Content-Length: 1300\\
+Date: Fri, 20 Apr 2018 10:06:57 GMT\\
+\textbf{Request Headers}\\
+GET /lab-java/ HTTP/1.1\\
+Host: localhost:8080\\
+Connection: keep-alive\\
+Upgrade-Insecure-Requests: 1\\
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_13\_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36\\
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\\
+DNT: 1\\
+Accept-Encoding: gzip, deflate, br\\
+Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7\\
+%}
+\textbf{第二次访问网站}：\\
+\textbf{General}\\
+Request URL: http://localhost:8080/lab-java/\\
+Request Method: GET\\
+Status Code: 200 \\
+Remote Address: [::1]:8080\\
+Referrer Policy: no-referrer-when-downgrade\\
+\textbf{Response Headers}\\
+HTTP/1.1 200\\
+Content-Type: text/html;charset=UTF-8\\
+Content-Length: 1300\\
+Date: Fri, 20 Apr 2018 10:14:19 GMT\\
+\textbf{Request Headers}\\
+GET /lab-java/ HTTP/1.1\\
+Host: localhost:8080\\
+Connection: keep-alive\\
+Cache-Control: max-age=0\\
+Upgrade-Insecure-Requests: 1\\
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_13\_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36\\
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\\
+DNT: 1\\
+Accept-Encoding: gzip, deflate, br\\
+Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7\\
+Cookie: JSESSIONID=8DF2DE79C1951FF63FAC3B89D47FD44F\\
+\subsection{cookie的常用方法}
+\begin{enumerate}
+\item
+获取cookie
+
+Cookie[] ck = request.getCookies();\\一个服务器可能会向一个客户端设置若干个cookie
+\item
+获取某个cookie对象的名字和值
+
+ckName=ck[i].getName();
+ckValue=ck[i].getValue();
+\item
+向客户端添加cookie
+\begin{enumerate}
+\item
+新建cookie
+
+Cookie my2ndCookie = new Cookie("username","unknown.yes\#or\#no?");
+\item
+向客户端发送cookie
+
+response.addCookie(my2ndCookie);
+\end{enumerate}
+
+\end{enumerate}
+\section{session}
+
+一个客户端与服务器端之间的通讯过程称为一次会话(session)。
+
+Session\footnote{\url{https://en.wikipedia.org/wiki/Session_(computer_science)}}是保存在服务器端的，是一个容器，其中保存的是一对一对的数据（属性-值）。在jsp中，每当一个客户端的请求到来时，服务器端都会检查其请求中是否包含cookie，若有，则从cookie中读取数据（JSESSIONID）；若无，则为这一个用户端与服务器端的会话过程创建一个session。这个session会在用户关闭了这个会话之后就消失了，下一次这个用户再来的时候，服务器会把他当做一个全新用户来对待。如何让服务器记住某个特定的用户呢？方法有若干种，这里介绍其中一种最常用的。在\ref{ck}部分介绍了客户端第一次访问服务器的时候，会得到一个服务器端生成的cookie，这个cookie的名字是JSESSIONID，值是一串十六进制数。这个cookie是用来保存用户seesion信息的，那个JSESSIONID就是服务器为那次会话生成的一个标识符，通常叫做session id。客户端在这之后再访问服务器的话，就会带上这个cookie来访问，服务器看到这个cookie里的session id就会知道某个特定的用户来了。
+\subsection{session的常用方法}
+\begin{enumerate}
+\item
+获取session
+
+session是servlet的一个内置对象，可以像request一样直接使用，一个客户端和一个服务器在一段时间内只拥有一个session
+\item
+往session里写数据
+
+session.setAttribute("id", id);\\注意是一对一对的写，与cookie类似
+
+\item
+读session里的数据
+
+session.getAttribute("id");
+\item
+销毁session
+
+session.invalidate();\\注销登陆
+\end{enumerate}
+\section{cookie和session的生命周期}
+cookie和session是有其生命周期的。
+\begin{itemize}
+\item
+有些网站会提供一个记住密码，多长时间不用再重新登陆的功能，使用的方法就是设置cookie的过期时间；
+\item
+有时候停留在某个页面长时间不进行操作的话，再去操作就可能会被提示登陆超时，请重新登陆，这个功能就很可能是session超时了。
+\end{itemize}
+cookie和session与时效相关的一些方法如Table\ref{cookie}和Table\ref{session}所示。
+\begin{table}
+\begin{tabular}{lp{25em}}
+\toprule
+\textbf{Method}&\textbf{Description}\\
+\midrule
+int getMaxAge()&  Returns the maximum age of the cookie, specified in seconds, By default, -1 indicating the cookie will persist until browser shutdown.\\
+void setMaxAge(int expiry) &  Sets the maximum age of the cookie in seconds.an integer specifying the maximum age of the cookie in seconds; if negative, means the cookie is not stored; if zero, deletes the cookie.\\
+\bottomrule
+\end{tabular}
+\caption{cookie时效相关的方法}
+\label{cookie}
+\end{table}
+\begin{table}
+\begin{tabular}{lp{20em}}
+\toprule
+\textbf{Method}&\textbf{Description}\\
+\midrule
+long getCreationTime() &  Returns the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.\\
+long getLastAccessedTime() & Returns the last time the client sent a request associated with this session, as the number of milliseconds since midnight January 1, 1970 GMT, and marked by the time the container received the request.\\
+int getMaxInactiveInterval() &  Returns the maximum time interval, in seconds, that the servlet container will keep this session open between client accesses.\\
+void 	setMaxInactiveInterval(int interval) &  Specifies the time, in seconds, between client requests before the servlet container will invalidate this session. A negative time indicates the session should never timeout.\\
+\bottomrule
+\end{tabular}
+\caption{session时效相关的一些方法}
+\label{session}
+\end{table}
+
+
+\section{Other}
+偶然间发现stanford的一个关于网站方面的资源，\url{https://crypto.stanford.edu/cs142/lectures/}；还有cookie和session方面的\url{https://web.stanford.edu/~ouster/cgi-bin/cs142-fall10/lecture.php?topic=cookie}。
