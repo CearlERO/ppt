@@ -57,25 +57,25 @@ throws ServletException, IOException {
 	String name = request.getParameter("nm");
 	
 	//get current date and time
-	LabDate ld = new LabDate();
-	String time = ld.getDtTm();
+	//LabDate ld = new LabDate();
+	//String time = ld.getDtTm();
 	
 	//write to database
-	String[] fields= {"id","name","logDate"};
-	String[] values= new String[3];
-	values[0]=id;
-	values[1]=name;
-	values[2]=time;
-	Db db = new Db();
-	int i = db.writeDb("teachers", fields, values);
-	db.getClose();
-	String rz="";
-	if(i==1) {
-		rz = "done! Will return to the former page in 3 seconds.";
-	}else {
-		rz = "Something wrong! Will return in 3 seconds.";
-	}
-	response.getWriter().print(rz);
+	//String[] fields= {"id","name","logDate"};
+	//String[] values= new String[3];
+	//values[0]=id;
+	//values[1]=name;
+	//values[2]=time;
+	//Db db = new Db();
+	//int i = db.writeDb("teachers", fields, values);
+	//db.getClose();
+	//String rz="";
+	//if(i==1) {
+	//	rz = "done! Will return to the former page in 3 seconds.";
+	//}else {
+	//	rz = "Something wrong! Will return in 3 seconds.";
+	//}
+	//response.getWriter().print(rz);
 	//response.setHeader("refresh","3,URL=teacher.jsp");
 }
 \end{lstlisting}
