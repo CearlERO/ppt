@@ -517,7 +517,7 @@ jsp:getProperty
 
 \end{frame}
 
-\begin{frame}[fragile]{对javabean属性赋值与获取javabean属性}
+\begin{frame}[fragile]{对javabean属性赋值与获取javabean属性I}
 在jsp页面中，对javabean属性赋值与获取javabean属性。
 \begin{lstlisting}
 //teacher_add.jsp
@@ -525,18 +525,31 @@ jsp:getProperty
 <jsp:useBean id="teacher" class="bean.Teacher">
  </jsp:useBean>
 <jsp:setProperty name="teacher" property="*" />
-<table>  <tr> <th>staffid</th> <th>nm</th> 
-      <th>logDate</th> </tr>  <tr> <td>
+
 <jsp:getProperty property="staffid" name="teacher"/>
-</td><td>
+
 <jsp:getProperty property="nm" name="teacher"/>
-</td><td>
+
 <jsp:getProperty property="logDate" name="teacher"/>
-</td></tr></table>
+
+\end{lstlisting}
+\textbf{这种给javabean赋值的方式（第5行），要求javabean里的属性名字和jsp表单中的名字完全一致。}
+\end{frame}
+\begin{frame}[fragile]{对javabean属性赋值与获取javabean属性II}
+在jsp页面中，对javabean属性赋值与获取javabean属性。
+\begin{lstlisting}
+//showCookie.jsp
+<jsp:useBean id="student" class="bean.Student">
+  </jsp:useBean>
+  
+<jsp:setProperty name="student" property="name" 
+  param="course"/>
+
+Student name is :<jsp:getProperty name="student" 
+  property="name"/>
 \end{lstlisting}
 
 \end{frame}
-
 \begin{frame}{作业}
 \begin{enumerate}
 \item
