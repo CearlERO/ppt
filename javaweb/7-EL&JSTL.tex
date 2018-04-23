@@ -90,7 +90,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[mvc]{MVC Servlet JavaBean} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[EL\&JSTL]{EL\&JSTL} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{张海宁} % Your name
 \institute[gzu] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -117,184 +117,290 @@
 %----------------------------------------------------------------------------------------
 
 %------------------------------------------------
-\section{MVC} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+\section{EL} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
 %------------------------------------------------
 \begin{frame}
-\Huge{\centerline{MVC}}
+\Huge{\centerline{EL}}
 \end{frame}
 \begin{frame}
-\frametitle{什么是MVC}
-MVC代表\textcolor{red}{M}odel-\textcolor{red}{V}iew-\textcolor{red}{C}ontroller（模型-视图-控制器）模式。这种模式应用于应用程序（包括但不限于web）的分层开发。
+\frametitle{什么是EL}
+EL是指jsp \textcolor{red}{E}xpression \textcolor{red}{L}anguage。EL是jsp2.0引入的，其目的就是为了简化jsp页面中的的一些参数获取操作（using html like tags）。\\
 
-在web开发中，这种模型将web应用分成了三个部分：
+使用EL可以方便的读取存储在以下对象中的数据：
 \begin{itemize}
 \item
-\textcolor{red}{M}odel
-
-web应用核心功能
-\begin{enumerate}
+JavaBean
 \item
-业务逻辑(\textcolor{red}{Java Bean})
+jsp的一些内置对象
+\begin{itemize}
 \item
-数据库操作(\textcolor{red}{JDBC})
-\end{enumerate}
-
+request
 \item
-\textcolor{red}{V}iew
-
-主要指与用户的交互界面，通过\textcolor{red}{jsp或html}来构建，负责接收用户输入并转交给控制器。
+session
 \item
-\textcolor{red}{C}ontroller
-
-负责接收用户的请求，并转发到模型去处理。(\textcolor{red}{servlet})
+application
+\item
+...
 \end{itemize}
-
+\end{itemize}
+\begin{block}{语法结构}
+\$\{ expression \}
+\end{block}
 \end{frame}
-\begin{frame}
-\frametitle{MVC模型}
-\begin{tikzpicture}
-\node (DB) at (10,8) [rectangle,draw,minimum height=10mm] {Database};
-\node (M) at (4,8) [circle,draw,minimum size =20mm] {\textcolor{red}{M}odel};
-\node (V) at (0,6) [circle,draw,minimum size =20mm] {\textcolor{red}{V}iew};
-\node (C) at (8,6) [circle,draw,minimum size =20mm] {\textcolor{red}{C}ontroller};
-\node (U) at (4,4) [circle,draw,minimum size =20mm] {User};
-\draw [dashed,line width=1.5pt] (M) -- (DB);
-
-\draw [->,line width=1.5pt] (C) -- (M);
-\draw [->,line width=1.5pt] (M)-- (V);
-\draw [dashed,line width=1.5pt] (V) -- (U);
-\draw [dashed,line width=1.5pt] (V) -- (C);
-\end{tikzpicture}
+\begin{frame}{EL的隐含对象}
+\label{elimplicit}
+与jsp的内置对象(参考本ppt第\ref{implicitobj},\ref{scope}页）类似的概念，可以直接使用。
+EL的隐含对象可以分为以下三类：
+\begin{itemize}
+\item
+页面上下文对象
+\item
+访问作用域范围的隐含对象
+\item
+访问环境信息的隐含对象
+\end{itemize}
 \end{frame}
-\begin{frame}
-\frametitle{MVC的具体实现}
-在不引入框架的情况下：
+\begin{frame}[fragile]{页面上下文对象}
+\begin{block}{}
+\begin{lstlisting}
+${pageContext.request }
+<% request.getMethod(); %>
+${pageContext.request.method }
 
+${pageContext.response }
+${pageContext.out }
+${pageContext.session }
+${pageContext.page }
+
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{访问作用域范围的隐含对象}
+\begin{block}{}
+\begin{lstlisting}
+<%
+pageContext.setAttribute("university", "pgGzu", 1);
+request.setAttribute("university", "reqGzu");
+session.setAttribute("university", "sessionGzu");
+application.setAttribute("university", "appGzu");
+%>
+${pageScope.university }
+${requestScope.university }
+${sessionScope.university }
+${applicationScope.university }
+${university }
+\end{lstlisting}
+\end{block}
+结合\${university}，来看作用域的查找顺序：
+page$>$request$>$session$>$application
+\end{frame}
+
+\begin{frame}[fragile]{访问环境信息的隐含对象}
+\begin{block}{}
+\begin{lstlisting}
+${param.course }
+<%request.getParameter("course"); %>
+<!--获取复选框的值  -->
+${paramValues.multiCheckBox[0] }
+${paramValues.multiCheckBox[1] }
+
+${header.connection }
+${header["connection"] }
+${header["User-Agent"] }
+
+${cookie.JSESSIONID }
+${cookie.JSESSIONID.value }
+\end{lstlisting}
+\end{block}
+\end{frame}
+%\begin{frame}
+%\begin{table}
+%\begin{tabular}{ll}
+%\toprule
+%\textbf{Impicit Objects}&\textbf{Usage}\\
+%\midrule
+%pageScope&访问page scope范围内的属性\\
+%requestScope&访问request scope范围内的属性\\
+%sessionScope&访问session scope范围内的属性\\
+%applicationScope&访问application scope范围内的属性\\
+%param&访问request parameter\\
+%paramValues&访问request parameter的名称\\
+%header&访问header范围内的属性\\
+%headerValues&返回header范围内的属性名称\\
+%cookie&访问cookie范围内的属性\\
+%initParam&访问initParam\\
+%pageContext&访问pageContext范围内的属性\\
+
+%\bottomrule
+%\end{tabular}
+%\caption{Implicit Objects in EL}
+%\end{table}
+%\end{frame}
+\begin{frame}[fragile]
+\frametitle{param示例}
+\begin{block}{the form in test.jsp}
+\begin{lstlisting}
+<form action="showCookie.jsp" method="post">
+课程：<select name="course">
+<option  value="AnalogCircuit" >模电</option>
+...
+</select>
+备注：<input name="note" type="text">
+<button type="submit">submit</button>
+</form>
+\end{lstlisting}
+\end{block}
+\textcolor{red}{Question: }怎么在showCookie.jsp页面获取数据？
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{param示例}
+\begin{block}{get the form parameter of test.jsp in showCookie.jsp}
+\begin{lstlisting}
+The course is: ${param.course}.
+\end{lstlisting}
+\end{block}
+\textcolor{red}{Question: }怎么在showCookie.jsp页面获取cookie相关的数据？
+\end{frame}
+\begin{frame}{EL的操作符}
+与jsp的内置对象类似的概念，可以直接使用。
 \begin{table}
-\begin{tabular}{cc}
+\begin{tabular}{lp{9em}ll}
 \toprule
-\textbf{M/V/C} & \textbf{technology}\\
+\textbf{Operator}&\textbf{Description}&\textbf{Operator}&\textbf{Description}\\
 \midrule
-V & jsp,html\\
-C & servlet\\
-M & java bean\\
+.&访问bean里的属性或map里的记录&\\
+$[]$&访问array或list里的元素&()&改变优先级\\
++ - * /&+ - * /&\%&取余\\
+==(eq)&判断是否相等&!=(nq)&判断是否不相等\\
+$<$(lt)&判断是否小于&$>$(gt)&判断是否大于\\
+$<=$(le)&判断是否小于或相等&$>=$(ge)&判断是否大于或相等\\
+\&\&(and)&与&||(or)&或\\
+!(not)&非&empty&判断是否为空\\
+
 \bottomrule
 \end{tabular}
-\caption{MVC的无框架实现}
-
+\caption{Basic Operators in EL}
 \end{table}
 \end{frame}
-\section{servlet}
+
+\section{JSTL}
 \begin{frame}
-\Huge{\centerline{servlet}}
-\end{frame}
-\begin{frame}
-\frametitle{什么是servlet}
-servlet是\textcolor{red}{运行在web服务器端的java程序}。
-\begin{enumerate}
-\item
-\textcolor{red}{封装了对HTTP请求}的处理
-\item
-运行\textcolor{red}{需要servlet容器}支持（比如tomcat、weblogic等）。
-\end{enumerate}
-
-
-servlet先于jsp产生，但是其代码组织形式是\textcolor{red}{将html代码混杂在java代码中}，给web程序设计带来了很多不便，比如负责网页设计的\textcolor{red}{美工人员也需要学习java知识}，才能进行页面的设计，在程序设计中，servlet产生的动态网页又需要在代码中\textcolor{red}{编写大量输出html标签的语句}。
-
-基于以上原因，Sun公司提出了jsp技术。jsp是一种在servlet规范之上的动态网页技术，jsp文件在第一次被请求时，会被编译成servlet文件，再通过容器调用servlet进行处理。
-
+\Huge{\centerline{JSTL}}
 \end{frame}
 \begin{frame}
-\frametitle{为什么使用servlet}
-由于以下两个特点，
-\begin{enumerate}
-\item
-servlet由java语言编写，因此其可获得java语言的所有功能支持
-\item
-servlet对web应用进行了封装，可对http请求进行相应的处理
-\end{enumerate}
-再加上\textcolor{red}{jsp}承担了原来servlet中的\textcolor{red}{负责页面显示}的部分，因此现在的\textcolor{red}{servlet}就比较适合用来\textcolor{red}{处理web系统的业务逻辑}。
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{servlet代码片断}
-\begin{lstlisting}
- while(enu.hasMoreElements()){
- String attr = enu.nextElement();
-  if(attr.equals("user")){
-    user = (String)session.getAttribute("user");
-    out.print("你好，"+user+"。");
-    out.print("<form action=\"logout.jsp\"
-        method=\"post\">");
-    out.print("<input type=\"submit\" 
-        value=\"logout\"></form>");
-    break;
-  }
-}
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{servlet代码结构}
+\frametitle{什么是JSTL}
+JSTL是\textcolor{red}{J}avaServer Pages \textcolor{red}{S}tandard \textcolor{red}{T}ag \textcolor{red}{L}ibrary (JSTL)的简称。JSTL提供了一系列封装好了的jsp标签，可以取代在jsp页面中嵌入java代码的做法。
 
- 在eclipse中，右键点击项目，选择新建，servlet，即可建立一个servlet.
-\begin{lstlisting}
-@WebServlet("/Reg")
-public class Reg extends HttpServlet {
-private static final long serialVersionUID = 1L;    
-  public Reg() {
-        super();
-    }
- protected void doGet(HttpServletRequest req, 
-     HttpServletResponse resp) 
-     throws ServletException, IOException {
- }
-  protected void doPost(HttpServletRequest req, 
-     HttpServletResponse resp) 
-     throws ServletException, IOException {
-  }
-}
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}
-\frametitle{servlet使用示例}
-以注册为例，展示servlet的使用方法。
-原来的注册功能是通过teacher\_add.jsp页面来实现的。
-
-接下来将采用Reg这个servlet来实现相同的功能，主要步骤为：
+JSTL实际上由5个功能不同的标签库组成：
 
 \begin{enumerate}
 \item
-更改form的action地址为Reg这个servlet
+\textcolor{red}{核心标签库}
 \item
-完善Reg这个servlet里的doPost()方法，以处理表单通过post提交过来的数据
+格式标签库
+\item
+SQL标签库
+\item
+XML标签库
+\item
+函数标签库
+\end{enumerate}
+
+\end{frame}
+\begin{frame}
+\frametitle{核心标签库}
+核心标签库主要用于完成JSP页面的常用功能，包括：
+\begin{itemize}
+\item
+表达式标签
+\begin{itemize}
+\item
+$<c:out>, <c:set>, <c:remove>, <c:catch>$
+\end{itemize}
+\item
+URL标签
+\begin{itemize}
+\item
+$<c:import>, <c:redirect>, <c:url>, <c:param>$
+\end{itemize}
+\item
+流程控制标签
+\begin{itemize}
+\item
+$<c:if>, <c:choose>, <c:when>, <c:otherwise>$
+\end{itemize}
+\item
+循环控制标签
+\begin{itemize}
+\item
+$<c:forEach>, <c:forTokens>$
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}{核心标签库中各标签的作用}
+\begin{table}
+\begin{tabular}{p{10em}l}
+\toprule
+\textbf{tag}&\textbf{Description}\\
+\midrule
+$<c:out>$&将表达式的值输出到jsp页面\\
+$<c:set>$&在指定的作用域内定义变量或为变量赋值\\
+$<c:remove>$&从指定的作用域中移除指定的变量\\
+$<c:catch>$&捕获程序的异常\\
+$<c:import>$&导入文件到web页面中\\
+$<c:redirect>$&将request请求重定向到其他URL\\
+$<c:url>$&构造一个URL\\
+$<c:param>$&为其他标签提供参数信息\\
+$<c:if>$&简单的条件判断\\
+$<c:choose>, <c:when>, <c:otherwise>$&选择，相当于switch\\
+$<c:forEach>$&遍例数组或集合类中的成员\\
+$<c:forTokens>$&迭代字符串中由分隔符分隔的成员\\
+\bottomrule
+\end{tabular}
+%\caption{JSTL核心标签库中标签的作用}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{JSTL的配置}
+\begin{enumerate}
+\item
+下载JSTL的jar文件
+
+\url{http://tomcat.apache.org/download-taglibs.cgi#Standard-1.2.5}
+\item
+将下载好的taglibs-standard-impl-1.2.5.jar文件，放到项目下的WEB-INF文件夹下的lib文件夹中
+\item
+在想使用JSTL标签的jsp页面中，定义引用的标签库和访问前缀
+\begin{lstlisting}
+<%@ taglib prefix = "c" 
+  uri = "http://java.sun.com/jsp/jstl/core" %>
+\end{lstlisting}
 \end{enumerate}
 \end{frame}
-\begin{frame}[fragile]
-\frametitle{更改form的action}
-\begin{lstlisting}
-<form action="Reg" method="post">
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{完成Reg里的doPost()方法}
-\begin{lstlisting}
-protected void doPost(... , ...)... {
-// 设置request传递过来值的编码，并获取传递值
-request.setCharacterEncoding("utf-8");
-String id = request.getParameter("staffid");
-String name = request.getParameter("nm");
-//get current date and time
-LabDate ld = new LabDate();  
-String time = ld.getDtTm();
-//write to database
-String[] fields= {"id","name","logDate"};
-String[] values= new String[3];
-values[0]=id; values[1]=name; values[2]=time;
-Db db = new Db();
-int i = db.writeDb("teachers", fields, values);
-db.getClose();
-}
-\end{lstlisting}
+
+\begin{frame}
+\frametitle{表达式标签<c:out>}
+<c:out>标签用于将表达式的值输出到jsp页面中去。类似于jsp的<\%=exp\%>或el的\$\{exp\}。
+
+\textcolor{red}{<c:out value="" [escapeXml="true|false"]  [default="defaultValue"] />}
+\begin{itemize}
+\item
+value
+
+用于指定变量或表达式，可以使用el
+\item
+escapeXml
+
+可选属性，默认为true，转换。用于指定是否转换value中的特殊字符。比如将<转换为\&lt;
+\item
+default
+
+可选属性，默认为空字符串。用于指定当value的值为null时，将要显示的默认值。
+\end{itemize}
+\textcolor{red}{<c:out value="<br>newline" />} 这里<br>原样输出 
+
+\textcolor{red}{ <c:out value="<br>newline" escapeXml="false"/>}这里<br>会被解析为html标记
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{完成Reg里的doPost()方法-II}
@@ -441,7 +547,7 @@ public class ServletClassArrange
 \end{lstlisting}
 \end{frame}
 %---------------------------------------------
-\section{javabean}
+\section{数据库分页}
 \begin{frame}
 \Huge{\centerline{javabean}}
 \end{frame}
@@ -564,7 +670,51 @@ jsp:getProperty
 \begin{frame}
 \Huge{\centerline{Appendix}}
 \end{frame}
-\begin{frame}{Appendix}
+
+\subsection{JSP 9个内置对象}
+\begin{frame}{内置对象}
+\label{implicitobj}
+\begin{table}
+\begin{tabular}{lll}
+\toprule
+\textbf{Object}&\textbf{Description}&\textbf{Scope}\\
+\midrule
+request&封装了客户端请求&\\
+response&封装了服务器端的回应信息&\\
+out&向response中写数据&\\
+session&保存一次会话的信息&一次会话\\
+application&保存应用程序中的公有数据&系统的全局变量\\
+config&&ServletConfig\\
+pageContext&获取jsp页面上下文，进而获取内置对象&\\
+page&调用当前jsp页面中的变量或方法&this的同意词\\
+exception&用来处理异常信息的&\\
+\bottomrule
+\end{tabular}
+\caption{implicit objects of jsp}
+
+\end{table}
+返回\ref{elimplicit}
+\end{frame}
+\subsection{JSP 4个作用域}
+\begin{frame}{作用域}
+\begin{table}
+\label{scope}
+\begin{tabular}{ll}
+\toprule
+\textbf{Scope}&\textbf{Description}\\
+\midrule
+page&当前的页面\\
+request&当前的请求\\
+session&当前的会话\\
+application&当前网站\\
+\bottomrule
+\end{tabular}
+\caption{scopes of jsp}
+\end{table}
+返回\ref{elimplicit}
+\end{frame}
+\subsection{相关资源}
+\begin{frame}
 \begin{block}{ppt、项目源代码及实验指导书的地址}
 \begin{enumerate}
 \item
@@ -584,11 +734,7 @@ lab-java项目
 \end{block}
 \end{frame}
 
-\begin{frame}{ServletRequest和HttpServletRequest}
-public interface HttpServletRequest\\
-extends ServletRequest\\
-Extends the ServletRequest interface to provide request information for HTTP servlets.
-\end{frame}
+
 
 %----------------------------------------------------------------------------------------
 

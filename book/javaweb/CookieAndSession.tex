@@ -94,7 +94,9 @@ response.addCookie(my2ndCookie);
 
 一个客户端与服务器端之间的通讯过程称为一次会话(session)。
 
-Session\footnote{\url{https://en.wikipedia.org/wiki/Session_(computer_science)}}是保存在服务器端的，是一个容器，其中保存的是一对一对的数据（属性-值）。在jsp中，每当一个客户端的请求到来时，服务器端都会检查其请求中是否包含cookie，若有，则从cookie中读取数据（JSESSIONID）；若无，则为这一个用户端与服务器端的会话过程创建一个session。这个session会在用户关闭了这个会话之后就消失了，下一次这个用户再来的时候，服务器会把他当做一个全新用户来对待。如何让服务器记住某个特定的用户呢？方法有若干种，这里介绍其中一种最常用的。在\ref{ck}部分介绍了客户端第一次访问服务器的时候，会得到一个服务器端生成的cookie，这个cookie的名字是JSESSIONID，值是一串十六进制数。这个cookie是用来保存用户seesion信息的，那个JSESSIONID就是服务器为那次会话生成的一个标识符，通常叫做session id。客户端在这之后再访问服务器的话，就会带上这个cookie来访问，服务器看到这个cookie里的session id就会知道某个特定的用户来了。
+Session\footnote{\url{https://en.wikipedia.org/wiki/Session_(computer_science)}}是保存在服务器端的，是一个容器，其中保存的是一对一对的数据（属性-值）。在jsp中，每当一个客户端的请求到来时，服务器端都会检查其请求中是否包含cookie，若有，则从cookie中读取数据（JSESSIONID）；若无，则为这一个用户端与服务器端的会话过程创建一个session。这个session会在用户关闭了这个会话之后就消失了，下一次这个用户再来的时候，服务器会把他当做一个全新用户来对待。如何让服务器记住某个特定的用户呢？方法有若干种，这里介绍其中一种最常用的。
+
+在\ref{ck}部分介绍了客户端第一次访问服务器的时候，会得到一个服务器端生成的cookie，这个cookie的名字是JSESSIONID，值是一串十六进制数。这个cookie是用来保存用户seesion信息的，那个JSESSIONID就是服务器为那次会话生成的一个标识符，通常叫做session id。客户端在这之后再访问服务器的话，就会带上这个cookie来访问，服务器看到这个cookie里的session id就会知道某个特定的用户来了。cookie和session的这种配合使用，就使得保存在客户端的信息和保存在服务器端的信息联系起来了。
 \subsection{session的常用方法}
 \begin{enumerate}
 \item
@@ -150,7 +152,13 @@ void 	setMaxInactiveInterval(int interval) &  Specifies the time, in seconds, be
 \caption{session时效相关的一些方法}
 \label{session}
 \end{table}
-
+\section{应用}
+\begin{enumerate}
+\item
+使用cookie和session实现登陆功能
+\item
+使用filter和session实现统计在线人数的功能
+\end{enumerate}
 
 \section{Other}
-偶然间发现stanford的一个关于网站方面的资源，\url{https://crypto.stanford.edu/cs142/lectures/}；还有cookie和session方面的\url{https://web.stanford.edu/~ouster/cgi-bin/cs142-fall10/lecture.php?topic=cookie}。
+分享stanford的一个关于网站方面的资源，\url{https://crypto.stanford.edu/cs142/lectures/}；还有cookie和session方面的\url{https://web.stanford.edu/~ouster/cgi-bin/cs142-fall10/lecture.php?topic=cookie}。
