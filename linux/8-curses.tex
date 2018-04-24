@@ -1,0 +1,611 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[curses]{使用curses函数库管理基于文本的屏幕} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{张海宁} % Your name
+\institute[贵大计算机] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{curses} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+\begin{frame}
+\Huge{\centerline{curses}}
+\end{frame}
+\begin{frame}
+\frametitle{curses}
+curses 是一个适用于\textcolor{red}{unix-like系统}的提供\textcolor{red}{终端控制}功能的函数库，其为文本用户界面程序（比如vi/vim）的开发带来了很大的方便。
+
+\end{frame}
+%\subsection{System Calls} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+\subsection{use curses}
+\begin{frame}
+\frametitle{use curses}
+\begin{itemize}
+\item
+引入头文件
+
+\#include<curses.h>
+\item
+编译程序时要使用-lcurses指明链接库
+
+gcc curses.c -o window -lcurses
+\end{itemize}
+curses.h一般情况下保存在/usr/include/curses.h
+\end{frame}
+\begin{frame}
+\frametitle{curses ncurses}
+curses函数库有多种不同的实现版本，linux上对应的版本是ncurses(又称new curses)。
+
+查看库文件路径下，可以发现curses实际上调用的是ncurses。\\
+ls -al /usr/lib | grep curse\\
+lrwxr-xr-x     libcurses.dylib -> libncurses.5.4.dylib\\
+
+-rwxr-xr-x    libncurses.5.4.dylib
+
+\end{frame}
+\begin{frame}{stdscr与curscr}
+curses工作在屏幕、窗口和子窗口之上。无论何时，至少存在一个curses窗口，称之为stdscr，它与
+物理屏幕的尺寸完全一样。curscr是指的当前屏幕的样子，直到程序调用refresh之后，curses函数库才会比较curscr与stdscr之间的不同之处，
+然后利用这个差异来刷新屏幕。
+\end{frame}
+\begin{frame}[fragile]{curses demo code}
+\begin{block}{curses.c}
+\begin{lstlisting}
+ cat curses.c 
+#include<unistd.h>
+#include<stdlib.h>
+#include<curses.h>
+
+int main(){
+  initscr();
+  move(1,10);
+  printw("%s","hello ncurses.");
+  refresh();
+  sleep(5);
+  endwin();
+  exit(0);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{curse demo screenshot}
+\label{ss}
+\begin{figure}
+\includegraphics[width=1\textwidth]{801.png}
+\caption{curse demo}
+\label{demo}
+\end{figure}
+\end{frame}
+%------------------------------------------------
+\section{curses库中常用的一些函数}
+\subsection{屏幕相关}
+\begin{frame}
+\Huge{\centerline{屏幕相关}}
+\end{frame}
+\begin{frame}
+\frametitle{初始化和重置函数}
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+WINDOW *initscr(void)
+
+初始化一个屏幕，必须要调用，一个程序中只能调用一次。返回一个指向结构体WINDOW的指针。
+\item
+init endwin(void)
+
+重置终端，使其恢复原来的样子，否则就会一直保持当前的样子，如ppt第\ref{ss}页。
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{输出到屏幕}
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int addch(const chtype ch);
+
+输出一个字符到当前光标位置，光标右移一个位置，会覆盖当前位置原有的字符。
+\item
+int addstr(const char *str);
+\item
+int refresh(void);
+
+更新屏幕，将自上次调用refresh方法以来所做的改变（比如addch.addstr等）显示到屏幕上。
+\item
+int beep(void);
+int flash(void);
+
+发出声音或闪动屏幕。（这两个方法是会互相调用的，如果终端不支持第一个那就自动调用第二个，如果都不支持就什么也不做。）
+\item
+int printw(const char *fmt, ...);
+
+works like printf, but in a curses environment.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%\begin{frame}
+%\frametitle{从屏幕读取}
+%\begin{block}{原型及说明}
+%\begin{itemize}
+%\item
+%chtype inch(void);
+
+%清空屏幕，并且将光标置于屏幕的左上角，需要配合refresh来使用。
+%\item
+%int move(int y, int x);
+
+%移动光标到指定的行和列。（注意该方法只会移动逻辑屏幕上的光标位置，下次的输出内容将出现在该位置上；如果想让当前物理屏幕上的光标立刻产生变化，需要在move之后就调用refresh。）
+%\end{itemize}
+%\end{block}
+
+%\end{frame}
+
+\begin{frame}
+\frametitle{清除屏幕及移动光标}
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int clear(void);
+
+清空屏幕，并且将光标置于屏幕的左上角，需要配合refresh来使用。
+\item
+int move(int y, int x);
+
+移动光标到指定的行和列。（注意该方法只会移动逻辑屏幕上的光标位置，下次的输出内容将出现在该位置上；如果想让当前物理屏幕上的光标立刻产生变化，需要在move之后就调用refresh。）
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{字符属性}
+每个curses字符都可以有特定的属性，该属性控制着字符在屏幕上的显示方式（如果屏幕支持）。预定义属性有：A\_BLINK,A\_BOLD,A\_DIM,A\_REVERSE,A\_STANDOUT和A\_UNDERLINE.
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int attroff(int attrs);
+int attron(int attrs);
+
+
+关闭或启用指定的属性。
+\end{itemize}
+\end{block}
+
+\end{frame}
+\subsection{键盘相关}
+\begin{frame}
+\Huge{\centerline{键盘相关}}
+\end{frame}
+
+\begin{frame}
+\frametitle{键盘工作模式}
+
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+\begin{itemize}
+\item
+int cbreak(void);
+
+设置输入模式为字符中止模式。字符一经输入立刻传送给程序。键盘特殊字符也被启用，但一些简单的特殊字符，比如backspace,会失去原有功能。
+\item
+int nocbreak(void);
+
+设置输入模式为行模式。此时键盘特殊字符被启用，按下特定的组合键会产生一个信号。
+\end{itemize}
+\item
+int echo(void);
+int noecho(void);
+
+开启或关闭字符的回显。（密码。）
+\item
+int raw(void);
+int noraw(void);
+
+关闭和恢复特殊字符的处理。noraw还有一个功能是恢复行模式。
+
+\end{itemize}
+\end{block}
+
+\end{frame}
+%----------------------------------------
+\begin{frame}
+\frametitle{读取键盘输入}
+
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int getch(void);
+
+获取一个字符，并以int返回。
+\item
+int getstr(char *str);
+
+获取一个字符序列(回车提交)，保存到一个字符数组中。
+\item
+int scanw(char *fmt, ...);
+
+类似于scanf。
+
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+\subsection{窗口相关}
+\begin{frame}
+\Huge{\centerline{窗口相关}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{窗口}
+之前的程序所使用的屏幕，都是当前的整个屏幕，从现在开始介绍窗口的使用。
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+WINDOW *newwin(int nlines, int ncols, int begin\_y,
+             int begin\_x);
+从指定的行 begin\_y和列begin\_x开始，创建一个nlines行和ncols列的窗口，返回一个指向新窗口的指针。          
+\item
+int delwin(WINDOW *win);
+
+删除一个窗口。
+\item
+int box(WINDOW *win, chtype verch, chtype horch);
+
+围绕一个窗口绘制方框。
+\item
+void getyx(WINDOW *win, int y, int x);
+
+获取指定窗口中当前的光标位置。
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{通用函数}
+之前的一些函数加上一些前缀则会变为通用函数(适用性更广的函数)。
+%（就是让这些函数在调用的时候可以指定作用于哪个窗口）。
+
+前缀\textcolor{red}{w}用于窗口，前缀\textcolor{red}{mv}用于光标移动，前缀\textcolor{red}{mvw}用于在窗口之间移动。
+
+
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int printw(const char *fmt, ...);
+\item
+int wprintw(WINDOW *win, const char *fmt, ...);
+\item
+int mvprintw(int y, int x, const char *fmt, ...);
+\item
+int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...);
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{移动和更新屏幕}
+
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+  int mvwin(WINDOW *win, int y, int x);
+  
+在屏幕上移动窗口。
+
+\item
+ int wrefresh(WINDOW *win);
+ 
+refresh的通用版本，可以指定某个窗口。
+\item
+int touchwin(WINDOW *win);
+
+告诉curses函数库某个窗口已发生了更改(即使其并未更改)，在下次调用wrefresh时，会重新绘制该窗口。
+默认情况下，如果某个窗口的实际内容没有更改的话，调用wrefresh不会看到什么效果。但是当调用了touchwin再调用wrefresh的话，
+窗口会重新被绘制。
+\textcolor{red}{当屏幕上存在多个窗口时，可通过此函数来安排显示窗口。}
+\item
+int scroll(WINDOW *win);
+
+将指定窗口中的内容上卷一行。
+
+\end{itemize}
+\end{block}
+
+\end{frame}
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{子窗口}
+
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+ WINDOW *subwin(WINDOW *orig, int nlines, int ncols,
+             int begin\_y, int begin\_x);
+  
+
+创建某个窗口的子窗口。可以使用mvw前缀的函数来操纵子窗口。
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{keypad模式}
+对大多数终端来说，解码一些特殊的按键（Home,esc,方向键等）是一件很困难的事情，因为这些按键
+往往会发送“以escape字符开头的字符串序列”来标识自己。
+
+应用程序需要区分是\textcolor{red}{单独按下了escape键}，还是\textcolor{red}{按下了某个功能键}。
+
+curses函数库可以通过keypad这个函数开启keypad模式，来接管特殊按键的识别问题。其在curses.h头文件中通过一组以KEY\_开头的定义来管理这些特殊按键。
+\begin{block}{原型及说明}
+\begin{itemize}
+\item
+int keypad(WINDOW *win, bool bf);
+
+bf为true时开启keypad模式。
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{彩色显示I}
+早期只有极少数终端支持彩色显示功能，所以大多数curses函数库不支持彩色显示，但是现在的技术发展和人们要求的提高，ncurses实现了对彩色的支持。
+
+curses对颜色的支持有个特殊之处：必须同时定义一个字符的前景色和背景色，称之为颜色组合（color pair）。
+
+
+\begin{block}{在使用颜色之前必须先调用以下两个函数：}
+\begin{itemize}
+\item
+bool has\_colors(void);
+
+检查终端是否支持颜色。
+\item
+int start\_color(void);
+
+初始化颜色显示功能。
+\end{itemize}
+\end{block}
+
+\end{frame}
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{彩色显示II}
+初始化了颜色显示以后，可以使用如下的方式来使用色彩方案。
+
+\begin{block}{使用色彩方案}
+\begin{itemize}
+\item
+int init\_pair(short pair, short f, short b);
+
+定义一个颜色显示方案pair，其前景色为f，背景色为b。
+\item
+int COLOR\_PAIR(int pair)
+
+使用特定组合的颜色方案。
+\item
+将一个窗口后续添加的内容设置为绿色背景和红色前景
+
+init\_pair(1,COLOR\_RED, COLOR\_GREEN);
+
+wattron(window\_ptr, COLOR\_PAIR(1);
+\end{itemize}
+\end{block}
+
+\end{frame}
+%----------------------------------------------
+
+\begin{frame}
+\frametitle{pad}
+在编写高级curse程序时，有时候需要先建立一个逻辑屏幕，然后再把它的部分或全部内容输出到物理屏幕上。
+到目前所学的为止，所有的屏幕都不能大于物理屏幕，为了解决这个问题curses提供了一个特殊的数据结构pad，pad可以控制尺寸大于物理屏幕的逻辑屏幕。
+
+pad类似于WINDOW，所有执行写窗口操作的curses函数同样适用于pad，但pad有其特有的创建函数和刷新函数。
+\begin{block}{pad特有的一些函数}
+\begin{itemize}
+\item
+WINDOW *newpad(int nlines, int ncols);
+
+注意其返回的是一个WINDOW。
+\item
+int prefresh(WINDOW *pad, int pminrow, int pmincol,
+             int sminrow, int smincol, int smaxrow, int smaxcol);
+
+将pad上某个位置(pminrow,pmincol)开始的区域写到屏幕上指定的显示区域((sminrow,smincol)$\sim$(smaxrow,smaxcol))。
+
+\end{itemize}
+\end{block}
+
+\end{frame}
+%------------------------------------------------
+
+
+\begin{frame}{作业}
+\begin{enumerate}
+\item
+设计一个程序用来模拟terminal的用户登陆界面。要求用户输入用户名，然后再要求用户输入密码，密码不能显示出来。
+\item
+尝试编写一个vim-like程序，至少可以打开并显示文件内容。
+\end{enumerate}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+
+
+\section{Appendix}
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{参考资料}
+\begin{enumerate}
+\item
+\url{http://heather.cs.ucdavis.edu/~matloff/UnixAndC/CLanguage/Curses.pdf}
+\item
+vim source code
+
+\url{https://www.vim.org/}
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\frametitle{about man page}
+The manual is generally split into eight numbered sections, organized as follows (on Research Unix, BSD, macOS and Linux):
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{section} & \textbf{description} \\
+\midrule
+1 & General commands\\
+ 2 & System calls\\
+ 3& Library function(C standard library)\\
+ 4 & Special files(devices) and drivers\\
+  5 & File formats and conventions\\
+  6  & Games and screensavers\\
+   7  & Miscellanea\\
+   8   & System administration commands and daemons\\  
+\bottomrule
+\end{tabular}
+\caption{man page}
+\end{table}
+
+在终端中运行man read 与 man 2 read ，观察其输出的区别。
+\end{frame}
+
+\end{document} 
