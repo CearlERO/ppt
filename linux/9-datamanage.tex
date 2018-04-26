@@ -1,0 +1,355 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[数据管理]{数据管理} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{张海宁} % Your name
+\institute[计算机科学与技术学院] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+\section{内存管理}
+\begin{frame}
+\Huge{\centerline{内存管理}}
+\end{frame}
+\begin{frame}{内存管理概述}
+在所有的计算机系统中，\textcolor{red}{内存}都是一种\textcolor{red}{稀缺资源}。而且无论有多少内存，似乎总是不够用，
+这就对内存的管理提出了挑战。
+
+联想一下电脑和手机的内存增长史，应用程序所需要占用的内存也在随着内存容量的增长而增加。
+%\begin{tikzpicture}
+%[mynode/.style={rectangle,draw=blue!50,thick,minimum width=12mm,minimum height=7mm},
+%mytext/.style={red,below}]
+%\node (a) at (0,0) [mynode] {512M};
+%\node (b) at (1.5,0) [mynode] {1G};
+%\node (c) at (3,0) [mynode] {2G};
+%\node (d) at (4.5,0) [mynode] {4G};
+%\node (e) at (6,0) [mynode] {8G};
+%\node (f) at (7.5,0) [mynode] {16G};
+%\node (h) at (9,0) [mynode] {more};
+%\node [mytext] (n1) at (a.south) {2008};
+%\node [mytext] (n2) at (b.south) {2009};
+%\node [mytext] (n3) at (c.south) {2010};
+%\node [mytext] (n4) at (d.south) {2012};
+%\node [mytext] (n5) at (e.south) {2015};
+%\node [mytext] (n6) at (f.south) {2018};
+
+%\end{tikzpicture}
+\end{frame}
+\begin{frame}[fragile]{内存分配I}
+\begin{block}{使用c语言标准库中的malloc来分配内存}
+\begin{lstlisting}
+\end{lstlisting}
+\#include<stdlib.h>
+
+void *malloc(size\_t size);
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{内存分配II}
+\begin{block}{使用c语言标准库中的malloc来分配内存}
+\begin{lstlisting}
+\end{lstlisting}
+\#include<stdlib.h>
+
+void *malloc(size\_t size);
+\end{block}
+\end{frame}
+%------------------------------------------------
+\section{文件锁定}
+\begin{frame}
+\Huge{\centerline{文件锁定}}
+\end{frame}
+\begin{frame}{文件锁定}
+文件锁定是多用户多任务操作系统中一个非常重要的组成部分。如果两个程序同时访问一个文件，一个读一个写，或者都在写，那么非常有可能出现文件内容不一致。
+Linux使用文件锁定来解决这个问题。实现文件锁定有两种形式：
+\begin{enumerate}
+\item
+创建锁文件
+\item
+锁定区域
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{创建锁文件I}
+许多应用程序只要能够针对某个资源创建一个锁文件即可，然后其他的程序就可以通过检查这个文件的状态来判断它们自己是否被允许访问这个资源。
+
+为了创建一个用途锁指示器的文件，使用fcntl.h头文件中定义的带O\_CREAT和O\_EXECL标志的open系统调用。这样能保证以一个原子操作同时完成两项工作：确定文件不存在，然后创建它。
+\end{frame}
+\begin{frame}[fragile]{创建锁文件II}
+\label{lock}
+\begin{block}{创建锁文件部分代码}
+\begin{lstlisting}
+int main(){
+ int file_desc, save_errno;	
+  file_desc=open("LCK.test",O_RDWR|O_CREAT|O_EXCL,
+     S_IRUSR);
+  if(file_desc==-1){
+   save_errno=errno;
+   printf("Open failed with error code %d.\n",
+     save_errno);
+  }else{
+   printf("Open succeeded.\n");
+  }
+ exit(EXIT_SUCCESS);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{创建锁文件III}
+\begin{block}{执行第\ref{lock}页代码}
+\begin{lstlisting}
+$ ./lock1 
+Open succeeded.
+$ ./lock1 
+Open failed with error code 17.
+\end{lstlisting}
+\end{block}
+可以看到，第一次运行程序，会成功打开文件，第二次运行就会打开失败，其实不管再运行几次，都会失败。Why?
+
+关于errno的更多信息可以查看第\ref{ferr}页。
+\end{frame}
+\begin{frame}[fragile]{创建锁文件IV}
+\textbf{临界区:}
+如果某个程序在执行的时候需要独占某个资源进行某操作，这部分操作被称为临界区，程序在进入临界区之前需要创建锁文件，
+在退出临界区之前需要删除（unlink）锁文件。
+\begin{block}{临界区代码}
+\begin{lstlisting}
+void writeAfile(){
+ FILE *out = fopen("lcktest2","a");
+ char st='a', end='z', c;
+ for(c=st;c<end;c++){
+  fputc(c,out);  fflush(out);
+ }
+ fputc('\n',out); fclose(out);
+ printf("write done.\n");
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{创建锁文件V}
+\begin{block}{普通模式访问代码}
+\begin{lstlisting}
+int main(){
+ int file_desc, tries=2;
+ while(tries--){
+  writeAfile();
+ }
+ exit(EXIT_SUCCESS);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{创建锁文件VI}
+\begin{block}{使用锁文件方式}
+\begin{lstlisting}
+int main(){
+ int file_desc, tries=2;
+ while(tries--){
+  file_desc=open(lock_file,O_RDWR|O_CREAT|O_EXCL,
+    S_IRUSR);
+  if(file_desc==-1){
+   printf("%d : Lock already present.\n",getpid());
+   sleep(3);  tries++;
+  }else{
+   printf("%d : Got access.\n",getpid());
+   writeAfile(); close(file_desc);
+   unlink(lock_file); sleep(1);
+  } } exit(EXIT_SUCCESS);}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{创建锁文件VII}
+\label{filelock}
+\begin{block}{查看结果}
+\begin{lstlisting}
+普通方式执行程序
+$./lock2n & ./lock2n
+aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyy
+
+abcdeafbcdhefgiijklmnopqjrksltmnopqrstuvwxy
+uvwxy
+创建锁文件方式执行程序
+$./lock2 & ./lock2
+abcdefghijklmnopqrstuvwxy
+abcdefghijklmnopqrstuvwxy
+abcdefghijklmnopqrstuvwxy
+abcdefghijklmnopqrstuvwxy
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{创建锁文件VIII}
+通过第\ref{filelock}页，可以看出，通过创建锁文件的方式，达到了一个程序单独占用某个文件的目的，确保了同一时间段只能有一个程序来独占一个文件进行操作。
+\end{frame}
+%------------------------------------------------
+\section{数据库}
+\begin{frame}
+\Huge{\centerline{数据库}}
+\end{frame}
+%------------------------------------------------
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+
+
+\section{Appendix}
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{errno}
+\label{ferr}
+关于文件操作相关的错误代码所代表的错误信息可以查看：
+\begin{block}{}
+\begin{lstlisting}
+/usr/include/sys/errno.h
+
+\#define EEXIST          17              /* File exists */
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{本课程相关资源下载}
+\begin{enumerate}
+\item
+ppt
+
+\url{https://github.com/gmsft/ppt/tree/master/linux}
+\item
+实验指导书
+
+\url{https://github.com/gmsft/ppt/tree/master/book/linux}
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\frametitle{about man page}
+The manual is generally split into eight numbered sections, organized as follows (on Research Unix, BSD, macOS and Linux):
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{section} & \textbf{description} \\
+\midrule
+1 & General commands\\
+ 2 & System calls\\
+ 3& Library function(C standard library)\\
+ 4 & Special files(devices) and drivers\\
+  5 & File formats and conventions\\
+  6  & Games and screensavers\\
+   7  & Miscellanea\\
+   8   & System administration commands and daemons\\  
+\bottomrule
+\end{tabular}
+\caption{man page}
+\end{table}
+
+在终端中运行man read 与 man 2 read ，观察其输出的区别。
+\end{frame}
+
+\end{document} 

@@ -373,7 +373,8 @@ int box(WINDOW *win, chtype verch, chtype horch);
 \item
 void getyx(WINDOW *win, int y, int x);
 
-获取指定窗口中当前的光标位置。
+设置指定窗口中当前的光标位置。
+The getyx macro places the current cursor position of the given window in the two integer variables y and x.
 \end{itemize}
 \end{block}
 
@@ -519,7 +520,7 @@ int COLOR\_PAIR(int pair)
 
 init\_pair(1,COLOR\_RED, COLOR\_GREEN);
 
-wattron(window\_ptr, COLOR\_PAIR(1);
+wattron(window\_ptr, COLOR\_PAIR(1));
 \end{itemize}
 \end{block}
 
