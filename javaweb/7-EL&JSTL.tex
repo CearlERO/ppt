@@ -456,8 +456,12 @@ var可以存储异常信息，供catch标签外的代码使用。
 此标签可以导入站内或站外的静态或动态文件到web页面。
 \begin{enumerate}
 \item
+直接引用地址
+
 <c:import url="url" >
 \item
+将url地址的内容保存到Reader类型的对象中
+
 <c:import url="url" varReader="name">
 \end{enumerate}
 varReader:用于指定一个变量名，该变量用于以Reader类型存储被包含对象。
@@ -469,19 +473,28 @@ varReader:用于指定一个变量名，该变量用于以Reader类型存储被�
 <c:url>标签可用于生成一个URL路径的字符串，这个字符串可以赋予HTML的<a>标记实现超链接，或利用这个生成的URL字符串实现网页转发与重定向。
 还可以与<c:param>标签结合动态添加URL的参数信息。
 \begin{enumerate}
-\item <c:url value="url" [var="name"] [scope="范围"] />
-
+\item
 输出产生的URL字符串信息，如果指定了var和scope属性，则URL信息就不再输出，而是存储在变量中。
-\item <c:url value="url" var="name"> <c:param name="" value=""> </c:url>
 
-本语法实现了语法1的功能，同时又搭配<c:param>标签给URL附带了参数。
+<c:url value="url" [var="name"] [scope="范围"] />
+
+
+\item 
+搭配<c:param>标签给URL附带参数。
+
+<c:url value="url" var="name"> <c:param name="" value=""> </c:url>
+
 \end{enumerate}
 \end{frame}
 \begin{frame}{<c:redirect>重定向标签}
 \begin{enumerate}
 \item
+简单指定重定向地址。
+
 <c:redirect url="">
 \item
+给重定向地址加上参数。
+
 <c:redirect url="url"> <c:param name="" value=""/> </c:redirect>
 \end{enumerate}
 \end{frame}
