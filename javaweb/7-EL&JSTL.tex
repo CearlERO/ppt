@@ -370,7 +370,7 @@ $<c:forTokens>$&迭代字符串中由分隔符分隔的成员\\
 
 \url{http://tomcat.apache.org/download-taglibs.cgi#Standard-1.2.5}
 \item
-将下载好的taglibs-standard-impl-1.2.5.jar文件，放到项目下的WEB-INF文件夹下的lib文件夹中
+将下载好的4个jar文件，放到项目下的WEB-INF文件夹下的lib文件夹中
 \item
 在想使用JSTL标签的jsp页面中，定义引用的标签库和访问前缀
 \begin{lstlisting}
@@ -469,7 +469,7 @@ varReader:用于指定一个变量名，该变量用于以Reader类型存储被�
 \emph{教材264页例12.5}
 \end{frame}
 
-\begin{frame}{<c:url>动态生成URL标签}
+\begin{frame}{<c:url>动态生成URL标签I}
 <c:url>标签可用于生成一个URL路径的字符串，这个字符串可以赋予HTML的<a>标记实现超链接，或利用这个生成的URL字符串实现网页转发与重定向。
 还可以与<c:param>标签结合动态添加URL的参数信息。
 \begin{enumerate}
@@ -486,7 +486,22 @@ varReader:用于指定一个变量名，该变量用于以Reader类型存储被�
 
 \end{enumerate}
 \end{frame}
-\begin{frame}{<c:redirect>重定向标签}
+\begin{frame}[fragile]{<c:url>动态生成URL标签II}
+\begin{block}{示例代码}
+\begin{lstlisting}
+<c:url value="index.jsp"/>
+<c:url value="index.jsp" var="backtoindex"/>
+<a href=${backtoindex }>back to index</a>
+
+pageScope:${pageScope.backtoindex }
+requestScope:${requestScope.backtoindex }
+sessionScope:${sessionScope.backtoindex }
+applicationScope:${applicationScope.backtoindex }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{<c:redirect>重定向标签}
 \begin{enumerate}
 \item
 简单指定重定向地址。
@@ -497,24 +512,188 @@ varReader:用于指定一个变量名，该变量用于以Reader类型存储被�
 
 <c:redirect url="url"> <c:param name="" value=""/> </c:redirect>
 \end{enumerate}
+\begin{block}{示例代码}
+\begin{lstlisting}
+<c:redirect url="Reg"/>
+<c:redirect url="index.jsp"/>
+\end{lstlisting}
+\end{block}
 \end{frame}
+
+\begin{frame}{控制标签}
+类似于一般的编程语言，JSTL也有\textcolor{red}{判断}和\textcolor{red}{循环}相关功能的标签。
+\begin{itemize}
+\item
+判断选择
+
+<c:if> <c:choose> <c:when> <c:otherwise>
+\item
+循环
+
+<c:forEach> <c:forTokens>
+\end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]{<c:if>条件判断标签}
+\begin{enumerate}
+\item
+将判断结果保存在变量中
+
+<c:if test="condition" var="name" />
+\item
+将判断结果保存在变量中，并且可以根据判断结果去执行标签体。
+
+<c:if test="condition" var="name" /> code\ldots </c:if>
+\end{enumerate}
+\emph{test}可使用\emph{el}表达式。
+\begin{block}{}
+\begin{lstlisting}
+<c:if test="${!backtoindex}">
+ <a href=${backtoindex }>back to index</a>
+</c:if>
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{<c:choose> <c:when> <c:otherwise>}
+<c:choose>标签只能做为<c:when> <c:otherwise>的父标签。
+\begin{block}{}
+\begin{lstlisting}
+<c:choose>
+<c:when test="${hour>8 && hour<18 }">work time
+  </c:when>
+<c:when test="${hour>18 && hour<20}">meal time
+  </c:when>
+<c:otherwise>do what you want</c:otherwise>
+
+</c:choose>
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{<c:forEach> 循环标签I}
+\begin{enumerate}
+\item
+\label{coll}
+集合成员迭代
+
+<c:forEach items="data" [var="name"] [begin="st"] 
+ [end="finish"] [step="step"] [varStatus="statusName"]>
+ 标签体
+ </c:forEach>
+ \item
+ \label{num}
+ 数字索引迭代
+ 
+ <c:forEach begin="start" end="finish" [step="step"]
+  [var="name"] [varStatus="statusName"]>
+ 标签体
+ </c:forEach>
+
+\end{enumerate}
+\begin{table}
+\begin{tabular}{lp{24em}}
+\toprule
+\textbf{属性}&\textbf{说明}\\
+\midrule
+items&指定被循环的对象，一般为数组或集合类。\\
+var&存储items指定对象的成员。\\
+varStatus&指定循环的状态。（其拥有一个index属性，可以用于获取当前循环的索引值）\\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]{<c:forEach> 循环标签II}
+\begin{block}{获取集合中的元素}
+\begin{lstlisting}
+<%
+List <String> lst = new ArrayList<String>();
+lst.add("gzu");
+lst.add("sdu");
+lst.add("cqut");
+pageContext.setAttribute("mylist", lst);
+%>
+<c:forEach items="${pageScope.mylist}" var="school"
+  varStatus="st">
+${st.index }:${school}<br>
+</c:forEach>
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{<c:forEach> 循环标签III}
+\begin{block}{进行数字循环}
+\begin{lstlisting}
+<c:set var="sum"  value="0"/>
+<c:forEach var="i" begin="1" end="100">
+${sum = sum+i }
+ </c:forEach>
+ sum is:${sum }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{<c:forTokens> 迭代标签I}
+<c:forTokens>迭代标签可以用指定的分隔符将一个字符串分割开，并获取分割后的值。
+
+<c:forTokens items="String" delims="char" [var="name"] 
+[begin="st"] [end="finish"] [step="step"] [varStatus="statusName"]>
+ 标签体
+ </c:forTokens>
+\begin{table}
+\begin{tabular}{lp{24em}}
+\toprule
+\textbf{属性}&\textbf{说明}\\
+\midrule
+items&指定要迭代的String对象。\\
+delims&指定要使用的分割符。\\
+var&保存了分割后的对象。\\
+varStatus&指定循环的状态。（其拥有一个index属性，可以用于获取当前循环的索引值）\\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}[fragile]{<c:forTokens> 迭代标签II}
+\begin{block}{使用迭代标签分隔字符串}
+\begin{lstlisting}
+<c:set var="mySchool" value="tzyz#zzti#cqut#gzu"/>
+ <c:forTokens items="${mySchool }" delims="#" 
+  var="sc">
+ ${sc }<br>
+ </c:forTokens>
+\end{lstlisting}
+\end{block}
+
+\end{frame}
+
 %---------------------------------------------
 
 \section{数据库分页}
 \begin{frame}
-\Huge{\centerline{javabean}}
+\Huge{\centerline{数据库分页}}
+\end{frame}
+\begin{frame}{分页使用场景}
+分页一般指的是将从数据库查询来的数据，分成多个页面来显示。
+一般情况下有两种方法来达到数据分页的目的：
+\begin{enumerate}
+\item
+获取到所有的查询结果，在页面显示时进行处理分页
+
+\item
+使用数据库的查询机制来分页
+
+select * from teacher limit 2,3;
+
+LIMIT 接受一个或两个数字参数。参数必须是一个整数常量。如果给定两个参数，第一个参数指定第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目。初始记录行的偏移量是 0(而不是 1)
+\end{enumerate}
 \end{frame}
 %---------------------------------------
 \begin{frame}{作业}
 \begin{enumerate}
 \item
-使用session记录登陆状态
-\item
-练习servlet和javabean的使用
-\item
-学习jsp+servlet+javabean联合使用
+实现小组项目的数据库分页功能\footnote{teacher.jsp里面的数据库分页比较复杂，请参考教材p222页10.4.2实现。}
 
-\url{https://github.com/danielniko/SimpleJspServletDB}
+
 \end{enumerate}
 \end{frame}
 %------------------------------------------------
