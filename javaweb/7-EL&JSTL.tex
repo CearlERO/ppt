@@ -80,6 +80,7 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
 \usepackage{color}
 \usepackage{listings}
 \usepackage{tikz}
@@ -402,250 +403,95 @@ default
 
 \textcolor{red}{ <c:out value="<br>newline" escapeXml="false"/>}这里<br>会被解析为html标记
 \end{frame}
-\begin{frame}[fragile]
-\frametitle{完成Reg里的doPost()方法-II}
+
+\begin{frame}{变量设置标签<c:set> I}
+<c:set>标签用于在指定范围（page, request,session,application）中定义保存某个值的变量，或为指定的对象设置属性。
+\begin{enumerate}
+\item
+在scope范围内将值保存到变量中
+
+<c:set var="name" value="value" [scope="范围"]/>
+\item
+在scope范围内将标签体保存到变量中
+
+<c:set var="name"  [scope="范围"]/>标签体</c:set>
+\item
+将值保存在对象的属性中
+
+<c:set  value="value" target="object" property="propertyName"/>
+\end{enumerate}
+\emph{value可以使用el表达式；target可以是javabean或map对象。}
+\end{frame}
+
+\begin{frame}[fragile]{变量设置标签<c:set> II}
+\begin{block}{设置一个request变量，给一个bean赋值}
 \begin{lstlisting}
-protected void doPost(... , ...)... {
-// 设置request传递过来值的编码，并获取传递值
-//get current date and time
-//write to database
-int i = db.writeDb("teachers", fields, values);
-db.getClose();
-String rz="";
-if(i==1) {
-  rz = "Done! Will return  in 3 seconds.";
-}else {
-  rz = "Sth wrong! Will return  in 3 seconds.";
-}
-response.getWriter().print(rz);
-response.setHeader("refresh","3,URL=teacher.jsp");
-}
+<%@ taglib prefix="c" 
+  uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="myName" value="gzu" scope="request"/>
+<c:out value="myName is ${myName }"/>
+<jsp:useBean id="st" class="bean.Student"/>
+<c:set target="${st}" property="name" value="BD"/>
+<c:out value="st.name is ${st.name }"/>
 \end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{<c:remove> 变量移除标签 <c:catch> 捕获异常标签}
+\begin{itemize}
+\item
+\emph{<c:remove var="name" [scope="范围"]>}
+
+最好指定范围，否则移除所有范围内的值。
+\item
+\emph{<c:catch [var="exception"]> code may have exception\ldots </c:catch>}
+
+var可以存储异常信息，供catch标签外的代码使用。
+\end{itemize}
+\end{frame}
+\begin{frame}{URL相关标签}
+文件导入、重定向和url地址生成是web应用中常用的功能。JSTL中提供的与URL相关的标签分别是：
+<c:import>,<c:url>,<c:redirect>和一个通常与其他标签配合使用的<c:param>。
+\end{frame}
+\begin{frame}{<c:import>导入标签}
+此标签可以导入站内或站外的静态或动态文件到web页面。
+\begin{enumerate}
+\item
+<c:import url="url" >
+\item
+<c:import url="url" varReader="name">
+\end{enumerate}
+varReader:用于指定一个变量名，该变量用于以Reader类型存储被包含对象。
+
+\emph{教材264页例12.5}
 \end{frame}
 
-\begin{frame}{servlet过滤器}
-先观察下图：
-\begin{figure}
-\begin{tikzpicture}
-\node (c) at (1,5) [circle,draw] {client};
+\begin{frame}{<c:url>动态生成URL标签}
+<c:url>标签可用于生成一个URL路径的字符串，这个字符串可以赋予HTML的<a>标记实现超链接，或利用这个生成的URL字符串实现网页转发与重定向。
+还可以与<c:param>标签结合动态添加URL的参数信息。
+\begin{enumerate}
+\item <c:url value="url" [var="name"] [scope="范围"] />
 
-\node (f) at (6,5) [rectangle,draw,minimum height=20mm] {\textcolor{red}{filter}};
-\node (s) at (8,5) [circle,draw] {server};
-\draw [dashed,label=above:webserver] (5,3) rectangle (9,7) ;
-\draw [->,line width=1.5pt] (1.5,5.5) -- (5.5,5.5); 
-\draw [<-,line width=1.5pt] (1.5,4.5) -- (5.5,4.5); 
-\draw [->,line width=1.5pt] (6.5,5.5) -- (7.5,5.5); 
-\draw [<-,line width=1.5pt] (6.5,4.5) -- (7.5,4.5); 
+输出产生的URL字符串信息，如果指定了var和scope属性，则URL信息就不再输出，而是存储在变量中。
+\item <c:url value="url" var="name"> <c:param name="" value=""> </c:url>
 
-\end{tikzpicture}
-\caption{the position and function of a filter}
-\end{figure}
-可以看出，filter是介于client和server端的一个“关卡”，其负责“过滤”信息流（这个过滤器可以有多个，形成过滤器链）。
+本语法实现了语法1的功能，同时又搭配<c:param>标签给URL附带了参数。
+\end{enumerate}
 \end{frame}
-\begin{frame}[fragile]{创建一个filter}
-创建一个filter，禁止特定id的用户注册(\textcolor{red}{chain.doFilter()})。
-
-创建过程与创建servlet类似。
-
-FilterReg.java的主要代码如下所示：
-\begin{lstlisting}
-@WebFilter(filterName = "/FilterReg",
-      urlPatterns = "/Reg")
-public class FilterReg implements Filter {
-  public void doFilter(ServletRequest request, 
-  ServletResponse response, FilterChain chain)  {
-  HttpServletRequest req = 
-      (HttpServletRequest) request; 
-  String id = request.getParameter("staffid");
-  System.out.println("staffid is: "+id);
-  // pass the request along the filter chain
-  chain.doFilter(request, response);
-  }
-}
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]{chain.doFilter()}
-Pay attention to 
-\textcolor{red}{chain.doFilter()}.
-\begin{lstlisting}
-public void doFilter(ServletRequest request, 
-    ServletResponse response, FilterChain chain){
-HttpServletRequest req = 
-  (HttpServletRequest) request; 
-String id = request.getParameter("staffid");
-System.out.println("staffid is: "+id);
-	
-// pass the request along the filter chain
-chain.doFilter(request, response);
-		
-HttpServletResponse resp = 
-    (HttpServletResponse) response;
-resp.getWriter().print("add is done. Stay here.");
-//resp.setHeader("refresh", "3,URL=index.jsp");
-}
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}{监听器}
-\textcolor{red}{监听}是对\textcolor{red}{特定事件}进行关注。
-
-所谓监听器就是对特定事件的发生做出反应，比如你点击了什么按钮等等。
-\begin{table}
-\begin{tabular}{ll}
-\toprule
-\textbf{Listener接口}&\textbf{Event类}\\
-\midrule
-ServletContextListener&ServletContextEvent\\
-ServletContexAttributeListener&ServletContextAttributeEvent\\
-HttpSessionListener&\multirow{2}{*}{HttpSeesionEvent}\\
-HttpSessionActivationListener&\\
-HttpSessionAttributeListener&\multirow{2}{*}{HttpSessionBindingEvent}\\
-HttpSessionBindingListener&\\
-ServletRequestListener&ServletRequestEvent\\
-ServletRequestAttributeListener&ServletRequestAttributeEvent\\
-\bottomrule
-\end{tabular}
-\caption{Listener接口与Event类}
-\end{table}
-\end{frame}
-
-
-\begin{frame}[fragile]{使用servlet处理文件上传I}
-form的主要代码为（class\_apply.jsp）：
-\begin{lstlisting}
-<form action="ServletClassArrange" 
-  enctype="multipart/form-data" method="post">
-<table>
-<tr><td>
-上传实验指导书:<input type="file" name="guideBook" >
-   </td></tr>
-<tr><td>
-<button type="submit">submit</button>
-   </td></tr>
-</table>
-</form>
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]{使用servlet处理文件上传II}
-Servlet的主要代码为（ServletClassArrange.java）：
-\begin{lstlisting}
-@WebServlet("/ServletClassArrange")
-@MultipartConfig
-public class ServletClassArrange 
-   extends HttpServlet {
- protected void doPost(......){
-  request.setCharacterEncoding("utf-8");
-  Part pt = request.getPart("guideBook");
-  String fName = pt.getSubmittedFileName();
-  System.out.println("the file is:"+fName);
-  System.out.println(
-   this.getServletContext().getRealPath("/")+fName);
-  pt.write("/Users/hainingzhang/Downloads/"+fName);
-  System.out.println("success uploaded!");
- }
-}
-\end{lstlisting}
+\begin{frame}{<c:redirect>重定向标签}
+\begin{enumerate}
+\item
+<c:redirect url="">
+\item
+<c:redirect url="url"> <c:param name="" value=""/> </c:redirect>
+\end{enumerate}
 \end{frame}
 %---------------------------------------------
+
 \section{数据库分页}
 \begin{frame}
 \Huge{\centerline{javabean}}
 \end{frame}
-\begin{frame}{什么是javabean}
-如果一个类满足以下条件：
-\begin{enumerate}
-\item
-All properties private (use getters/setters)
-\item
-A public no-argument constructor
-\item
-Implements Serializable
-\end{enumerate}
-则就称这个类是一个javabean。
-\end{frame}
-\begin{frame}[fragile]{serializable}
-如果想将一个java对象保存到文件中，那么这个对象必须是可序列化的（serializable）,也就是说这个对象的类需要是可序列化的。
-\begin{block}{Teacher类实现序列化}
-\begin{lstlisting}
-import java.io.Serializable;
-
-public class Teacher implements Serializable{
-   private static final long serialVersionUID = 1L;
-}
-\end{lstlisting}
-\end{block}
-\end{frame}
-\begin{frame}{为什么要使用javabean}
-使用javabean可以使html代码和java代码尽可能的分离，将java代码单独封装成为一个处理某种业务逻辑的类，然后在jsp页面中调用此类。以\textcolor{red}{简化jsp页面和提高java程序代码的重用性}。
-\end{frame}
-\begin{frame}[fragile]{Teacher}
-定义Teacher类，该类为封装教师对象的javabean。
-\begin{lstlisting}
-//Teacher.java
-package bean;
-import java.io.Serializable;
-public class Teacher implements Serializable{
- private static final long serialVersionUID = 1L;
- private String staffid,nm,logDate;	
- public Teacher() {}
- public void setstaffid(String id){this.staffid=id;}
- public void setnm(String name) {this.nm=name;}
- public void setlogDate(String logDate) {
-   this.logDate=logDate;}
- public String getstaffid() { return staffid; }
- public String getnm() { return nm;  }
- public String getlogDate() { return logDate;  }
-}
-\end{lstlisting}
-
-\end{frame}
-\begin{frame}[fragile]{与javabean相关的几个jsp标签}
-\begin{enumerate}
-\item
-jsp:useBean
-
-实例化一个对象
-\item
-jsp:setProperty
-
-为一个属性赋值
-\item
-jsp:getProperty
-
-获取一个属性值
-\end{enumerate}
-\begin{lstlisting}
-//teacher_add.jsp
-<jsp:useBean id="teacher" class="bean.Teacher">
- </jsp:useBean>
-<jsp:setProperty name="teacher" property="nm"
- value="贵州大学" />
-<jsp:getProperty property="nm" name="teacher"/>
-
-\end{lstlisting}
-
-\end{frame}
-
-\begin{frame}[fragile]{对javabean属性赋值与获取javabean属性}
-在jsp页面中，对javabean属性赋值与获取javabean属性。
-\begin{lstlisting}
-//teacher_add.jsp
-<% request.setCharacterEncoding("utf-8"); %>
-<jsp:useBean id="teacher" class="bean.Teacher">
- </jsp:useBean>
-<jsp:setProperty name="teacher" property="*" />
-<table>  <tr> <th>staffid</th> <th>nm</th> 
-      <th>logDate</th> </tr>  <tr> <td>
-<jsp:getProperty property="staffid" name="teacher"/>
-</td><td>
-<jsp:getProperty property="nm" name="teacher"/>
-</td><td>
-<jsp:getProperty property="logDate" name="teacher"/>
-</td></tr></table>
-\end{lstlisting}
-
-\end{frame}
-
+%---------------------------------------
 \begin{frame}{作业}
 \begin{enumerate}
 \item
@@ -729,7 +575,7 @@ lab-java项目
 \item
 实验指导书
 
-暂无，拟放在ppt的仓库里
+放在ppt的仓库里
 \end{enumerate}
 \end{block}
 \end{frame}
