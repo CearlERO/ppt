@@ -142,24 +142,65 @@
 
 %\end{tikzpicture}
 \end{frame}
-\begin{frame}[fragile]{内存分配I}
-\begin{block}{使用c语言标准库中的malloc来分配内存}
-\begin{lstlisting}
-\end{lstlisting}
-\#include<stdlib.h>
 
-void *malloc(size\_t size);
-\end{block}
-\end{frame}
-\begin{frame}[fragile]{内存分配II}
-\begin{block}{使用c语言标准库中的malloc来分配内存}
+\begin{frame}[fragile]{内存管理I}
+\begin{block}{malloc、free}
 \begin{lstlisting}
-\end{lstlisting}
-\#include<stdlib.h>
 
-void *malloc(size\_t size);
+#include<stdlib.h>
+void *malloc(size_t size);
+void free(void *ptr);
+\end{lstlisting}
 \end{block}
+The malloc() function allocates size bytes of memory and returns a pointer to the allocated memory.
+
+The free() function deallocates the memory allocation pointed to by ptr. If ptr is a NULL pointer, no operation is performed.
+
+A call to free should be made only with a pointer to memory allocated by a call to malloc, calloc, or realloc.
 \end{frame}
+
+\begin{frame}[fragile]{内存管理II}
+\label{malloc}
+\begin{block}{分配、释放内存以及内存的合理使用}
+\begin{verbatim}
+int main(){
+ char * ch,*tmp;
+ ch = (char *) malloc(1);
+ tmp = (char *) malloc(1);
+ printf("the addr of ch is:%p, tmp is %p\n",ch,tmp);
+ sprintf(tmp,"java.\n");
+ sprintf(ch,"hello mem, it may be breaks other address.\n");
+ printf("the ch is: %s",ch);
+ printf("the tmp is: %s",tmp);
+ free(ch);
+ free(tmp);
+ exit(0);
+}
+\end{verbatim}
+\end{block}
+\emph{Question}:这段代码的输出会是什么样的？
+\end{frame}
+
+\begin{frame}[fragile]{内存管理III}
+\label{m2}
+\begin{block}{内存的合理使用}
+\begin{verbatim}
+int main(){
+ char * ch2="h";
+ char * tmp2="java.";
+ printf("the addr of ch2 is:%p, tmp2 is %p\n",ch2,tmp2);
+ ch2="hello mem, it may be breaks other address.";
+ printf("the ch2 is: %s\n",ch2);
+ printf("the tmp2 is: %s\n",tmp2);
+ printf("the ch2 addr %p %p %p\n",&ch2[0],&ch2[1],&ch[3]);
+ printf("the tmp2 addr %p %p\n",&tmp2[0],&tmp2[1]);
+ exit(0);
+}
+\end{verbatim}
+\end{block}
+\emph{Question}:这段代码的输出又会是什么样的？为什么与第\ref{malloc}页不同？
+\end{frame}
+
 %------------------------------------------------
 \section{文件锁定}
 \begin{frame}
@@ -321,6 +362,25 @@ F\_GETLK  获取锁信息。若失败，返回-1。
 F\_SETLK 设置锁。若失败，返回-1。
 \item
 F\_SETLKW 设置锁，直到成功。
+\end{enumerate}
+\end{frame}
+\begin{frame}{F\_GETLK}
+fcntl这个系统调用可以使用F\_GETLK这个参数来获取文件某一区域当前的锁定状态。其返回值有两种：
+\begin{enumerate}
+\item
+-1
+
+调用失败，表明F\_GETLK无法获取信息。
+\item
+非-1
+
+调用成功，表明F\_GETLK获取到了锁信息。
+\begin{itemize}
+\item
+如果文件的该区域已经存在一个锁的话，F\_GETLK会将本次调用中的flock结构中的l\_pid修改为锁定进程的进程号。
+\item
+若文件的该区域没有锁，则不做修改。
+\end{itemize}
 \end{enumerate}
 \end{frame}
 \begin{frame}{flock}
@@ -656,14 +716,249 @@ l_type 3, l_whence 0, l_start 40, l_len 10, l_pid 4732
 \node (lock4) at (8,1.8){lock4}; 
 \end{tikzpicture}
 \end{frame}
+\begin{frame}{文件锁的竞争}
+针对某一文件的特写区域，存在三种状态：
+\begin{enumerate}
+\item
+无锁
 
+新程序可以随意加锁
+\item
+have a read lock(shared lock)
+
+可以加read lock
+\item
+have a write lock(exclusive lock)
+
+新程序不可加锁
+\end{enumerate}
+针对解锁有个特别要说明的是：即使一个程序对某一区域不拥有任何锁，同时不管该区域拥有什么锁，这个程序针对这一区域的解锁操作都会返回成功，因为对于本程序来说，只要解锁操作的结果是本身对文件的特定区域不拥有任何锁，那么这个解锁操作就是成功的。
+\end{frame}
+\begin{frame}{死锁}
+假设AB两个程序需要同时更新字节1和字节2, 程序A先锁定了字节1, 程序B先锁定了字节2 。然后程序A尝试锁定字节
+2, 而此时字节2正在被程序B锁定，A只好继续锁定字节1, 等待机会锁定字节2; 而程序B相反，它锁定了字节2, 等待机会去锁定字节1 。这就出现了A和B各处占有，又各自等待的情况，最终的结果就是两个程序都无法继续执行下去，这种现象就是\textcolor{red}{死锁}。
+
+\begin{tikzpicture}
+
+\node (a) at (3,1) {};
+\node (b) at (5,1) {};
+\node (c) at (7,1) {};
+\node (d) at (7,1.8) {};
+\node (e) at (5,1.8) {};
+\node (f) at (3,1.8) {};
+\node (B) at (5,0) {B};
+\node (A) at (5,2.8) {A};
+\draw (a) -- (b) -- (c) -- (d) -- (e) -- (f) -- (a);
+\draw (b) -- (e);
+\node (C) at (4,1.4) {};
+\node (D) at (6,1.4) {};
+\draw [thick] (A) to[out=180,in=90] node {locked} (C) [->];
+\draw [thick] (B) to[out=0,in=270] node{locked} (D) [->];
+\draw [thick,red,dashed] (A) to[out=0,in=90] node {want to} (D) [->];
+\draw [thick,red,dashed] (B) to[out=180,in=270] node{want to} (C) [->];
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{真的锁住了？}
+fcntl的锁只是\textcolor{red}{建议性}的锁，并不会真正的阻止我们从文件中读写数据，对锁的检测是程序的责任。
+
+规范性。
+\end{frame}
 %------------------------------------------------
 \section{数据库}
 \begin{frame}
 \Huge{\centerline{数据库}}
 \end{frame}
+\begin{frame}{dbm}
+dbm是Linux平台和Unix-like平台上的一个基础的、但是非常有效的与数据存储有关的函数库，
+通常称为dbm数据库。dbm数据库很适合用来存储索引化的静态数据，
+
+一些使用RPM包管理机制的linux发行版，比如Red Hat和SUSE使用dbm来进行包信息的存储管理。
+
+\end{frame}
+\begin{frame}{dbm的结构}
+与MySQL等数据库不同，dbm不使用表来存储数据。其使用一种叫做\textcolor{red}{datum}的结构来存储数据。
+一个dbm数据库中包含若干个“索引-数据”对，每个索引或数据都是一个datum结构的数据。
+datum的具体实现不尽相同，但至少会包含以下两个内容：
+\begin{enumerate}
+\item
+void *dptr;
+
+dptr指向数据的开始。
+\item
+size\_t dsize
+
+指明数据的大小。
+\end{enumerate}
+就像打开或关闭文件需要使用FILE结构一样，使用dbm数据库时，需要使用\textcolor{red}{DBM}这种结构。
+\end{frame}
+\begin{frame}[fragile]{dbm常用函数}
+\begin{block}{dbm\_open 函数原型}
+\begin{lstlisting}
+#include <ndbm.h>
+DBM *dbm_open(const char *filename, 
+  int file_open_flags, mode_t file_mode);
+\end{lstlisting}
+\end{block}
+dbm\_open函数用来打开一个存在的数据库或都创建一个数据库。
+
+其接收的第一个参数是一个数据库文件名;第二个参数和第三个参数与
+打开文件的open系统调用是一致的。
+
+其返回值是一个DBM类型的指针，以供接下来访问数据库使用。如果失败的话，会返回
+0 。
+\end{frame}
+
+\begin{frame}[fragile]{dbm常用函数}
+\begin{block}{dbm\_store 函数原型}
+\begin{lstlisting}
+#include <ndbm.h>
+int dbm_store(DBM *database_descriptor, 
+  datum key, datum content, int store_mode); 
+\end{lstlisting}
+\end{block}
+dbm\_store是往数据库里存储数据的。为了存储数据，需要定义两个datum结构：一个用来放
+索引，一个用来放实际的数据。
+
+store\_mode是用来声明如果一个索引已经存在的话，本次的存储数据操作会如何应对：如果是DBM\_INSERT，
+那么本次操作会失败，并返回1;如果是DBM\_REPLACE，新数据会覆盖旧数据，并返回0 。
+如果有其他错误的话，会返回负值。
+\end{frame}
+\begin{frame}[fragile]{dbm常用函数}
+\begin{block}{dbm\_fetch 函数原型}
+\begin{lstlisting}
+#include <ndbm.h>
+datum dbm_fetch(DBM *database_descriptor, datum key);
+\end{lstlisting}
+\end{block}
+dbm\_fetch用于从数据库中查询数据。如果与key相关的数据被查询到，返回的datum结构中的dptr和
+dsize会根据实际的数据设置，如果没有找到，那么datum中的dptr会被设置成NULL。
+\end{frame}
+\begin{frame}[fragile]{dbm常用函数}
+\begin{block}{dbm\_close 函数原型}
+\begin{lstlisting}
+#include <ndbm.h>
+void dbm_close(DBM *database_descriptor);
+\end{lstlisting}
+\end{block}
+关闭数据库。
+\end{frame}
+
+\begin{frame}[fragile]{创建一个dbm数据库}
+\begin{block}{创建数据库}
+\begin{lstlisting}
+#include<ndbm.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+int main(){
+//create a db
+DBM *db = dbm_open("mydbm",O_CREAT|O_RDWR,0666);
+if(!db){
+ printf("the dbm database open failure.");
+}else{
+ printf("the dbm database open successed.\n");	
+}
+dbm_close(db);
+exit(0);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{插入数据}
+\begin{block}{插入数据}
+\begin{lstlisting}
+//insert a recode
+datum key,value;
+char * k="gzu";
+char * v="guizhou university";
+key.dptr=k;  key.dsize=strlen(k);
+value.dptr=v;  value.dsize=strlen(v);
+int rz = dbm_store(db,key,value,DBM_INSERT);
+if(rz==0){
+ printf("the data insert successed.\n");
+ dbm_close(db);	
+}else{	
+ printf("the data insert failure.\n");
+ dbm_close(db);	
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{查询数据}
+\begin{block}{查询数据}
+\begin{lstlisting}
+//retrive a recode
+datum valueRetrive;
+valueRetrive = dbm_fetch(db,key);
+if(valueRetrive.dptr!=NULL){
+ char * dt;
+ strncpy(dt,valueRetrive.dptr,valueRetrive.dsize);
+ //printf("the retrived data is: %s.\n",
+   valueRetrive.dptr);
+ printf("the retrived data is: %s.\n",dt);
+ printf("the data longth is:%l.\n",valueRetrive.dsize);
+}else{
+ printf("no data was retrived.\n");
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{dbm其他的一些函数}
+\begin{block}{其他函数原型}
+\begin{lstlisting}
+#include <ndbm.h>
+int dbm_delete(DBM *database_descriptor, datum key); 
+int dbm_error(DBM *database_descriptor);
+int dbm_clearerr(DBM *database_descriptor);
+datum dbm_firstkey(DBM *database_descriptor);
+datum dbm_nextkey(DBM *database_descriptor);
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{delete,error,clearerr}
+\begin{itemize}
+\item
+dbm\_delete
+
+The dbm\_delete function is used to delete entries from the database. It takes a key datum just like dbm\_fetch but rather than retrieve the data, it deletes the data. It returns 0 on success.
+\item
+dbm\_error
+
+The dbm\_error function simply tests whether an error has occurred in the database, returning 0 if there is none.
+\item
+dbm\_clearerr
+
+The dbm\_clearerr clears any error condition flag that may be set in the database.
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{dbm\_firstkey and dbm\_nextkey}
+
+These routines are normally used as a pair to scan through all the keys of all the items in a database. The loop structure required is as follows:
+
+\begin{block}{dbm\_firstkey and dbm\_nextkey}
+\begin{lstlisting}
+DBM *db_ptr; 
+datum key;
+for(key = dbm_firstkey(db_ptr); key.dptr; 
+  key = dbm_nextkey(db_ptr));
+\end{lstlisting}
+\end{block}
+\end{frame}
 %------------------------------------------------
 %------------------------------------------------
+\begin{frame}{作业}
+\begin{enumerate}
+\item
+回答第\ref{malloc}、第\ref{m2}页的代码输出结果为什么不同（下周三课前收作业）
+\item
+练习使用创建锁文件和锁定区域两种不同的形式对文件进行锁定
+\item
+练习dbm库的使用
+\end{enumerate}
+\end{frame}
 
 \begin{frame}
 \Huge{\centerline{The End}}
@@ -676,6 +971,17 @@ l_type 3, l_whence 0, l_start 40, l_len 10, l_pid 4732
 \Huge{\centerline{Appendix}}
 \end{frame}
 %----------------------------------------------------------------------------------------
+\begin{frame}[fragile]{sprintf}
+\textbf{Description}
+
+The C library function int sprintf(char *str, const char *format, ...) sends formatted output to a string pointed to, by str.
+
+\textbf{Declaration}
+
+Following is the declaration for sprintf() function.
+
+\fbox{int sprintf(char *str, const char *format, ...)}
+\end{frame}
 \begin{frame}[fragile]
 \frametitle{errno}
 \label{ferr}
