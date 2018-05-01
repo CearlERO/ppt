@@ -1,7 +1,8 @@
 \documentclass{beamer}
 \usetheme[block=fill,numbering=fraction]{metropolis}         % Use metropolis theme
 \usepackage{xeCJK}%支持中文
-\setCJKmainfont{SourceHanSerifCN-Regular}
+%\setCJKmainfont{SourceHanSerifCN-Regular}%windows
+\setCJKmainfont{SourceHanSerif-Regular}%mac
 \usepackage{listings}%support code enviroment
 \usepackage{booktabs}%support 三线表
 \usepackage{ulem}
@@ -244,8 +245,20 @@ on page \pageref{titlepage}
 \end{lstlisting}
 \end{frame}
 \begin{frame}[fragile]{列表}
+列表有两种，一种是前面有数字标号的，一种是没标号的。
+
 \begin{columns}
-\column{.5\linewidth}
+\column{0.5\textwidth}
+\begin{block}{有标号的}
+\begin{lstlisting}
+\begin{enumerate}
+\item
+an item
+\item
+another item
+\end{enumerate}
+\end{lstlisting}
+\end{block}
 \begin{enumerate}
 \item
 an item
@@ -253,6 +266,16 @@ an item
 another item
 \end{enumerate}
 \column{.5\linewidth}
+\begin{block}{无标号的}
+\begin{lstlisting}
+\begin{itemize}
+\item
+an item
+\item
+another item
+\end{itemize}
+\end{lstlisting}
+\end{block}
 \begin{itemize}
 \item
 an item
@@ -260,16 +283,218 @@ an item
 another item
 \end{itemize}
 \end{columns}
+
+\end{frame}
+\begin{frame}[fragile]{代码}
+\begin{enumerate}
+\item
+lstlisting环境，需要引用lstings宏包
+
+\begin{lstlisting}
+#include<stdio.h>
+
+int main(){
+    char *a = (char *) malloc(1000);
+}
+\end{lstlisting}
+
+\item
+verbatim环境
+\begin{verbatim}
+#include<stdio.h>
+
+int main(){
+    char *a = (char *) malloc(1000);
+}
+\end{verbatim}
+\end{enumerate}
+\end{frame}
+\begin{frame}{表格I}
+以三线表为例，需要引用booktabs宏包。
+\begin{table}
+\begin{tabular}{lcrp{6em}}
+\toprule
+\textbf{id}&\textbf{name}&\textbf{age}&\textbf{note}\\
+\midrule
+01&trump&20&the president of America\\
+\bottomrule
+\end{tabular}
+\caption{a table example}
+\label{tableExample}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]{表格II}
+Table \ref{tableExample}的代码为：
+\begin{verbatim}
+\begin{table}
+\begin{tabular}{lcrp{6em}}
+\toprule
+\textbf{id}&\textbf{name}&\textbf{age}&\textbf{note}\\
+\midrule
+01&trump&20&the president of America\\
+\bottomrule
+\end{tabular}
+\caption{a table example}
+\label{tableExample}
+\end{table}
+\end{verbatim}
+\end{frame}
+\begin{frame}[fragile]{图片}
+latex除可以插入eps格式的矢量图以外，还可以插入普通格式的图片，如png,bmp,jpg，不过需要使用宏包graphicx 。
+\begin{block}{insert a picture}
+\begin{verbatim}
+\includegraphics[⟨options⟩]{⟨filename⟩}
+\end{verbatim}
+\end{block}
+
+\begin{table}
+\begin{tabular}{lr}
+\toprule
+\textbf{option}&\textbf{description}\\
+\midrule
+width=<width>&将图片缩放到宽度为<width>\\
+height=<height>&将图片缩放到高度为<height>\\
+scale=<scale>&将图片相对于原尺寸缩放<scale>倍\\
+angle=<angle>&将图片逆时针旋转<angle>度\\
+\bottomrule
+\end{tabular}
+\caption{includegraphics的options}
+\end{table}
+
+
 \end{frame}
 \section{数学公式}
-\section{样式设定}
-\section{其他功能}
-\subsection{文献、索引}
-\subsection{超链接}
+\begin{frame}{数学公式}
+latex的强项---排版数学公式。
+
+排版数学公式需要使用amsmath宏包。
+
+数学公式排版有两种：
+\begin{enumerate}
+\item
+与文字混排，称为\textcolor{red}{行内公式}。
+\item
+单独一行排版，称为\textcolor{red}{行间公式}。
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{行内公式}
+行内公式由一对\$符号包裹，如：$a^2+b^2=c^2$
+\begin{block}{latex代码}
+\begin{verbatim}
+行内公式由一对\$符号包裹，如：$a^2+b^2=c^2$
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{行间公式}
+行间公式由equation环境包裹，如：公式 \ref{gg}，
+或公式 \eqref{gg}。
+\begin{equation}
+a^2+b^2=c^2 \label{gg}
+\end{equation}
+\begin{block}{latex代码}
+\begin{verbatim}
+行间公式由equation环境包裹，如：公式 \ref{gg}，
+或公式 \eqref{gg}。
+\begin{equation}
+a^2+b^2=c^2 \label{gg}
+\end{equation}
+
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{数学符号}
+\begin{itemize}
+\item
+省略号 $\dots$  $\vdots$  $\ddots$
+\item
+上标，下标 $x^{2+i}$ $x_{j}$
+\item
+分式，根式 $\frac{1}{2}$ $\sqrt[3]{2}$ $\binom{n}{k}=\binom{n-1}{k}+\binom{n-1}{k-1}$
+\item
+积分、求和类的符号 $\int_{0}^{\frac{\pi}{2}}$ $\sum_{i=1}^{n}$
+\item
+数学重音 $\bar{x_{i}}$ $\vec{x_{0}}$
+\end{itemize}
+\begin{block}{latex代码}
+\begin{verbatim}
+省略号 $\dots$  $\vdots$  $\ddots$
+上标，下标 $x^{2+i}$ $x_{j}$
+分式，根式 $\frac{1}{2}$ $\sqrt[3]{2}$ 
+  $\binom{n}{k}=\binom{n-1}{k}+\binom{n-1}{k-1}$
+积分、求和类的符号 $\int_{0}^{\frac{\pi}{2}}$ 
+  $\sum_{i=1}^{n}$
+数学重音 $\bar{x_{i}}$ $\vec{x_{0}}$
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{长公式折行}
+一般来说，应当避免写出超过一行的公式，如果有此需要的话，可以使用multline环境，多行公式的首行左对齐，末行右对齐，其余行居中，如：
+\begin{multline}
+(a+b)^{2}\\
+=a^2+2ab+b^2
+\end{multline}
+
+\begin{block}{latex代码}
+\begin{verbatim}
+\begin{multline}
+(a+b)^{2}\\
+=a^2+2ab+b^2
+\end{multline}
+
+\end{verbatim}
+\end{block}
+
+\end{frame}
+\begin{frame}{数组和矩阵I}
+可以使用array和matrix环境来分别产生数组和矩阵。
+$ \mathbf{X} = \left(
+\begin{array}{cccc}
+x_{11} & x_{12} & \ldots & x_{1n}\\
+x_{21} & x_{22} & \ldots & x_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{n1} & x_{n2} & \ldots & x_{nn}\\
+\end{array} \right) $
+$
+\begin{bmatrix}
+x_{11} & x_{12} & \ldots & x_{1n}\\
+x_{21} & x_{22} & \ldots & x_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{n1} & x_{n2} & \ldots & x_{nn}\\
+\end{bmatrix}
+$
+\end{frame}
+\begin{frame}[fragile]{数组和矩阵II}
+\begin{block}{latex代码}
+\begin{verbatim}
+$ \mathbf{X} = \left(
+\begin{array}{cccc}
+x_{11} & x_{12} & \ldots & x_{1n}\\
+x_{21} & x_{22} & \ldots & x_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{n1} & x_{n2} & \ldots & x_{nn}\\
+\end{array} \right) $
+$ \begin{bmatrix}
+x_{11} & x_{12} & \ldots & x_{1n}\\
+x_{21} & x_{22} & \ldots & x_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{n1} & x_{n2} & \ldots & x_{nn}\\
+\end{bmatrix}$
+\end{verbatim}
+\end{block}
+\end{frame}
+
+%\section{样式设定}
+%\section{其他功能}
+%\subsection{文献、索引}
+%\subsection{超链接}
 
 \begin{frame}[standout]
 The END.
 
 Q\&A
+
+参考资料\footnote{本ppt的内容基本上都来自于此。}：\url{https://mirrors.tuna.tsinghua.edu.cn/CTAN/info/lshort/chinese/lshort-zh-cn.pdf}
 \end{frame}
+
 \end{document}
