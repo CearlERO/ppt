@@ -223,38 +223,22 @@ ServletRequestAttributeListener&ServletRequestAttributeEvent\\
 其代码如Figure \ref{listenercode}所示。
 \begin{figure}
 \begin{lstlisting}
-package listener;
-
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
-import cs.LabDate;
-/**
- * Application Lifecycle Listener implementation class OnlineNum
- *
- */
+//OnlineNum.java
 @WebListener
 public class OnlineNum implements HttpSessionListener {
 	private int count;
-	
 	public int getNum() {
 		return count;
-	}
-	
+	}	
 	public synchronized void setCount(int c) {
 		count+=c;
 	}
 
-    /**
-     * Default constructor. 
-     */
     public OnlineNum() {
         // TODO Auto-generated constructor stub
     	count=0;
     	System.out.println("当前在线人数被初始化为0");
     }
-
 	/**
      * @see HttpSessionListener#sessionCreated(HttpSessionEvent)
      */
@@ -262,17 +246,14 @@ public class OnlineNum implements HttpSessionListener {
          // TODO Auto-generated method stub
     	String dt = new LabDate().getDtTm();
     	String sid = arg0.getSession().getId();
-//    	count++;
     	setCount(1);
     	System.out.println("at "+dt+","+sid+" coming, 当前在线人数为："+count);
     }
-
 	/**
      * @see HttpSessionListener#sessionDestroyed(HttpSessionEvent)
      */
     public void sessionDestroyed(HttpSessionEvent arg0)  { 
          // TODO Auto-generated method stub
-//    	count--;
     	setCount(-1);
     	String dt = new LabDate().getDtTm();
     	String sid = arg0.getSession().getId();
