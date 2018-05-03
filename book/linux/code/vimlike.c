@@ -24,11 +24,13 @@ int main(){
 		switch(key_press){
 			case 'Q':
 				endwin();
+				free(fileName);
 				exit(0);
 			case 'O':
-				swin = subwin(fwin,3,15,20,30);
+				swin = subwin(fwin,3,50,20,30);
 				box(swin,'#','#');
 				wmove(swin,1,2);
+				waddstr(swin,"Input the file name:");
 				wgetstr(swin,fileName);	
 				wrefresh(swin);
 				readAfile(fileName,fwin);
