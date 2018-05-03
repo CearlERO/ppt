@@ -1,0 +1,781 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{multirow}
+\lstset{numbers=left,xleftmargin=10pt,xrightmargin=10pt}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[SpringMVC]{SpringMVC} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{张海宁} % Your name
+\institute[Guizhou University] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{EL} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+\begin{frame}
+\Huge{\centerline{EL}}
+\end{frame}
+\begin{frame}
+\frametitle{什么是EL}
+EL是指jsp \textcolor{red}{E}xpression \textcolor{red}{L}anguage。EL是jsp2.0引入的，其目的就是为了简化jsp页面中的的一些参数获取操作（using html like tags）。\\
+
+使用EL可以方便的读取存储在以下对象中的数据：
+\begin{itemize}
+\item
+JavaBean
+\item
+jsp的一些内置对象
+\begin{itemize}
+\item
+request
+\item
+session
+\item
+application
+\item
+...
+\end{itemize}
+\end{itemize}
+\begin{block}{语法结构}
+\$\{ expression \}
+\end{block}
+\end{frame}
+\begin{frame}{EL的隐含对象}
+\label{elimplicit}
+与jsp的内置对象(参考本ppt第\ref{implicitobj},\ref{scope}页）类似的概念，可以直接使用。
+EL的隐含对象可以分为以下三类：
+\begin{itemize}
+\item
+页面上下文对象
+\item
+访问作用域范围的隐含对象
+\item
+访问环境信息的隐含对象
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{页面上下文对象}
+通过页面上下文对象pageContext来获取jsp内置对象后，可以获取其属性，即getXXX()方法中的XXX部分。使用的时候去掉get并将XXX的首字母改为小写。比如下面的request.getMethod()。
+\begin{block}{对应这些对象的getXXX()方法}
+
+\begin{lstlisting}
+${pageContext.request }
+<% request.getMethod(); %>
+${pageContext.request.method }
+
+${pageContext.response }
+${pageContext.out }
+${pageContext.session }
+${pageContext.page }
+
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{访问作用域范围的隐含对象}
+\begin{block}{}
+\begin{lstlisting}
+<%
+pageContext.setAttribute("university", "pgGzu", 1);
+request.setAttribute("university", "reqGzu");
+session.setAttribute("university", "sessionGzu");
+application.setAttribute("university", "appGzu");
+%>
+${pageScope.university }
+${requestScope.university }
+${sessionScope.university }
+${applicationScope.university }
+${university }
+\end{lstlisting}
+\end{block}
+结合\${university}，来看作用域的查找顺序：
+page$>$request$>$session$>$application
+\end{frame}
+
+\begin{frame}[fragile]{访问环境信息的隐含对象}
+\begin{block}{}
+\begin{lstlisting}
+${param.course }
+<%request.getParameter("course"); %>
+<!--获取复选框的值  -->
+${paramValues.multiCheckBox[0] }
+${paramValues.multiCheckBox[1] }
+
+${header.connection }
+${header["connection"] }
+${header["User-Agent"] }
+
+${cookie.JSESSIONID }
+${cookie.JSESSIONID.value }
+\end{lstlisting}
+\end{block}
+\end{frame}
+%\begin{frame}
+%\begin{table}
+%\begin{tabular}{ll}
+%\toprule
+%\textbf{Impicit Objects}&\textbf{Usage}\\
+%\midrule
+%pageScope&访问page scope范围内的属性\\
+%requestScope&访问request scope范围内的属性\\
+%sessionScope&访问session scope范围内的属性\\
+%applicationScope&访问application scope范围内的属性\\
+%param&访问request parameter\\
+%paramValues&访问request parameter的名称\\
+%header&访问header范围内的属性\\
+%headerValues&返回header范围内的属性名称\\
+%cookie&访问cookie范围内的属性\\
+%initParam&访问initParam\\
+%pageContext&访问pageContext范围内的属性\\
+
+%\bottomrule
+%\end{tabular}
+%\caption{Implicit Objects in EL}
+%\end{table}
+%\end{frame}
+\begin{frame}[fragile]
+\frametitle{param示例}
+\begin{block}{the form in test.jsp}
+\begin{lstlisting}
+<form action="showCookie.jsp" method="post">
+课程：<select name="course">
+<option  value="AnalogCircuit" >模电</option>
+...
+</select>
+备注：<input name="note" type="text">
+<button type="submit">submit</button>
+</form>
+\end{lstlisting}
+\end{block}
+\textcolor{red}{Question: }怎么在showCookie.jsp页面获取数据？
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{param示例}
+\begin{block}{get the form parameter of test.jsp in showCookie.jsp}
+\begin{lstlisting}
+The course is: ${param.course}.
+\end{lstlisting}
+\end{block}
+\textcolor{red}{Question: }怎么在showCookie.jsp页面获取cookie相关的数据？
+\end{frame}
+\begin{frame}{EL的操作符}
+与jsp的内置对象类似的概念，可以直接使用。
+\begin{table}
+\begin{tabular}{lp{9em}ll}
+\toprule
+\textbf{Operator}&\textbf{Description}&\textbf{Operator}&\textbf{Description}\\
+\midrule
+.&访问bean里的属性或map里的记录&\\
+$[]$&访问array或list里的元素&()&改变优先级\\
++ - * /&+ - * /&\%&取余\\
+==(eq)&判断是否相等&!=(nq)&判断是否不相等\\
+$<$(lt)&判断是否小于&$>$(gt)&判断是否大于\\
+$<=$(le)&判断是否小于或相等&$>=$(ge)&判断是否大于或相等\\
+\&\&(and)&与&||(or)&或\\
+!(not)&非&empty&判断是否为空\\
+
+\bottomrule
+\end{tabular}
+\caption{Basic Operators in EL}
+\end{table}
+\end{frame}
+
+\section{JSTL}
+\begin{frame}
+\Huge{\centerline{JSTL}}
+\end{frame}
+\begin{frame}
+\frametitle{什么是JSTL}
+JSTL是\textcolor{red}{J}avaServer Pages \textcolor{red}{S}tandard \textcolor{red}{T}ag \textcolor{red}{L}ibrary (JSTL)的简称。JSTL提供了一系列封装好了的jsp标签，可以取代在jsp页面中嵌入java代码的做法。
+
+JSTL实际上由5个功能不同的标签库组成：
+
+\begin{enumerate}
+\item
+\textcolor{red}{核心标签库}
+\item
+格式标签库
+\item
+SQL标签库
+\item
+XML标签库
+\item
+函数标签库
+\end{enumerate}
+
+\end{frame}
+\begin{frame}
+\frametitle{核心标签库}
+核心标签库主要用于完成JSP页面的常用功能，包括：
+\begin{itemize}
+\item
+表达式标签
+\begin{itemize}
+\item
+$<c:out>, <c:set>, <c:remove>, <c:catch>$
+\end{itemize}
+\item
+URL标签
+\begin{itemize}
+\item
+$<c:import>, <c:redirect>, <c:url>, <c:param>$
+\end{itemize}
+\item
+流程控制标签
+\begin{itemize}
+\item
+$<c:if>, <c:choose>, <c:when>, <c:otherwise>$
+\end{itemize}
+\item
+循环控制标签
+\begin{itemize}
+\item
+$<c:forEach>, <c:forTokens>$
+\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}{核心标签库中各标签的作用}
+\begin{table}
+\begin{tabular}{p{10em}l}
+\toprule
+\textbf{tag}&\textbf{Description}\\
+\midrule
+$<c:out>$&将表达式的值输出到jsp页面\\
+$<c:set>$&在指定的作用域内定义变量或为变量赋值\\
+$<c:remove>$&从指定的作用域中移除指定的变量\\
+$<c:catch>$&捕获程序的异常\\
+$<c:import>$&导入文件到web页面中\\
+$<c:redirect>$&将request请求重定向到其他URL\\
+$<c:url>$&构造一个URL\\
+$<c:param>$&为其他标签提供参数信息\\
+$<c:if>$&简单的条件判断\\
+$<c:choose>, <c:when>, <c:otherwise>$&选择，相当于switch\\
+$<c:forEach>$&遍例数组或集合类中的成员\\
+$<c:forTokens>$&迭代字符串中由分隔符分隔的成员\\
+\bottomrule
+\end{tabular}
+%\caption{JSTL核心标签库中标签的作用}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{JSTL的配置}
+\begin{enumerate}
+\item
+下载JSTL的jar文件
+
+\url{http://tomcat.apache.org/download-taglibs.cgi#Standard-1.2.5}
+\item
+将下载好的4个jar文件，放到项目下的WEB-INF文件夹下的lib文件夹中
+\item
+在想使用JSTL标签的jsp页面中，定义引用的标签库和访问前缀
+\begin{lstlisting}
+<%@ taglib prefix = "c" 
+  uri = "http://java.sun.com/jsp/jstl/core" %>
+\end{lstlisting}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{表达式标签<c:out>}
+<c:out>标签用于将表达式的值输出到jsp页面中去。类似于jsp的<\%=exp\%>或el的\$\{exp\}。
+
+\textcolor{red}{<c:out value="" [escapeXml="true|false"]  [default="defaultValue"] />}
+\begin{itemize}
+\item
+value
+
+用于指定变量或表达式，可以使用el
+\item
+escapeXml
+
+可选属性，默认为true，转换。用于指定是否转换value中的特殊字符。比如将<转换为\&lt;
+\item
+default
+
+可选属性，默认为空字符串。用于指定当value的值为null时，将要显示的默认值。
+\end{itemize}
+\textcolor{red}{<c:out value="<br>newline" />} 这里<br>原样输出 
+
+\textcolor{red}{ <c:out value="<br>newline" escapeXml="false"/>}这里<br>会被解析为html标记
+\end{frame}
+
+\begin{frame}{变量设置标签<c:set> I}
+<c:set>标签用于在指定范围（page, request,session,application）中定义保存某个值的变量，或为指定的对象设置属性。
+\begin{enumerate}
+\item
+在scope范围内将值保存到变量中
+
+<c:set var="name" value="value" [scope="范围"]/>
+\item
+在scope范围内将标签体保存到变量中
+
+<c:set var="name"  [scope="范围"]/>标签体</c:set>
+\item
+将值保存在对象的属性中
+
+<c:set  value="value" target="object" property="propertyName"/>
+\end{enumerate}
+\emph{value可以使用el表达式；target可以是javabean或map对象。}
+\end{frame}
+
+\begin{frame}[fragile]{变量设置标签<c:set> II}
+\begin{block}{设置一个request变量，给一个bean赋值}
+\begin{lstlisting}
+<%@ taglib prefix="c" 
+  uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="myName" value="gzu" scope="request"/>
+<c:out value="myName is ${myName }"/>
+<jsp:useBean id="st" class="bean.Student"/>
+<c:set target="${st}" property="name" value="BD"/>
+<c:out value="st.name is ${st.name }"/>
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{<c:remove> 变量移除标签 <c:catch> 捕获异常标签}
+\begin{itemize}
+\item
+\emph{<c:remove var="name" [scope="范围"]>}
+
+最好指定范围，否则移除所有范围内的值。
+\item
+\emph{<c:catch [var="exception"]> code may have exception\ldots </c:catch>}
+
+var可以存储异常信息，供catch标签外的代码使用。
+\end{itemize}
+\end{frame}
+\begin{frame}{URL相关标签}
+文件导入、重定向和url地址生成是web应用中常用的功能。JSTL中提供的与URL相关的标签分别是：
+<c:import>,<c:url>,<c:redirect>和一个通常与其他标签配合使用的<c:param>。
+\end{frame}
+\begin{frame}{<c:import>导入标签}
+此标签可以导入站内或站外的静态或动态文件到web页面。
+\begin{enumerate}
+\item
+直接引用地址
+
+<c:import url="url" >
+\item
+将url地址的内容保存到Reader类型的对象中
+
+<c:import url="url" varReader="name">
+\end{enumerate}
+varReader:用于指定一个变量名，该变量用于以Reader类型存储被包含对象。
+
+\emph{教材264页例12.5}
+\end{frame}
+
+\begin{frame}{<c:url>动态生成URL标签I}
+<c:url>标签可用于生成一个URL路径的字符串，这个字符串可以赋予HTML的<a>标记实现超链接，或利用这个生成的URL字符串实现网页转发与重定向。
+还可以与<c:param>标签结合动态添加URL的参数信息。
+\begin{enumerate}
+\item
+输出产生的URL字符串信息，如果指定了var和scope属性，则URL信息就不再输出，而是存储在变量中。
+
+<c:url value="url" [var="name"] [scope="范围"] />
+
+
+\item 
+搭配<c:param>标签给URL附带参数。
+
+<c:url value="url" var="name"> <c:param name="" value=""> </c:url>
+
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{<c:url>动态生成URL标签II}
+\begin{block}{示例代码}
+\begin{lstlisting}
+<c:url value="index.jsp"/>
+<c:url value="index.jsp" var="backtoindex"/>
+<a href=${backtoindex }>back to index</a>
+
+pageScope:${pageScope.backtoindex }
+requestScope:${requestScope.backtoindex }
+sessionScope:${sessionScope.backtoindex }
+applicationScope:${applicationScope.backtoindex }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{<c:redirect>重定向标签}
+\begin{enumerate}
+\item
+简单指定重定向地址。
+
+<c:redirect url="">
+\item
+给重定向地址加上参数。
+
+<c:redirect url="url"> <c:param name="" value=""/> </c:redirect>
+\end{enumerate}
+\begin{block}{示例代码}
+\begin{lstlisting}
+<c:redirect url="Reg"/>
+<c:redirect url="index.jsp"/>
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}{控制标签}
+类似于一般的编程语言，JSTL也有\textcolor{red}{判断}和\textcolor{red}{循环}相关功能的标签。
+\begin{itemize}
+\item
+判断选择
+
+<c:if> <c:choose> <c:when> <c:otherwise>
+\item
+循环
+
+<c:forEach> <c:forTokens>
+\end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]{<c:if>条件判断标签}
+\begin{enumerate}
+\item
+将判断结果保存在变量中
+
+<c:if test="condition" var="name" />
+\item
+将判断结果保存在变量中，并且可以根据判断结果去执行标签体。
+
+<c:if test="condition" var="name" /> code\ldots </c:if>
+\end{enumerate}
+\emph{test}可使用\emph{el}表达式。
+\begin{block}{}
+\begin{lstlisting}
+<c:if test="${!backtoindex}">
+ <a href=${backtoindex }>back to index</a>
+</c:if>
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{<c:choose> <c:when> <c:otherwise>}
+<c:choose>标签只能做为<c:when> <c:otherwise>的父标签。
+\begin{block}{}
+\begin{lstlisting}
+<c:choose>
+<c:when test="${hour>8 && hour<18 }">work time
+  </c:when>
+<c:when test="${hour>18 && hour<20}">meal time
+  </c:when>
+<c:otherwise>do what you want</c:otherwise>
+
+</c:choose>
+\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}{<c:forEach> 循环标签I}
+\begin{enumerate}
+\item
+\label{coll}
+集合成员迭代
+
+<c:forEach items="data" [var="name"] [begin="st"] 
+ [end="finish"] [step="step"] [varStatus="statusName"]>
+ 标签体
+ </c:forEach>
+ \item
+ \label{num}
+ 数字索引迭代
+ 
+ <c:forEach begin="start" end="finish" [step="step"]
+  [var="name"] [varStatus="statusName"]>
+ 标签体
+ </c:forEach>
+
+\end{enumerate}
+\begin{table}
+\begin{tabular}{lp{24em}}
+\toprule
+\textbf{属性}&\textbf{说明}\\
+\midrule
+items&指定被循环的对象，一般为数组或集合类。\\
+var&存储items指定对象的成员。\\
+varStatus&指定循环的状态。（其拥有一个index属性，可以用于获取当前循环的索引值）\\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]{<c:forEach> 循环标签II}
+\begin{block}{获取集合中的元素}
+\begin{lstlisting}
+<%
+List <String> lst = new ArrayList<String>();
+lst.add("gzu");
+lst.add("sdu");
+lst.add("cqut");
+pageContext.setAttribute("mylist", lst);
+%>
+<c:forEach items="${pageScope.mylist}" var="school"
+  varStatus="st">
+${st.index }:${school}<br>
+</c:forEach>
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{<c:forEach> 循环标签III}
+\begin{block}{进行数字循环}
+\begin{lstlisting}
+<c:set var="sum"  value="0"/>
+<c:forEach var="i" begin="1" end="100">
+${sum = sum+i }
+ </c:forEach>
+ sum is:${sum }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{<c:forTokens> 迭代标签I}
+<c:forTokens>迭代标签可以用指定的分隔符将一个字符串分割开，并获取分割后的值。
+
+<c:forTokens items="String" delims="char" [var="name"] 
+[begin="st"] [end="finish"] [step="step"] [varStatus="statusName"]>
+ 标签体
+ </c:forTokens>
+\begin{table}
+\begin{tabular}{lp{24em}}
+\toprule
+\textbf{属性}&\textbf{说明}\\
+\midrule
+items&指定要迭代的String对象。\\
+delims&指定要使用的分割符。\\
+var&保存了分割后的对象。\\
+varStatus&指定循环的状态。（其拥有一个index属性，可以用于获取当前循环的索引值）\\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}[fragile]{<c:forTokens> 迭代标签II}
+\begin{block}{使用迭代标签分隔字符串}
+\begin{lstlisting}
+<c:set var="mySchool" value="tzyz#zzti#cqut#gzu"/>
+ <c:forTokens items="${mySchool }" delims="#" 
+  var="sc">
+ ${sc }<br>
+ </c:forTokens>
+\end{lstlisting}
+\end{block}
+
+\end{frame}
+
+%---------------------------------------------
+
+\section{数据库分页}
+\begin{frame}
+\Huge{\centerline{数据库分页}}
+\end{frame}
+\begin{frame}{分页使用场景}
+分页一般指的是将从数据库查询来的数据，分成多个页面来显示。
+一般情况下有两种方法来达到数据分页的目的：
+\begin{enumerate}
+\item
+获取到所有的查询结果，在页面显示时进行处理分页
+
+\item
+使用数据库的查询机制来分页
+
+select * from teacher limit 2,3;
+
+LIMIT 接受一个或两个数字参数。参数必须是一个整数常量。如果给定两个参数，第一个参数指定第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目。初始记录行的偏移量是 0(而不是 1)
+\end{enumerate}
+\end{frame}
+%---------------------------------------
+\begin{frame}{作业}
+\begin{enumerate}
+\item
+实现小组项目的数据库分页功能\footnote{teacher.jsp里面的数据库分页比较复杂，请参考教材p222页10.4.2实现。}
+
+
+\end{enumerate}
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%---------------------------------------
+\section{Appendix}
+
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+
+\subsection{JSP 9个内置对象}
+\begin{frame}{内置对象}
+\label{implicitobj}
+\begin{table}
+\begin{tabular}{lll}
+\toprule
+\textbf{Object}&\textbf{Description}&\textbf{Scope}\\
+\midrule
+request&封装了客户端请求&\\
+response&封装了服务器端的回应信息&\\
+out&向response中写数据&\\
+session&保存一次会话的信息&一次会话\\
+application&保存应用程序中的公有数据&系统的全局变量\\
+config&&ServletConfig\\
+pageContext&获取jsp页面上下文，进而获取内置对象&\\
+page&调用当前jsp页面中的变量或方法&this的同意词\\
+exception&用来处理异常信息的&\\
+\bottomrule
+\end{tabular}
+\caption{implicit objects of jsp}
+
+\end{table}
+返回\ref{elimplicit}
+\end{frame}
+\subsection{JSP 4个作用域}
+\begin{frame}{作用域}
+\begin{table}
+\label{scope}
+\begin{tabular}{ll}
+\toprule
+\textbf{Scope}&\textbf{Description}\\
+\midrule
+page&当前的页面\\
+request&当前的请求\\
+session&当前的会话\\
+application&当前网站\\
+\bottomrule
+\end{tabular}
+\caption{scopes of jsp}
+\end{table}
+返回\ref{elimplicit}
+\end{frame}
+\subsection{相关资源}
+\begin{frame}
+\begin{block}{ppt、项目源代码及实验指导书的地址}
+\begin{enumerate}
+\item
+ppt
+
+\url{https://github.com/gmsft/ppt/tree/master/javaweb}
+\item
+lab-java项目
+
+\url{https://github.com/gmsft/javaweb}
+
+\item
+实验指导书
+
+放在ppt的仓库里
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
