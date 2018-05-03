@@ -1,0 +1,82 @@
+\chapter{ShellScript}
+\section{目的}
+\begin{enumerate}
+\item
+理解shell script的意义
+\item
+掌握shell script的写法
+\end{enumerate}
+\section{目标}
+\begin{enumerate}
+\item
+写一脚本，计算你下一次的生日距离今天还有多少天。
+\item
+写一脚本，将服务器上所有的用户名显示出来。（按如下格式显示）
+\begin{verbatim}
+the 802 line is:1400170159
+
+the 803 line is:1500170146
+
+the 804 line is:1500170150
+\end{verbatim}
+\end{enumerate}
+\section{实验过程}
+\subsection{计算生日}
+\subsubsection{分析}
+本题目需要使用到date命令来获取当前的时间，并且需要输入生日的日期。
+\subsubsection{难点}
+日期差的计算。
+\subsubsection{解决方法}
+计算机中的时间表示是从1970-01-01 00:00:00开始计算，到目前为止经过了多长时间，可以借助这个知识来计算。
+\subsubsection{代码}
+此问题的脚本如Figure \ref{SS1}所示。
+\begin{figure}
+\begin{verbatim}
+#!bin/bash
+#calculate the day to next birthday
+read -p"please input your birthday:(mmdd/0102)" birthday
+year=`date +%Y`
+yb=${year}${birthday}
+now=`date +%Y%m%d`
+nowSecond=`date +%s`
+birthdaySecond=`date +%s -d "${yb}"`
+bts=$((${birthdaySecond}/60/60/24))
+nts=$((${nowSecond}/60/60/24))
+echo "birthday to 19700101 is ${bts} days."
+echo "today to 19700101 is ${nts} days."
+if [ "${bts}" == "${nts}" ]; then
+echo "Today is your birthday.Happy birthday to you!"
+elif [ "${bts}" -gt "${nts}" ]; then
+day=$((${bts}-${nts}))
+echo "Your birthday is after ${day} days."
+else
+day=$((365-$((${nts}-${bts}))))
+echo "Your birthday is after about ${day} days."
+fi
+\end{verbatim}
+\caption{计算生日}
+\label{SS1}
+\end{figure}
+
+\subsection{输出系统中的用户}
+\subsubsection{分析}
+要完成任务，需要知道当前系统中的用户名存储在哪个文件中，还要知道如何按要求输出。
+\subsubsection{难点}
+获取特定字段。
+\subsubsection{解决方法}
+可用cut命令截取要求的字段输出。（awk也可以。）
+\subsubsection{代码}
+此问题的脚本如Figure \ref{SS2}所示。
+\begin{figure}
+\begin{verbatim}
+#!/bin/bash
+#list all the user of this system.
+i=1
+for user in `cat /etc/passwd|cut -d: -f1`
+do
+echo "the ${i} line is:${user}"
+i=$((i+1))
+done\end{verbatim}
+\caption{计算生日}
+\label{SS2}
+\end{figure}
