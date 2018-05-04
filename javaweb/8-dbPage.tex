@@ -1,0 +1,264 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{multirow}
+\lstset{numbers=left,xleftmargin=10pt,xrightmargin=10pt}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[数据库分页]{数据库分页} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{张海宁} % Your name
+\institute[Guizhou University] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{数据库分页} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+\begin{frame}
+数据库分页是web开发中的常用技术。
+
+在数据量大的情况下，将所有的数据显示在同一个页面中，给查看带来不便的同时，也给服务器带来了压力，这种情况下就需要对数据进行分页查询。
+\end{frame}
+%------------------------------------------------
+\begin{frame}{分页查询的方法}
+介绍两种数据库分页查询的机制：
+\begin{enumerate}
+\item
+一次查出所有数据，然后再根据用户的选择进行显示（通过用户点击第几页）
+
+
+\item
+通过数据库自身的分页机制进行分次查询，用户点击第几页就去数据库中查询第几页
+
+\end{enumerate}
+\fbox{在数据量很大的时候，采用第一种机制是不明智的。}
+\end{frame}
+\begin{frame}{数据库自身的分页机制}
+数据库自身的分页机制是与数据库紧密关联的，每种数据库实现的方式都不一样。此处以MySQL为例。
+
+MySQL数据库通过\emph{limit}关键字来控制\emph{select}语句返回的记录数。
+\begin{block}{limit 接收一或两个整数参数}
+\begin{enumerate}
+\item
+With one argument, the value specifies the number of rows to return from the beginning of the result set.
+
+\fbox{SELECT * FROM tbl LIMIT 5;}
+\item
+With two arguments, the first argument specifies the offset of the first row to return, and the second specifies the maximum number of rows to return. The offset of the initial row is 0 (not 1).
+
+\fbox{SELECT * FROM tbl LIMIT 5,10;}
+\end{enumerate}
+\end{block}
+\textcolor{red}{Question:思考一下这种分页机制的使用方式。}
+\end{frame}
+\section{分页实例}
+\begin{frame}
+以教师信息查询为例。
+\end{frame}
+\begin{frame}[fragile]{定义一个bean用于封装要查询的信息}
+\begin{block}{Teacher.java主要属性}
+\begin{verbatim}
+ private int staffid;
+ private String nm;
+\end{verbatim}
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{创建一个类用于封装数据库的相关操作}
+此处以Db.java为例。一般情况下，一个封装了数据库操作的类要包含的主要功能有：
+\begin{enumerate}
+\item
+获取数据库连接Connection对象
+\item
+关闭数据库连接
+\end{enumerate}
+由于要实现分页查询，所以考虑将查询数据相关的操作封装到Db类中。
+\end{frame}
+
+\begin{frame}[fragile]{分页查询数据的方法}
+\begin{block}{Db.java中的find方法}
+\begin{verbatim}
+public ArrayList<Teacher> find(int page,int countPerPage){
+ ArrayList<Teacher> teacherList = new ArrayList<Teacher>();
+ String sql="select id,name,logDate from teachers limit ?,?";
+ PreparedStatement ps = conn.prepareStatement(sql);
+ ps.setInt(1, page);  ps.setInt(2, countPerPage);
+ ResultSet rs=ps.executeQuery();
+ while(rs.next()) {
+  Teacher t = new Teacher();
+  t.setStaffid(rs.getInt("id"));
+  t.setNm(rs.getString("name"));
+  t.setLogDate(rs.getString("logDate"));
+  teacherList.add(t);
+ }
+ return teacherList;
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{获取总的页数}
+
+\begin{block}{总页数=总记录数$\div$每页记录数}
+\begin{verbatim}
+public int getTotalPages(int countPerPage) {
+ int page=0;
+ int totalCount=0;
+ String sql="select count(*) from teachers";
+ try {
+  Statement st = conn.createStatement();
+  ResultSet rs = st.executeQuery(sql);
+  rs.next();
+  totalCount =rs.getInt(1);
+ } catch (SQLException e) {
+  e.printStackTrace();
+ }
+ page = (totalCount/countPerPage)+1;
+ return page;
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%---------------------------------------
+\section{Appendix}
+
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+
+\subsection{相关资源}
+\begin{frame}
+\begin{block}{ppt、项目源代码及实验指导书的地址}
+\begin{enumerate}
+\item
+ppt
+
+\url{https://github.com/gmsft/ppt/tree/master/javaweb}
+\item
+lab-java项目
+
+\url{https://github.com/gmsft/javaweb}
+
+\item
+实验指导书
+
+放在ppt的仓库里
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
