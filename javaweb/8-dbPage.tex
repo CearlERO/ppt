@@ -225,10 +225,232 @@ public int getTotalPages(int countPerPage) {
 \end{verbatim}
 \end{block}
 \end{frame}
+\begin{frame}{查询}
+\begin{tikzpicture}
+\node (a) [draw,rectangle] at (0,0) {查询链接};
+\node (b) [draw,rectangle] at (5,0) {servlet};
+\node (c) [draw,rectangle] at (10,0) {显示页面};
+\draw [thick,->,above] (a) to[out=0,in=180] node{1} (b) ;
+\draw [thick,->,above] (b) to[out=45,in=135]  node{2} (c);
+\draw [thick,->,above,dashed,red] (c) to[out=225,in=315]  node{3} (b);
+\end{tikzpicture}
+\begin{block}{查询流程}
+\begin{enumerate}
+\item
+1 --> 2
+\item
+1 --> 2 --> 3 --> 2
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]{查询链接}
+在teacher.jsp页面的合适位置，放置一个查询链接，通过本链接去调用负责查询的servlet。
+\begin{block}{查询链接}
+\begin{verbatim}
+<form action="QueryTeacher" method="post">
+<input type="submit" value="query teacher info"/>
+</form>
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}{servlet I}
+负责查询数据的servlet要完成以下工作：
+\begin{enumerate}
+\item
+查询指定的记录
+
+\emph{offset and how many}
+\item
+生成页数相关的信息
+
+\emph{current page and total page}
+\item
+将结果传递给显示页面
+
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{servlet II}
+\begin{block}{QueryTeacher.java-doPost 查询指定的记录}
+\begin{verbatim}
+ArrayList<Teacher> tLst=null;
+int curPage = 1;
+int TotalPage=0;
+int countPerPage = 5;
+Db d = new Db();
+TotalPage=d.getTotalPages(countPerPage);
+d=new Db();
+if(request.getParameter("page")==null) {
+ tLst=d.find(1, countPerPage);
+}else {
+  curPage = Integer.parseInt(
+    request.getParameter("page"));
+  tLst=d.find(curPage, countPerPage);
+ }		
+request.setAttribute("teacherList", tLst);
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{servlet III}
+\begin{block}{QueryTeacher.java-doPost 生成页数相关信息}
+\begin{verbatim}
+StringBuilder strb = new StringBuilder();
+strb.append("<div><form name='qt' action='QueryTeacher' 
+  method='post'>");
+strb.append("第<select name='page'  
+  onchange='document.qt.submit()'>");
+for(int i=1;i<=TotalPage;i++) {
+ if(i==curPage) {
+  strb.append("<option value='"+i+"' selected='selected'>"
+    +i+"</option>");
+ }else {
+  strb.append("<option value="+i+">"+i+"</option>");
+  }  }
+strb.append("</select>页，共"+TotalPage+"页");
+strb.append("</form></div>");
+request.setAttribute("pageBar", strb);
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{servlet IV}
+\begin{block}{QueryTeacher.java-doPost 将request传递给显示页面}
+\begin{verbatim}
+request.getRequestDispatcher("teacher_list.jsp")
+  .forward(request, response);
+\end{verbatim}
+
+\end{block}
+这条语句的意思是：将本servlet处理之后的request封装起来，传递给\emph{teacher\_list.jsp}页面。
+\end{frame}
+\begin{frame}[fragile]{显示页面}
+\begin{block}{teacher\_list.jsp}
+\begin{verbatim}
+<div class="content main">
+当前系统中教师信息如下：<br>
+<table>
+<c:forEach items="${teacherList }" var="t" >
+<tr><td>${t.staffid}</td><td>${t.nm }</td></tr>
+</c:forEach>
+</table>
+${pageBar}
+
+</div>
+\end{verbatim}
+
+\end{block}
+\end{frame}
+\section{修改数据库记录}
+\begin{frame}{修改}
+我们学习了如何往数据库里\textcolor{red}{写}数据，如何从数据库里\textcolor{red}{查}数据。
+
+现在来学习如何\textcolor{red}{修改/删除}数据库里的记录。
+\begin{block}{update, delete from}
+\begin{itemize}
+\item
+\emph{\textcolor{red}{UPDATE} Person \textcolor{red}{SET} FirstName = 'Fred' \textcolor{red}{WHERE} LastName = 'Wilson' }
+\item
+\emph{\textcolor{red}{DELETE FROM} Person \textcolor{red}{WHERE} LastName = 'Wilson' }
+\end{itemize}
+\end{block}
+可以看出，要修改或删除某条记录，关键在于要准确定位某条记录。可以通过主键来定位。
+\end{frame}
+
+\begin{frame}{修改记录}
+\begin{tikzpicture}
+\node (a) [draw,rectangle] at (0,0) {带修改链接的列表页面};
+\node (b) [draw,rectangle] at (4,0) {servlet};
+\node (c) [draw,rectangle] at (8,0) {修改页面};
+\draw [thick,->,above] (a) to[out=0,in=180] node{1} (b) ;
+\draw [thick,->,above] (b) to[out=45,in=135]  node{2} (c);
+\draw [thick,->,above,dashed,red] (c) to[out=225,in=315]  node{3} (b);
+\end{tikzpicture}
+
+\end{frame}
+\begin{frame}[fragile]{带修改链接的列表页面}
+\begin{block}{teacher\_list.jsp}
+\begin{verbatim}
+<c:forEach items="${teacherList }" var="t" >
+<tr><td>${t.staffid}</td><td>${t.nm }</td>
+<td>
+<a href='ModifyTeacher?id=${t.staffid }&name=${t.nm}'>
+修改</a></td></tr>
+</c:forEach>
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{servlet I}
+\begin{block}{ModifyTeacher.java - doGet}
+\begin{verbatim}
+request.setCharacterEncoding("utf-8");
+request.setAttribute("id", request.getParameter("id"));
+request.setAttribute("name", request.getParameter("name"));
+request.getRequestDispatcher("teacher_modify.jsp")
+  .forward(request, response);
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{servlet II}
+\begin{block}{ModifyTeacher.java - doPost}
+\begin{verbatim}
+request.setCharacterEncoding("utf-8");
+System.out.println(request.getParameter("id")+","+ 
+   request.getParameter("name"));
+Db d = new Db();
+int rz = d.modifyTeacher(request.getParameter("id"), 
+   request.getParameter("name"));
+if(rz==1) {
+ response.getWriter().println("modify successfully.");
+}else {
+ response.getWriter().println("something wrong.");
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{数据库操作类Db}
+\begin{block}{Db.java - modifyTeacher}
+\begin{verbatim}
+public int modifyTeacher(String id,String name) {
+ int rz=0;
+ String sql = "update teachers set name=? where id=?";
+ try {
+  PreparedStatement ps = conn.prepareStatement(sql);
+  ps.setInt(2, Integer.parseInt(id));
+  ps.setString(1, name);
+  rz=ps.executeUpdate();
+  getClose();
+ } catch (SQLException e) {
+  // TODO Auto-generated catch block
+  e.printStackTrace();
+ }
+ return rz;
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{修改页面}
+\begin{block}{teacher\_modify.jsp}
+\begin{verbatim}
+<form action="ModifyTeacher" method="post">
+<table>
+<tr><td>${id}
+<input type="hidden" name="id" value="${id }"/></td>
+<td><input type="text" name="name" value="${name }"/></td>
+<td><input type="submit" value="提交修改"/></td></tr>
+\end{verbatim}
+\end{block}
+\end{frame}
+
+%---------------------------------------
 \begin{frame}
 \Huge{\centerline{The End}}
 \end{frame}
-
 %---------------------------------------
 \section{Appendix}
 
