@@ -162,7 +162,9 @@ EL的隐含对象可以分为以下三类：
 \end{itemize}
 \end{frame}
 \begin{frame}[fragile]{页面上下文对象}
-\begin{block}{}
+通过页面上下文对象pageContext来获取jsp内置对象后，可以获取其属性，即getXXX()方法中的XXX部分。使用的时候去掉get并将XXX的首字母改为小写。比如下面的request.getMethod()。
+\begin{block}{对应这些对象的getXXX()方法}
+
 \begin{lstlisting}
 ${pageContext.request }
 <% request.getMethod(); %>
