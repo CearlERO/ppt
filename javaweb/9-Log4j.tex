@@ -1,0 +1,379 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{multirow}
+\lstset{numbers=left,xleftmargin=10pt,xrightmargin=10pt}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Log4j]{Log4j} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{张海宁} % Your name
+\institute[Guizhou University] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Log4j} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+\begin{frame}
+\Huge{\centerline{Log4j简介}}
+\end{frame}
+%------------------------------------------------
+\begin{frame}{Log4j简介}
+Apache log4j is a logging library for Java.
+
+With log4j it is possible to enable logging at runtime without modifying the application binary.Logging behavior can be controlled by editing a configuration file, without touching the application binary.
+
+The target of the log output can be a file, an OutputStream, a java.io.Writer, a remote log4j server, a remote Unix Syslog daemon, or many other output targets.
+\end{frame}
+
+\begin{frame}{Log4j的组成}
+Log4j主要由以下3大组件构成：
+\begin{enumerate}
+\item
+Logger
+
+可以定义多个Logger，每个Logger实现不同的功能
+\item
+Appender
+
+指定log信息存储的目标地址
+\item
+Layout
+
+格式化log信息的输出样式
+\end{enumerate}
+\end{frame}
+
+%---------------------------------------
+\section{Log4j的配置}
+\begin{frame}
+\Huge{\centerline{Log4j的配置}}
+\end{frame}
+\begin{frame}{Log4j的配置}
+\begin{enumerate}
+\item
+下载jar文件
+
+\url{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.17/log4j-1.2.17.zip}
+\item
+添加到build path
+
+将上一步下载的压缩包解压，将其中的jar文件放到项目的lib路径中，比如：\emph{/Users/hainingzhang/git/javaweb/lab-java/WebContent/WEB-INF/lib} ,然后右键点击log4j的jar文件，选择build path--add to build path.
+\end{enumerate}
+\end{frame}
+%---------------------------------------
+\section{Logger}
+\begin{frame}
+\Huge{\centerline{Logger}}
+\end{frame}
+\begin{frame}{日志级别}
+Logger是Log4j的日志记录器，是Log4j的核心组件。Log4j将输出的日志信息定义了5种级别，如表\ref{loggerLevel}。
+\begin{table}
+\begin{tabular}{llll}
+\toprule
+\textbf{name}&\textbf{type}&\textbf{desc}&\textbf{level}\\
+\midrule
+DEBUG&Object&输出调试级别的日志信息&1\\
+INFO&Object&输出消息日志&2\\
+WARN&Object&输出警告级别的日志信息&3\\
+ERROR&Object&输出错误级别的日志信息&4\\
+FATAL&Object&输出致使错误级别的日志信息&5\\
+\bottomrule
+\end{tabular}
+\caption{Log4j的日志级别}
+\label{loggerLevel}
+\end{table}
+\fbox{只有高过配置中定义级别的日志信息才会被输出。}
+
+\end{frame}
+
+\begin{frame}[fragile]{日志输出}
+在程序中，可以使用Logger类的不同方法来输出对应级别的日志信息。
+\begin{block}{日志输出方法}
+\begin{verbatim}
+logger.debug("debug log");
+logger.info("info log");
+logger.warn("warn log");
+logger.error("数据库连接失败");
+logger.fatal("内存不足");
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{配置日志}
+在配置文件中配置Logger日志时，可以定义日志的级别、输出目标等信息。
+\begin{block}{配置日志级别}
+\begin{verbatim}
+log4j.logger.[loggerName]=[loggerLevel], appenderName, ...
+\end{verbatim}
+\begin{itemize}
+\item
+loggerName
+
+日志的名称
+\item
+loggerLevel
+
+日志的级别
+\item
+appenderName
+
+日志的输出目地的地
+\end{itemize}
+\emph{log4j.logger.myLogger=debug,file}
+\end{block}
+
+\end{frame}
+\begin{frame}
+\Huge{\centerline{Logger}}
+\end{frame}
+%---------------------------------------
+\section{Appender}
+\begin{frame}
+\Huge{\centerline{Appender}}
+\end{frame}
+\begin{frame}{Appender的种类}
+Appender可以指定日志文件的目的地，几种常用的目的地如表\ref{appender}所示：
+\begin{table}
+\begin{tabular}{lp{12em}}
+\toprule
+\textbf{Appender接口的实现类}&\textbf{Description}\\
+\midrule
+org.apache.log4j.ConsoleAppender&输出到控制台\\
+org.apache.log4j.FileAppender&输出到日志文件\\
+org.apache.log4j.RollingFileAppender&当文件大小超出限制时，重新生成新的日志文件\\
+org.apache.log4j.DailyRollingAppender&每天只生成一个对应的日志文件\\
+\bottomrule
+\end{tabular}
+\caption{Appender的几种常用目的地}
+\label{appender}
+\end{table}
+\end{frame}
+
+\begin{frame}[fragile]{配置日志}
+在配置文件中配置Logger日志时，可以定义日志的级别、输出目标等信息。
+\begin{block}{配置输出目标}
+\begin{verbatim}
+log4j.appender.[dstName]=[Appender接口的实现类]
+
+#appender
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/root/log.htm
+log4j.appender.file.MaxFileSize=10KB
+log4j.appender.file.MaxBackupIndex=3
+\end{verbatim}
+\emph{log4j.logger.myLogger=debug,file}
+\end{block}
+例子给出的10KB和3代表的意思是：日志文件增长到10KB后就会生成一个新的日志文件，并将此日志文件转为一个备份日志文件，当备份日志文件超出3个后，则最早的那个备份文件会被覆盖。
+\end{frame}
+
+%---------------------------------------
+\section{Layout}
+\begin{frame}
+\Huge{\centerline{Layout}}
+\end{frame}
+\begin{frame}{Layout的种类}
+Appender必须使用一个与之相关联的Layout附加在Appender上，它可以根据用户的个人习惯格式化日志的输出格式，例如：文本文件、HTML文件等。
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{layout的子类}&\textbf{description}\\
+\midrule
+org.apache.log4j.HTMLLayout&将日志以HTML格式输出\\
+org.apache.log4j.PatternLayout&将日志以指定的转换模式格式化输出\\
+org.apache.log4j.SimpleLayout&将日志以简单的格式输出\\
+org.apache.log4j.TTCCLayout&这种日志包含线程等信息\\
+\bottomrule
+\end{tabular}
+\caption{Layout的种类}
+\label{layout}
+\end{table}
+\end{frame}
+\begin{frame}[fragile]{配置日志}
+为appender定义Layout.
+\begin{block}{定义Layout}
+\begin{verbatim}
+log4j.appender.[dstName].layout=[Layout的子类]
+
+#layout
+log4j.appender.file.layout=org.apache.log4j.HTMLLayout
+
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=%d%F - %m%n
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}{部分转换字符表}
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{转换字符}&\textbf{描述}\\
+\midrule
+\%c&日志名称\\
+\%d&产生日志的时间和日期\\
+\%l&日志操作代码所在的类名及方法名，还会包含行号\\
+\%p&以大写格式输出日志级别\\
+\%F&日志操作所在类的源文件名称\\
+\%m&除输出日志信息外，不包含任何信息\\
+\%n&日志信息中的换行符\\
+\bottomrule
+\end{tabular}
+\caption{Layout的部分转换字符对照表}
+\end{table}
+\end{frame}
+%--------------------------------------
+\section{实例}
+\begin{frame}
+\Huge{\centerline{实例}}
+\end{frame}
+\begin{frame}{实例}
+\end{frame}
+\begin{frame}{Log4j实例}
+将用户的注册信息使用Log4j输出到日志文件和控制台。
+\end{frame}
+
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%---------------------------------------
+\section{Appendix}
+
+\begin{frame}
+\Huge{\centerline{Appendix}}
+\end{frame}
+
+\subsection{相关资源}
+\begin{frame}
+\begin{block}{ppt、项目源代码及实验指导书的地址}
+\begin{enumerate}
+\item
+ppt
+
+\url{https://github.com/gmsft/ppt/tree/master/javaweb}
+\item
+lab-java项目
+
+\url{https://github.com/gmsft/javaweb}
+
+\item
+实验指导书
+
+放在ppt的仓库里
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
