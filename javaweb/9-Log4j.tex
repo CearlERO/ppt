@@ -230,9 +230,7 @@ appenderName
 \end{block}
 
 \end{frame}
-\begin{frame}
-\Huge{\centerline{Logger}}
-\end{frame}
+
 %---------------------------------------
 \section{Appender}
 \begin{frame}
@@ -333,13 +331,75 @@ log4j.appender.console.layout.ConversionPattern=%d%F - %m%n
 \begin{frame}
 \Huge{\centerline{实例}}
 \end{frame}
-\begin{frame}{实例}
-\end{frame}
+
 \begin{frame}{Log4j实例}
-将用户的注册信息使用Log4j输出到日志文件和控制台。
+将用户的登陆信息使用Log4j输出到日志文件。
+
+
+\begin{enumerate}
+\item
+创建一个log4j的配置文件
+
+放在项目的文件夹下即可
+\item
+在servlet中使用rootLogger
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{log4j配置文件}
+\begin{block}{log4j.properties}
+\begin{verbatim}
+#Logger
+log4j.rootLogger=info,file
+
+#Appender
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/Users/hainingzhang/Documents/
+  GitHub/javaweb/lab-java/WebContent/login_log.html
+log4j.appender.file.MaxFileSize=10kb
+log4j.appender.file.MaxBackupIndex=3
+
+#Layout
+#log4j.appender.console.layout=org.apache.log4j.PatternLayout
+#log4j.appender.console.layout.ConversionPattern=%t %p
+log4j.appender.file.layout=org.apache.log4j.HTMLLayout
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{在servlet中使用log4j}
+\begin{block}{Login.java}
+\begin{verbatim}
+//specify the property file of log4j and load it
+String path = getServletContext().getRealPath("WEB-INF/
+  log4j.properties");
+PropertyConfigurator.configure(path);
+//get the rootlogger
+Logger lg = LogManager.getLogger(Login.class);
+//write the log at any position
+lg.info("do login.");
+...
+lg.info(name+" is loging.");
+\end{verbatim}
+\end{block}
+
 \end{frame}
 
+\begin{frame}{查看log文件}
+由于在log4j.properties中指定的file格式是HTMLLayout，所以，可以使用浏览器打开日志文件进行查看。
+\url{http://localhost:8080/lab-java/login_log.html}
+\end{frame}
 
+\begin{frame}
+\Huge{\centerline{作业}}
+\end{frame}
+\begin{frame}{作业}
+在本小组项目中添加以下功能：
+\begin{enumerate}
+\item
+将重要信息保存到磁盘上的日志文件中。
+\item
+数据库分页，及增删改查功能。
+\end{enumerate}
+\end{frame}
 \begin{frame}
 \Huge{\centerline{The End}}
 \end{frame}
