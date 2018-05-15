@@ -467,18 +467,6 @@ thread 2 is selling ticket 1.
 \end{block}
 \end{frame}
 
-\section{Thread Attributes}
-\begin{frame}{}
-\Huge{\centerline{Thread Attributes}}
-\end{frame}
-\subsection{detached threads}
-\begin{frame}{}
-\Huge{\centerline{detached threads}}
-\end{frame}
-\begin{frame}{detached threads}
-前面的多线程程序中，主线程都调用了pthread\_join方法来等待线程结束。
-在主线程需要子线程返回结果的时候，这种方法是必要的。但是在主线程不需要子线程的返回结果时，就没必要这样做了，只需要让子线程自已去运行，然后自行结束就可以了，这样的线程就被称为\emph{detached threads}。
-\end{frame}
 %------------------------------------------------
 %------------------------------------------------
 %\section{Signal}
@@ -488,14 +476,16 @@ thread 2 is selling ticket 1.
 %------------------------------------------------
 %------------------------------------------------
 \begin{frame}{作业}
-编写一个程序，要求如下：
+编写一个程序，要求：
 \begin{enumerate}
 \item
-在一个进程中创建两个线程
+创建两个线程：一个生产者线程，一个消费者线程
 \item
-在父进程中，每1秒输出一个大写字母：A$\sim$Z
+当缓冲区为空时，生产者线程提示用户输入一串字符，然后将用户输入的字符写入缓冲区
 \item
-在子进程中，每1秒输出一个小写字母：a$\sim$z
+当缓冲区非空时，消费者线程从缓冲出取出所有字符
+\item
+当用户输入end时，程序结束
 \end{enumerate}
 \end{frame}
 
@@ -531,19 +521,35 @@ The manual is generally split into eight numbered sections, organized as follows
 \textbf{section} & \textbf{description} \\
 \midrule
 1 & General commands\\
- 2 & System calls\\
- 3& Library function(C standard library)\\
- 4 & Special files(devices) and drivers\\
-  5 & File formats and conventions\\
-  6  & Games and screensavers\\
-   7  & Miscellanea\\
-   8   & System administration commands and daemons\\  
+2 & System calls\\
+3 & Library function(C standard library)\\
+4 & Special files(devices) and drivers\\
+5 & File formats and conventions\\
+6 & Games and screensavers\\
+7 & Miscellanea\\
+8 & System administration commands and daemons\\  
 \bottomrule
 \end{tabular}
 \caption{man page}
 \end{table}
 
 在终端中运行man read 与 man 2 read ，观察其输出的区别。
+\end{frame}
+\begin{frame}{detached threads}
+前面的多线程程序中，主线程都调用了pthread\_join方法来等待线程结束。
+在主线程需要子线程返回结果的时候，这种方法是必要的。但是在主线程不需要子线程的返回结果时，就没必要这样做了，只需要让子线程自已去运行，然后自行结束就可以了，这样的线程就被称为\emph{detached threads}。
+
+在任何一个时间点上，线程是可结合的（joinable）或者是分离的（detached）。一个可结合的线程能够被其他线程收回其资源和杀死。在 被其他线程回收之前，它的存储器资源（例如栈）是不释放的。相反，一个分离的线程是不能被其他线程回收或杀死的，它的存储器资源在它终止时由系统自动释放。
+\end{frame}
+\begin{frame}[fragile]{detached threads示例}
+\begin{verbatim}
+pthread_attr_t att;
+pthread_attr_init(&att);
+pthread_attr_setdetachstate(&att,PTHREAD_CREATE_DETACHED);
+char  ch='a';
+int ra=pthread_create(&pth[0],&att,fmt,&ch);
+
+\end{verbatim}
 \end{frame}
 
 \end{document} 
