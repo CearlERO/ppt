@@ -1,0 +1,522 @@
+% !TEX encoding = UTF-8 Unicode
+\chapter{Log4j and Database}
+
+\section{目的}
+\begin{enumerate}
+\item
+练习Log4j的使用
+\item
+掌握数据库增删改查操作以及分页，加深对它们的理解。
+\end{enumerate}
+\section{目标}
+\begin{enumerate}
+\item
+在项目中使用日志记录重要信息
+\item
+在项目中使用数据库分页技术来显示查询结果
+\end{enumerate}
+
+\section{过程}
+\subsection{Log4j}
+Log4j是Apache的一个开源项目，是用来为java项目记录日志的。其有三个组件组成：
+\begin{enumerate}
+\item
+Logger
+
+可以定义多个Logger，每个Logger实现不同的功能
+\item
+Appender
+
+指定log信息存储的目标地址
+\item
+Layout
+
+格式化log信息的输出样式
+\end{enumerate}
+\subsubsection{Logger}
+Logger是Log4j的日志记录器，是Log4j的核心组件。Log4j将输出的日志信息定义了5种级别，如表\ref{loggerLevel}。
+\begin{table}
+\begin{tabular}{llll}
+\toprule
+\textbf{name}&\textbf{type}&\textbf{desc}&\textbf{level}\\
+\midrule
+DEBUG&Object&输出调试级别的日志信息&1\\
+INFO&Object&输出消息日志&2\\
+WARN&Object&输出警告级别的日志信息&3\\
+ERROR&Object&输出错误级别的日志信息&4\\
+FATAL&Object&输出致使错误级别的日志信息&5\\
+\bottomrule
+\end{tabular}
+\caption{Log4j的日志级别}
+\label{loggerLevel}
+\end{table}
+\subsubsection{Appender}
+Appender可以指定日志文件的目的地，几种常用的目的地如表\ref{appender}所示。
+\begin{table}
+\begin{tabular}{lp{12em}}
+\toprule
+\textbf{Appender接口的实现类}&\textbf{Description}\\
+\midrule
+org.apache.log4j.ConsoleAppender&输出到控制台\\
+org.apache.log4j.FileAppender&输出到日志文件\\
+org.apache.log4j.RollingFileAppender&当文件大小超出限制时，重新生成新的日志文件\\
+org.apache.log4j.DailyRollingAppender&每天只生成一个对应的日志文件\\
+\bottomrule
+\end{tabular}
+\caption{Appender的几种常用目的地}
+\label{appender}
+\end{table}
+\subsubsection{Layout}
+Layout决定了日志的输出格式，其必须和Appender配合使用，它可以根据用户的个人习惯格式化日志的输出格式，例如：文本文件、HTML文件等，常用的格式如表\ref{layout}所示。
+\begin{table}
+\begin{tabular}{ll}
+\toprule
+\textbf{layout的子类}&\textbf{description}\\
+\midrule
+org.apache.log4j.HTMLLayout&将日志以HTML格式输出\\
+org.apache.log4j.PatternLayout&将日志以指定的转换模式格式化输出\\
+org.apache.log4j.SimpleLayout&将日志以简单的格式输出\\
+org.apache.log4j.TTCCLayout&这种日志包含线程等信息\\
+\bottomrule
+\end{tabular}
+\caption{Layout的种类}
+\label{layout}
+\end{table}
+\subsubsection{Log4j的使用}
+\begin{enumerate}
+\item
+创建配置文件
+
+要使用Log4j，首先要将下载的Log4j-xxx.jar文件放到项目文件夹内，并将其添加到build path中；然后再创建一个配置文件。完成这两个操作之后中就可以在项目中使用Log4j来记录日志了。一个典型的Log4j配置文件如Figure \ref{log4j}所示.
+\begin{figure}
+\begin{verbatim}
+#Logger
+#设置rootLogger的记录级别为info,输出目的地为file
+log4j.rootLogger=info,file
+
+#Appender
+#将file的属性设置为一个大小固定，可循环覆盖的文件
+#指定日志文件的位置为/User\dots log.html
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/Users/hainingzhang/Documents/
+  GitHub/javaweb/lab-java/WebContent/login_log.html
+log4j.appender.file.MaxFileSize=10kb
+log4j.appender.file.MaxBackupIndex=3
+
+#Layout
+#指定日志格式为html
+log4j.appender.file.layout=org.apache.log4j.HTMLLayout
+\end{verbatim}
+\caption{log4j.properties}
+\label{log4j}
+\end{figure}
+\item
+在servlet中使用Log4j
+
+在servlet中需要首先获取Lot4j配置文件的路径并加载，然后就可以获取日志记录器进行写日志了，部分代码如Figure \ref{log4jserv}所示。
+\begin{figure}
+\begin{verbatim}
+//specify the property file of log4j and load it
+//需要指定log4j.properties文件的具体位置
+String path = getServletContext().getRealPath("WEB-INF/
+  log4j.properties");
+PropertyConfigurator.configure(path);
+//get the rootlogger
+Logger lg = LogManager.getLogger(Login.class);
+//write the log at any position
+lg.info("do login.");
+...
+lg.info(name+" is loging.");
+\end{verbatim}
+\caption{在servlet中使用Log4j}
+\label{log4jserv}
+\end{figure}
+
+\end{enumerate}
+\subsection{数据库的基本查操作}
+使用jsp操作数据库的流程如下：
+\begin{enumerate}
+\item
+加载数据库驱动类，并创建连接
+\item
+通过连接创建Statement或PreparedStatement（推荐使用这种，不需要进行拼接sql语句）
+\item
+通过Statement或PreparedStatement对象进行数据库查询操作
+\end{enumerate}
+一个数据库操作的示例(查询和更改)见Figure \ref{Log4j-db}。
+\begin{figure}
+\begin{verbatim}
+public class Db {
+	public Db(){
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(
+			    	"jdbc:mysql://localhost/lab?useUnicode=true&characterEncoding=UTF-8",
+				 "root","xxx");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public ArrayList<Teacher> find(int page,int countPerPage){
+		ArrayList<Teacher> teacherList = new ArrayList<Teacher>();
+		String sql = "select id,name,logDate from teachers limit ?,?";
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, page);
+			ps.setInt(2, countPerPage);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()) {
+				Teacher t = new Teacher();
+				t.setStaffid(rs.getInt("id"));
+				t.setNm(rs.getString("name"));
+				t.setLogDate(rs.getString("logDate"));
+				teacherList.add(t);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return teacherList;
+	}
+	public int modifyTeacher(String id,String name) {
+		int rz=0;
+		String sql = "update teachers set name=? where id=?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(2, Integer.parseInt(id));
+			ps.setString(1, name);
+			rz=ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rz;
+	}
+}
+\end{verbatim}
+\caption{Db.java文件中的部分代码}
+\label{Log4j-db}
+\end{figure}
+\subsection{数据库的分页}
+在数据量大的情况下，将所有的数据显示在同一个页面中，给查看带来不便的同时，也给服务器带来了压力，这种情况下就需要对数据进行分页查询。
+一般来说，有两种数据库分页查询的机制：
+\begin{enumerate}
+\item
+一次查出所有数据，然后再根据用户的选择进行显示（通过用户点击第几页）
+
+
+\item
+通过数据库自身的分页机制进行分次查询，用户点击第几页就去数据库中查询第几页
+
+\end{enumerate}
+\fbox{在数据量很大的时候，采用第一种机制是不明智的。}
+数据库自身的分页机制是与数据库紧密关联的，每种数据库实现的方式都不一样。此处以MySQL为例。
+
+MySQL数据库通过\emph{limit}关键字来控制\emph{select}语句返回的记录数。
+limit 可以接收一或两个整数参数，它们的区别为：
+\begin{enumerate}
+\item
+With one argument, the value specifies the number of rows to return from the beginning of the result set.
+
+\fbox{SELECT * FROM tbl LIMIT 5;}
+\item
+With two arguments, the first argument specifies the offset of the first row to return, and the second specifies the maximum number of rows to return. The offset of the initial row is 0 (not 1).
+
+\fbox{SELECT * FROM tbl LIMIT 5,10;}
+\end{enumerate}
+\subsubsection{分页实例}
+接下来通过查询teachers表中的教师信息为例来展示如何实现分页查询。
+分页查询的流程如Figure \ref{Log4j-pro}所示。
+\begin{figure}
+\begin{tikzpicture}
+\node (a) [draw,rectangle] at (0,0) {查询链接};
+\node (b) [draw,rectangle] at (5,0) {servlet};
+\node (c) [draw,rectangle] at (10,0) {显示页面};
+\draw [thick,->,above] (a) to[out=0,in=180] node{1} (b) ;
+\draw [thick,->,above] (b) to[out=45,in=135]  node{2} (c);
+\draw [thick,->,above,dashed,red] (c) to[out=225,in=315]  node{3} (b);
+\end{tikzpicture}
+
+\caption{分页查询的流程}
+\label{Log4j-pro}
+\end{figure}
+
+分页查询的数据库操作代码涉及到以下两点：
+\begin{enumerate}
+\item
+要知道数据到底有多少条，然后就可以计算出总共的页数，代码如Figure \ref{Log4j-page}所示。
+\item
+指定查询哪一页，每页显示多少条数据。代码如Figure \ref{Log4j-find}所示。
+\end{enumerate}
+
+\begin{figure}
+\begin{verbatim}
+public int getTotalPages(int countPerPage) {
+ int page=0;
+ int totalCount=0;
+ String sql="select count(*) from teachers";
+ try {
+  Statement st = conn.createStatement();
+  ResultSet rs = st.executeQuery(sql);
+  rs.next();
+  totalCount =rs.getInt(1);
+ } catch (SQLException e) {
+  e.printStackTrace();
+ }
+ page = (totalCount/countPerPage)+1;
+ return page;
+}
+\end{verbatim}
+\caption{Db.java文件中获取总页数的代码}
+\label{Log4j-page}
+\end{figure}
+
+\begin{figure}
+\begin{verbatim}
+public ArrayList<Teacher> find(int page,int countPerPage){
+ ArrayList<Teacher> teacherList = new ArrayList<Teacher>();
+ String sql="select id,name,logDate from teachers limit ?,?";
+ PreparedStatement ps = conn.prepareStatement(sql);
+ ps.setInt(1, page);  ps.setInt(2, countPerPage);
+ ResultSet rs=ps.executeQuery();
+ while(rs.next()) {
+  Teacher t = new Teacher();
+  t.setStaffid(rs.getInt("id"));
+  t.setNm(rs.getString("name"));
+  t.setLogDate(rs.getString("logDate"));
+  teacherList.add(t);
+ }
+ return teacherList;
+}
+\end{verbatim}
+\caption{Db.java文件中分页查询的代码}
+\label{Log4j-find}
+\end{figure}
+
+\subsubsection{查询链接}
+在teacher.jsp页面的合适位置，放置一个查询链接，如Figrue \ref{Log4j-query}所示，通过本链接去调用负责查询的servlet。
+\begin{figure}
+\begin{verbatim}
+<form action="QueryTeacher" method="post">
+<input type="submit" value="query teacher info"/>
+</form>
+\end{verbatim}
+\caption{查询链接}
+\label{Log4j-query}
+\end{figure}
+\subsubsection{Servlet}
+负责查询数据的servlet要完成以下工作：
+\begin{enumerate}
+\item
+查询指定的记录
+
+\emph{offset and how many}
+\item
+生成页数相关的信息
+
+\emph{current page and total page}
+\item
+将结果传递给显示页面
+
+\end{enumerate}
+
+在servlet中查询指定页数据的部分代码如Figure \ref{Log4j-servq}所示，注意其中的变量page是由显示页面传递过来的参数，是为了获取用户在显示页面点击的第几页（比如用户点击了第10页，那么就把这个提交给servlet，servlet查询了第10页后，把结果再返回给显示页面）。
+\begin{figure}
+\begin{verbatim}
+ArrayList<Teacher> tLst=null;
+int curPage = 1;
+int TotalPage=0;
+int countPerPage = 5;
+Db d = new Db();
+TotalPage=d.getTotalPages(countPerPage);
+d=new Db();
+if(request.getParameter("page")==null) {
+ tLst=d.find(1, countPerPage);
+}else {
+  curPage = Integer.parseInt(
+    request.getParameter("page"));
+  tLst=d.find(curPage, countPerPage);
+ }		
+request.setAttribute("teacherList", tLst);
+\end{verbatim}
+\caption{servlet-QueryTeacher.java中查询指定记录的代码}
+\label{Log4j-servq}
+\end{figure}
+
+
+servlet不光要查询数据，还要生成有关页码的导航条，如代码Figure \ref{Log4j-navi}所示。
+
+
+\begin{figure}
+\begin{verbatim}
+StringBuilder strb = new StringBuilder();
+strb.append("<div><form name='qt' action='QueryTeacher' 
+  method='post'>");
+strb.append("第<select name='page'  
+  onchange='document.qt.submit()'>");
+for(int i=1;i<=TotalPage;i++) {
+ if(i==curPage) {
+  strb.append("<option value='"+i+"' selected='selected'>"
+    +i+"</option>");
+ }else {
+  strb.append("<option value="+i+">"+i+"</option>");
+  }  }
+strb.append("</select>页，共"+TotalPage+"页");
+strb.append("</form></div>");
+request.setAttribute("pageBar", strb);
+\end{verbatim}
+\caption{servlet-QueryTeacher.java中生成页码导航条的代码}
+\label{Log4j-navi}
+\end{figure}
+
+
+servlet将查询到的数据和所生成的页码导航条封装到request中传递给显示页面，代码如Figure \ref{Log4j-servv}所示，其中代码的意思是：将本servlet处理之后的request封装起来，传递给\emph{teacher\_list.jsp}页面。
+\begin{figure}
+\begin{verbatim}
+request.getRequestDispatcher("teacher_list.jsp")
+  .forward(request, response);
+\end{verbatim}
+\caption{servlet-QueryTeacher.java将request传递给显示页面}
+\label{Log4j-servv}
+\end{figure}
+
+显示页面中可以显示servlet查询到的数据，又可以从显示页面选择第几页，从而查询那一页的数据，其代码如Figure \ref{Log4j-list}所示。
+
+\begin{figure}
+\begin{verbatim}
+<div class="content main">
+当前系统中教师信息如下：<br>
+<table>
+<c:forEach items="${teacherList }" var="t" >
+<tr><td>${t.staffid}</td><td>${t.nm }</td></tr>
+</c:forEach>
+</table>
+${pageBar}
+
+</div>
+\end{verbatim}
+\caption{teacher\_list.jsp}
+\label{Log4j-list}
+\end{figure}
+\subsection{修改数据}
+修改数据的关键在于定位某条数据，我们可以通过主键来定位数据。在数据显示页面，可以增加一列超链接（“修改”），在这个超链接中传入本条记录的主键，当点击这个链接的时候，打开一个新的页面，即修改页面，在修改页面中将各字段的值放到一个input中，以供修改，然后将本form中的数据提交，将数据库表中对应主键的那条记录进行更新。修改数据的流程如Figure \ref{Log4j-mod-pro}所示。
+
+\begin{figure}
+\begin{tikzpicture}
+\node (a) [draw,rectangle] at (0,0) {带修改链接的列表页面};
+\node (b) [draw,rectangle] at (4,0) {servlet};
+\node (c) [draw,rectangle] at (8,0) {修改页面};
+\draw [thick,->,above] (a) to[out=0,in=180] node{1} (b) ;
+\draw [thick,->,above] (b) to[out=45,in=135]  node{2} (c);
+\draw [thick,->,above,dashed,red] (c) to[out=225,in=315]  node{3} (b);
+\end{tikzpicture}
+\caption{修改数据的流程}
+\label{Log4j-mod-pro}
+\end{figure}
+
+这里涉及以下几个内容：
+\begin{enumerate}
+\item
+带修改链接的显示页面
+
+代码如Figure \ref{Log4j-list-chg}所示。
+\item
+将显示页面数据传递到修改页面的代码
+
+如Figure \ref{Log4j-lst-serv-chg}所示。
+\item
+修改页面
+
+代码如Figure \ref{Log4j-chg}所示。
+\item
+处理修改信息
+
+代码如Figure \ref{Log4j-serv-mod}所示。
+\item
+数据库操作
+
+代码如Figure \ref{Log4j-db-update}所示。
+\end{enumerate}
+
+\begin{figure}
+\begin{verbatim}
+<c:forEach items="${teacherList }" var="t" >
+<tr><td>${t.staffid}</td><td>${t.nm }</td>
+<td>
+<a href='ModifyTeacher?id=${t.staffid }&name=${t.nm}'>
+修改</a></td></tr>
+</c:forEach>
+\end{verbatim}
+\caption{带修改链接的显示页面teacher\_list.jsp}
+\label{Log4j-list-chg}
+\end{figure}
+
+\begin{figure}
+\begin{verbatim}
+//ModifyTeacher.java - doGet
+request.setCharacterEncoding("utf-8");
+request.setAttribute("id", request.getParameter("id"));
+request.setAttribute("name", request.getParameter("name"));
+request.getRequestDispatcher("teacher_modify.jsp")
+  .forward(request, response);
+\end{verbatim}
+\caption{显示页面数据传递到修改页面}
+\label{Log4j-lst-serv-chg}
+\end{figure}
+
+
+\begin{figure}
+\begin{verbatim}
+<form action="ModifyTeacher" method="post">
+<table>
+<tr><td>${id}
+<input type="hidden" name="id" value="${id }"/></td>
+<td><input type="text" name="name" value="${name }"/></td>
+<td><input type="submit" value="提交修改"/></td></tr>
+\end{verbatim}
+\caption{修改页面teacher\_modify.jsp}
+\label{Log4j-chg}
+\end{figure}
+
+\begin{figure}
+\begin{verbatim}
+//ModifyTeacher.java - doPost
+request.setCharacterEncoding("utf-8");
+System.out.println(request.getParameter("id")+","+ 
+   request.getParameter("name"));
+Db d = new Db();
+int rz = d.modifyTeacher(request.getParameter("id"), 
+   request.getParameter("name"));
+if(rz==1) {
+ response.getWriter().println("modify successfully.");
+}else {
+ response.getWriter().println("something wrong.");
+}
+\end{verbatim}
+\caption{servlet处理修改数据的请求}
+\label{Log4j-serv-mod}
+\end{figure}
+
+\begin{figure}
+\begin{verbatim}
+//Db.java - modifyTeacher
+public int modifyTeacher(String id,String name) {
+ int rz=0;
+ String sql = "update teachers set name=? where id=?";
+ try {
+  PreparedStatement ps = conn.prepareStatement(sql);
+  ps.setInt(2, Integer.parseInt(id));
+  ps.setString(1, name);
+  rz=ps.executeUpdate();
+  getClose();
+ } catch (SQLException e) {
+  // TODO Auto-generated catch block
+  e.printStackTrace();
+ }
+ return rz;
+}
+\end{verbatim}
+\caption{数据库操作类Db}
+\label{Log4j-db-update}
+\end{figure}
+
+

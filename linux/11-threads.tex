@@ -132,12 +132,12 @@
 \begin{frame}{线程和进程}
 \begin{enumerate}
 \item
-进程是操作系统进行资源（包括cpu、内存、磁盘IO等）分配的最小单位
+进程是操作系统进行资源（包括cpu、内存、磁盘IO等）分配的最小单位。
 \item
-线程是cpu调度的基本单位
+线程是cpu调度的基本单位。
 \item
 我们打开的微信，浏览器都是一个进程。
-进程可能有多个子任务，比如微信要接受消息，发送消息，这些子任务就是线程。
+进程可能有多个子任务，比如微信要接收消息，发送消息，这些子任务就是线程。
 资源分配给进程，线程共享进程资源。
 \item
 线程的调度比进程的调度所需要的系统开销要小得多。
@@ -157,7 +157,7 @@ int pthread_create(pthread_t *thread, pthread_attr_t *attr,
 \end{verbatim}
 \begin{enumerate}
 \item
-第一个参数是事先声明的一个pthread类型的指针，新创建的线程通过这个指针来引用。
+第一个参数是事先声明的一个pthread\_t类型的指针，新创建的线程通过这个指针来引用。
 \item
 第二个参数用来设置线程的属性，一般情况下可以设置为NULL。
 \item
@@ -221,18 +221,19 @@ void *fmt(void * arg){
 \node[draw,rectangle,thick] (init) at (10,6) {main};
 \node[draw,rectangle,thick] (ta) at (8,4) {pth[0]};
 \node[draw,rectangle,thick] (tA) at (12,4) {pth[1]};
-\node[draw,rectangle,thick] (wait) at (10,2) {wait};
+\node[draw,rectangle,thick] (wait) at (10,2) {pthread\_join};
 \node (e) at (10,1) {};
 \draw[thick,->] (s) to[out=270,in=90] node{} (init);
 \draw[thick,->] (init) to[out=225,in=90] node{} (ta);
 \draw[thick,->] (init) to[out=315,in=90] node{} (tA);
+\draw[thick,->,dashed] (init) to[out=270,in=90] node{} (wait);
 \draw[thick,->] (ta) to[out=315,in=90] node{} (wait);
 \draw[thick,->] (tA) to[out=225,in=90] node{} (wait);
 \draw[thick,->] (wait) to[out=270,in=90] node{} (e);
 \end{tikzpicture}
 }
 \end{block}
-\emph{Question}:如果没有wait会如何执行？
+\emph{Question}:如果没有pthread\_join会如何执行？
 \end{frame}
 %-----------------------------------------------
 \section{Synchronization}
@@ -381,7 +382,7 @@ int main(){
 \item
 我们的生产者会一直提示用户输入数据（写入buf），不管消费者是否取走了buf里的数据。
 \item
-理想的生产者应该先查看buf里的数据是否被取走，然后再生产。（\textcolor{red}{作业}）
+理想的生产者应该先查看buf里的数据是否被取走或者是buf未满，然后再生产。（\textcolor{red}{作业}）
 \end{enumerate}
 \end{block}
 \end{frame}
