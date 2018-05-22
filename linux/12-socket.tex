@@ -269,10 +269,10 @@ Socket是一种进程间的通信机制。
 socket() creates an endpoint for communication and returns a descriptor.
 \begin{block}{原型}
 \begin{verbatim}
-     #include <sys/socket.h>
+#include <sys/types.h>          /* See NOTES */
+#include <sys/socket.h>
 
-     int
-     socket(int domain, int type, int protocol);
+       int socket(int domain, int type, int protocol);
 \end{verbatim}
 \end{block}
 \end{frame}
@@ -282,18 +282,13 @@ socket() creates an endpoint for communication and returns a descriptor.
 \begin{table}
 \begin{tabular}{ll}
 \toprule
-\textbf{Domain}&\textbf{Description}\\
-\midrule
-           \textcolor{red}{PF\_LOCAL}    &    Host-internal protocols, formerly called PF\_UNIX\\
-           PF\_UNIX    &     Host-internal protocols, deprecated, use PF\_LOCAL\\
-           \textcolor{red}{PF\_INET}       &  Internet version 4 protocols\\
-           PF\_ROUTE   &     Internal Routing protocol\\
-           PF\_KEY         & Internal key-management function\\
-           PF\_INET6       & Internet version 6 protocols\\
-           PF\_SYSTEM    &   System domain\\
-           PF\_NDRV        & Raw access to network device\\
-           \bottomrule
-           \end{tabular}
+\textbf{Name}&\textbf{Purpose}\\
+\midrule                                                       
+       AF\_UNIX, AF\_LOCAL &  Local communication     \\        
+       AF\_INET       &      IPv4 Internet protocols    \\      
+       AF\_INET6     &       IPv6 Internet protocols     \\     
+ \bottomrule
+ \end{tabular}
 \caption{Domain of socket}
 \label{skt-dm}
 \end{table}
@@ -303,16 +298,13 @@ socket() creates an endpoint for communication and returns a descriptor.
      The socket has the indicated type, which specifies the semantics of communication.  Currently defined types are:
 \begin{enumerate}
 \item
-           SOCK\_STREAM
-        \item   SOCK\_DGRAM
-          \item SOCK\_RAW
+SOCK\_STREAM
+\item   
+SOCK\_DGRAM
 \end{enumerate}
      A SOCK\_STREAM type provides sequenced, reliable, two-way connection based byte streams.  An out-of-band data(like urgent mode in tcp) transmission mechanism may be supported.  
      
      A SOCK\_DGRAM socket supports datagrams (connectionless, unreliable messages of a fixed (typically small) maximum length). 
-     
-      SOCK\_RAW sockets provide access to internal network protocols and interfaces.  The type
-     SOCK\_RAW, which is available only to the super-user.
 \end{frame}
 \begin{frame}{socket-protocol}
 The protocol used for communication is usually determined by the socket type and domain. There is normally no choice. The protocol parameter is used where there is a choice. \textcolor{red}{0 }selects the default protocol, which is used in all the examples in our course.
@@ -320,29 +312,56 @@ The protocol used for communication is usually determined by the socket type and
 \begin{frame}{Name a socket}
 To make a socket (as created by a call to socket) available for use by other processes, a server program needs to give the socket a name. 
 
-Thus, PF\_LOCAL sockets are associated with a file system pathname. 
+Thus, AF\_LOCAL sockets are associated with a file system pathname. 
 
-PF\_INET sockets are associated with an IP port number.
+AF\_INET sockets are associated with an IP port number.
 \end{frame}
 \begin{frame}[fragile]{bind}
 \begin{block}{bind原型}
 \begin{verbatim}
-#include <sys/socket.h>
-int bind(int socket, const struct sockaddr *address, 
-  size_t address_len);
+ #include <sys/types.h>          
+ #include <sys/socket.h>
+
+       int bind(int sockfd, const struct sockaddr *addr,
+                socklen_t addrlen);
 \end{verbatim}
 \end{block}
-The bind system call assigns the address specified in the parameter, address, to the unnamed socket associated with the file descriptor socket. The length of the address structure is passed as address\_len.
-The length and format of the address depend on the address family. A particular address structure pointer will need to be cast to the generic address type(struct sockaddr *) in the call to bind.
+\begin{tikzpicture}
+\node (sk) [draw,rectangle] at (0,0) {socket};
+\node (des) [draw] at (0,1) {描述符};
+\draw [-] (sk) to[out=90,in=270] (des);
+
+\node (add) [draw,rectangle,red] at (3,1) {address};
+\draw [-,dashed,thick,above,red] (add) to[out=180,in=360] node{bind}(des);
+\end{tikzpicture}
+
 On successful completion, bind returns 0. If it fails, it returns -1 and sets errno .
+\end{frame}
+\begin{frame}[fragile]{bind-addr}       
+       The actual structure passed for the addr argument will depend on the address family.  The sockaddr structure is defined as something like:
+\begin{verbatim}
+struct sockaddr_in {
+  sa_family_t    sin_family; /* address family: AF_INET */
+  in_port_t      sin_port;   /* port in network byte order */
+  struct in_addr sin_addr;   /* internet address */
+};
+/* Internet address. */
+  struct in_addr {
+  uint32_t       s_addr;     /* address in network byte order */
+};
+\end{verbatim}
+The rules used in name binding vary between address families.  Consult the manual entries in Section 7 for detailed information.  For AF\_INET see ip(7), for AF\_INET6 see  ipv6(7),  for  AF\_UNIX  see
+       unix(7).
 \end{frame}
 \begin{frame}[fragile]{create a socket queue}
 To accept incoming connections on a socket, a server program must create a queue to store pending requests. It does this using the listen system call.
 \begin{block}{listen原型}
 \begin{verbatim}
-#include <sys/socket.h>
-int listen(int socket, int backlog);
-\end{verbatim}
+ #include <sys/types.h>  
+ #include <sys/socket.h>
+
+       int listen(int sockfd, int backlog);
+       \end{verbatim}
 \end{block}
 The listen function will return 0 on success or -1 on error.
 \end{frame}
@@ -351,9 +370,11 @@ The listen function will return 0 on success or -1 on error.
 Once a server program has created and named a socket, it can wait for connections to be made to the socket by using the accept system call.
 \begin{block}{accept原型}
 \begin{verbatim}
+#include <sys/types.h> 
 #include <sys/socket.h>
-int accept(int socket, struct sockaddr *address, 
-  size_t *address_len);
+
+ int accept(int sockfd, struct sockaddr *addr, 
+   socklen_t *addrlen);
 \end{verbatim}
 \end{block}
 The accept system call returns when a client program attempts to connect to the socket specified by the parameter socket. 
@@ -373,9 +394,10 @@ If there are no connections pending on the socket’s queue, \textcolor{red}{acc
 Client programs connect to servers by establishing a connection between an unnamed socket and the server listen socket. We can do this by calling connect.
 \begin{block}{connect原型}
 \begin{verbatim}
+#include <sys/types.h>                
 #include <sys/socket.h>
-int connect(int socket, const struct sockaddr *address, 
-  size_t address_len);
+int connect(int sockfd, const struct sockaddr *addr,
+                   socklen_t addrlen);
 \end{verbatim}
 \end{block}
 The socket specified by the parameter socket is connected to the server socket specified by the parameter address, which is of length address\_len. The socket must be a valid file descriptor obtained by a call to socket.
@@ -383,7 +405,7 @@ If it succeeds, connect returns 0, and -1 is returned on error.
 \end{frame}
 \begin{frame}[fragile]{close a socket}
 We can terminate a socket connection at the server and client by calling close, just as we would for low-level file descriptors. 
-\begin{block}{connect原型}
+\begin{block}{close原型}
 \begin{verbatim}
 #include <unistd.h>
 
@@ -392,7 +414,225 @@ We can terminate a socket connection at the server and client by calling close, 
 \end{verbatim}
 \end{block}
 \end{frame}
-\begin{frame}{Socket Communications}
+\begin{frame}[fragile]{网络通信-客户端I}
+\begin{block}{引入头文件}
+\begin{verbatim}
+cat client.c 
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<netinet/ip.h>
+#include<netinet/in.h>
+#include<unistd.h>
+
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{网络通信-客户端II}
+\begin{block}{创建socket连接}
+\begin{verbatim}
+int main(){
+ int sockfd, len, result;
+//man 7 ip
+ struct sockaddr_in address;
+ char ch='C';
+ sockfd=socket(AF_INET,SOCK_STREAM,0);
+ address.sin_family=AF_INET;
+ address.sin_addr.s_addr=inet_addr("127.0.0.1");
+ address.sin_port=9980;
+ len=sizeof(address);
+ result=connect(sockfd,(struct sockaddr *)&address,len);
+ if(result==-1){
+  perror("oops:client!");
+  exit(1);
+ }
+...
+}
+
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{网络通信-客户端III}
+\begin{block}{对socket进行读写操作}
+\begin{verbatim}
+cat client.c 
+int main(){
+...	
+ write(sockfd,&ch,1);
+ read(sockfd,&ch,1);
+ printf("char from server is:%c\n",ch);
+ close(sockfd);
+ exit(0);
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{网络通信-服务端I}
+\begin{block}{创建一个socket}
+\begin{verbatim}
+cat server.c
+int main(){
+ int server_sockfd, client_sockfd;
+ int server_len, client_len;
+//man 7 ip
+ struct sockaddr_in server_address;
+ struct sockaddr_in client_address;
+ server_sockfd=socket(AF_INET,SOCK_STREAM,0);
+...
+}
+
+\end{verbatim}
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]{网络通信-服务端II}
+\begin{block}{bind}
+\begin{verbatim}
+cat server.c
+int main(){
+...
+server_sockfd=socket(AF_INET,SOCK_STREAM,0);
+server_address.sin_family=AF_INET;
+server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
+server_address.sin_port=9980;
+server_len=sizeof(server_address);
+
+bind(server_sockfd,
+  (struct sockaddr *)&server_address, 
+  server_len);
+...
+}
+
+\end{verbatim}
+\end{block}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{网络通信-服务端III}
+\begin{block}{listen and accept}
+\begin{verbatim}
+cat server.c
+int main(){
+...
+listen(server_sockfd,5);
+while(1){
+ char ch;
+ printf("serve...\n");
+ client_len=sizeof(client_address);
+ client_sockfd=accept(server_sockfd,
+  (struct sockaddr *)&client_address,
+  &client_len);
+ read(client_sockfd,&ch,1);
+ ch++;
+ write(client_sockfd,&ch,1);
+ close(client_sockfd);
+}
+exit(0);
+}
+
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{查看监听的端口号}
+
+\fbox{server\_address.sin\_port=9980;}
+当server运行起来时，通过netstat可能会发现本机监听的端口中并没有9980,这是因为通过socket传递的端口号是二进制数字，在各平台上的解析可能不一样。可做以下修改：
+\fbox{server\_address.sin\_port=htons(9980);}\footnote{服务器端和客户端程序都要修改。}
+\end{frame}
+\section{数据报}
+\begin{frame}
+\Huge{\centerline{数据报}}
+\end{frame}
+\begin{frame}{数据报}
+前面讲解的都是基于连接的通信方式（TCP）。
+当有些通信对数据的丢失不敏感或要求数据的质量不高的时候，可以考虑使用数据报来传递数据，对应到传输协议就是UDP协议。
+
+编写udp服务程序，与tcp最明显的不同之处在于：需要使用两个数据报专用的系统调用sendto和recvfrom来代替read和write调用。
+\end{frame}
+
+\begin{frame}{数据报通信过程}
+
+%\begin{block}{Socket通信过程}
+\center{
+\begin{tikzpicture}
+\draw [thick,red,dashed,above] (0,0) rectangle (3,5) node{Client};
+\node [draw,rectangle] (skt) at(1.5,4){socket()};
+\node [draw,rectangle] (sd) at(1.5,3){sendto()};
+\node [draw,rectangle] (rec) at(1.5,2){recvfrom()};
+\node [draw,rectangle] (clo) at(1.5,1){close()};
+\draw [thick,blue,dashed,above] (6,0) rectangle (9,6)node{Server};
+\node [draw,rectangle] (sskt) at(7.5,5){socket()};
+\node [draw,rectangle] (sbd) at(7.5,4){bind()};
+\node [draw,rectangle] (srec) at(7.5,3){recvfrom()};
+\node [draw,rectangle] (ssd) at(7.5,2){sendto()};
+\node [draw,rectangle] (sclo) at(7.5,1){close()};
+\draw [->,thick] (skt) -- (sd);
+\draw [->,thick] (sd) -- (rec);
+\draw [->,thick] (rec) -- (clo);
+
+\draw [->,thick] (sskt) -- (sbd);
+\draw [->,thick] (sbd) -- (srec);
+\draw [->,thick] (srec) -- (ssd);
+\draw [->,thick] (ssd) -- (sclo);
+\draw[->,dashed,thick,above] (sd) to[out=0,in=180] node{request} (srec);
+\draw[->,dashed,thick,above] (ssd) to[out=180,in=0] node{response} (rec);
+%\draw[thick,->](pa1) to[out=0,in=360] (pa2);
+%\draw[thick,->](pa2) to[out=0,in=360] (pa1);
+%\draw[thick,->,green](pa3) to[out=0,in=180] (pb1);
+%\draw[thick,->,green](pa4) to[out=0,in=270] (pb1);
+%\draw[thick,->,green](pb1) to[out=180,in=360] (pa3);
+%\draw[thick,->,green](pb1) to[out=270,in=360] (pa4);
+\end{tikzpicture}
+}
+%\end{block}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{数据报例子-客户端}
+\begin{block}{clientUDP.c}
+\begin{verbatim}
+sockfd=socket(AF_INET,SOCK_DGRAM,0);
+address.sin_family=AF_INET;
+address.sin_addr.s_addr=inet_addr("127.0.0.1");
+address.sin_port=htons(9980);
+len=sizeof(address);
+
+printf("input a char:");
+buf=getchar();
+int rz = sendto(sockfd,&buf,1,0,
+  (struct sockaddr *)&address,len);
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{数据报例子-服务端}
+\begin{block}{serverUDP.c}
+\begin{verbatim}
+server_sockfd=socket(AF_INET,SOCK_DGRAM,0);
+ server_address.sin_family=AF_INET;
+ server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
+ server_address.sin_port=htons(9980);
+ server_len=sizeof(server_address);
+ bind(server_sockfd,
+   (struct sockaddr *)&server_address,server_len);
+
+while(1){
+  char ch;
+  printf("UDP serve...\n");
+  recvfrom(server_sockfd,buf,1,0,
+    (struct sockaddr *)&server_address,&server_len);
+  printf("the client sent:%s",buf);
+}
+
+\end{verbatim}
+\end{block}
 \end{frame}
 %------------------------------------------------
 %------------------------------------------------
@@ -403,16 +643,23 @@ We can terminate a socket connection at the server and client by calling close, 
 %------------------------------------------------
 %------------------------------------------------
 \begin{frame}{作业}
-编写一个程序，要求：
+编写一个socket程序，要求：
 \begin{enumerate}
 \item
-创建两个线程：一个生产者线程，一个消费者线程
+使用TCP协议实现
 \item
-当缓冲区为空时，生产者线程提示用户输入一串字符，然后将用户输入的字符写入缓冲区
+客户端可以和服务器端进行通信
 \item
-当缓冲区非空时，消费者线程从缓冲出取出所有字符
+当用户输入end时，本客户端退出结束
 \item
-当用户输入end时，程序结束
+进阶要求：
+\begin{enumerate}
+\item
+多个客户端可以同时分别和服务端通信
+\item
+实现一个类似聊天室的功能
+\end{enumerate}
+
 \end{enumerate}
 \end{frame}
 
@@ -461,22 +708,6 @@ The manual is generally split into eight numbered sections, organized as follows
 \end{table}
 
 在终端中运行man read 与 man 2 read ，观察其输出的区别。
-\end{frame}
-\begin{frame}{detached threads}
-前面的多线程程序中，主线程都调用了pthread\_join方法来等待线程结束。
-在主线程需要子线程返回结果的时候，这种方法是必要的。但是在主线程不需要子线程的返回结果时，就没必要这样做了，只需要让子线程自已去运行，然后自行结束就可以了，这样的线程就被称为\emph{detached threads}。
-
-在任何一个时间点上，线程是可结合的（joinable）或者是分离的（detached）。一个可结合的线程能够被其他线程收回其资源和杀死。在 被其他线程回收之前，它的存储器资源（例如栈）是不释放的。相反，一个分离的线程是不能被其他线程回收或杀死的，它的存储器资源在它终止时由系统自动释放。
-\end{frame}
-\begin{frame}[fragile]{detached threads示例}
-\begin{verbatim}
-pthread_attr_t att;
-pthread_attr_init(&att);
-pthread_attr_setdetachstate(&att,PTHREAD_CREATE_DETACHED);
-char  ch='a';
-int ra=pthread_create(&pth[0],&att,fmt,&ch);
-
-\end{verbatim}
 \end{frame}
 
 \end{document} 
