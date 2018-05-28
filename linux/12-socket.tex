@@ -80,6 +80,7 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
 \usepackage{color}
 \usepackage{listings}
 \lstset{numbers=left}
@@ -148,7 +149,7 @@ Socket是一种进程间的通信机制。
 \end{frame}
 
 \begin{frame}{Socket通信过程 I}
-服务器端的进程process B通过socket系统调用创建了一个socket, 这个socket对外表现就是一个端口。比如web常用端口80 。
+服务器端的进程process B通过socket系统调用创建了一个socket, 这个socket对外表现可以暂的理解为一个端口。比如web常用端口80 。
 该socket随即调用accept方法，等待客户端的连接。
 %\begin{block}{Socket通信过程}
 \center{
@@ -269,7 +270,7 @@ Socket是一种进程间的通信机制。
 socket() creates an endpoint for communication and returns a descriptor.
 \begin{block}{原型}
 \begin{verbatim}
-#include <sys/types.h>          /* See NOTES */
+#include <sys/types.h>         
 #include <sys/socket.h>
 
        int socket(int domain, int type, int protocol);
@@ -295,14 +296,14 @@ socket() creates an endpoint for communication and returns a descriptor.
 
 \end{frame}
 \begin{frame}{socket-type}
-     The socket has the indicated type, which specifies the semantics of communication.  Currently defined types are:
+     The socket has the indicated type, which specifies the semantics of communication.  Currently defined types\footnote{一部分。} are:
 \begin{enumerate}
 \item
 SOCK\_STREAM
 \item   
 SOCK\_DGRAM
 \end{enumerate}
-     A SOCK\_STREAM type provides sequenced, reliable, two-way connection based byte streams.  An out-of-band data(like urgent mode in tcp) transmission mechanism may be supported.  
+     A SOCK\_STREAM type provides sequenced, reliable,  connection based byte streams.  An out-of-band data(like urgent mode in tcp) transmission mechanism may be supported.  
      
      A SOCK\_DGRAM socket supports datagrams (connectionless, unreliable messages of a fixed (typically small) maximum length). 
 \end{frame}
@@ -310,7 +311,7 @@ SOCK\_DGRAM
 The protocol used for communication is usually determined by the socket type and domain. There is normally no choice. The protocol parameter is used where there is a choice. \textcolor{red}{0 }selects the default protocol, which is used in all the examples in our course.
 \end{frame}
 \begin{frame}{Name a socket}
-To make a socket (as created by a call to socket) available for use by other processes, a server program needs to give the socket a name. 
+To make a socket (as created by a call to socket()) available for use by other processes, a server program needs to give the socket a name. 
 
 Thus, AF\_LOCAL sockets are associated with a file system pathname. 
 
