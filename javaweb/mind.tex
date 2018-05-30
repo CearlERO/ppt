@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{mindmap}
+\usepackage{xeCJK}
+\begin{document}
+\begin{tikzpicture}
+\path[mindmap,concept color=gray,text=white]
+	node[concept] {数据挖掘}
+	[clockwise from=0]
+	child[concept color=green!50!black]{
+		node[concept] {任务}
+		[clockwise from=90]
+		child[concept color=green!50!black]{
+		node[concept]{预测}
+		}
+		child{node[concept] {描述性}}
+		child{node[concept] {预测性}}
+	};
+
+\end{tikzpicture}
+
+
+\end{document}

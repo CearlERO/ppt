@@ -151,9 +151,9 @@ cat <<"EOF" | grep "abc"
 \end{block}
 \end{frame}
 %------------------------------------------------
-\section{Process pipe}
+\subsection{进程管道}
 \begin{frame}
-\Huge{\centerline{Process pipe}}
+\Huge{\centerline{进程管道}}
 \end{frame}
 \begin{frame}[fragile]{Process pipe}
 Perhaps the simplest way of passing data between two programs is with the \emph{popen} and \emph{pclose} functions. 
@@ -245,8 +245,131 @@ int main(){
 \end{verbatim}
 \end{block}
 \end{frame}
+\begin{frame}{popen的特性}
+\begin{enumerate}
+\item
+启动一个新进程时会先启动一个shell(回顾一下system函数)
+\item
+cmd是作为一个参数传递给shell来运行的
+\end{enumerate}
+\end{frame}
+%------------------------------------------------
+\subsection{pipe 调用}
+\begin{frame}
+\Huge{\centerline{pipe调用}}
+\end{frame}
+\begin{frame}[fragile]{pipe调用}
+pipe调用也可以在两个程序间传递数据，与popen不同的是，pipe不需要启动shell,同时还提供了对读写数据的更多控制。
+\begin{block}{pipe原型}
+\begin{verbatim}
+#include <unistd.h>
+int  pipe(int fildes[2]);
+\end{verbatim}
+成功返回0, 否则返回-1 。
+\end{block}
+\begin{tikzpicture}
+\node [draw,rectangle] (0) at(0,0) {file\_descriptor[0]};
+\node [draw,rectangle] (1) at(5,0) {file\_descriptor[1]};
+\draw[->,thick,above] (1) to[out=180,in=360] (0) ;
+\node [draw,rectangle](w) at(5,1) {write to};
+\node [draw,rectangle](r) at(1,1) {read from};
+\draw[->,thick,above] (0) to[out=90,in=270] (r) ;
+\draw[->,thick,above] (w) to[out=270,in=90] (1);
+\end{tikzpicture}
 
+\end{frame}
 
+\begin{frame}[fragile]{pipe 例子}
+\begin{block}{13-pipe.c}
+\begin{verbatim}
+int main(){
+ int fd[2]; pid_t cpid; char buf[100];
+ char * data="data to be sent."; int len;
+ memset(buf,'\0',sizeof(buf));
+ if(pipe(fd)==0){
+  cpid=fork();
+  if(cpid==-1){ perror("fork error!"); exit(-1); }
+ if(cpid==0){
+  len=read(fd[0],buf,100);
+  printf("read %d bytes, it is: %s.\n",len,buf); exit(0);	
+ }else{
+   len=write(fd[1],data,strlen(data));
+   printf("wrote %d bytes to another process.\n",len);
+  } } exit(0); }
+
+\end{verbatim}
+\end{block}
+\end{frame}
+%-----------------------------------------------
+\section{命名管道:FIFO}
+\begin{frame}
+\Huge{\centerline{命名管道FIFO}}
+\end{frame}
+\begin{frame}{FIFO文件}
+我们涉及到管道的两种实现方式都只是在有相互关联的程序之间传递数据。如果想在没有关联的程序之间传递数据的话，可以使用FIFO文件，通常也被称为命名管道（name pipe）。
+
+命名管道是一种特殊的文件，其行为和我们之前的管道是类似的。
+\end{frame}
+\begin{frame}[fragile]{命名管道的使用}
+\begin{enumerate}
+\item
+创建命名管道
+\begin{verbatim}
+#include <sys/types.h>
+#include <sys/stat.h>
+int mkfifo(const char *path, mode_t mode);
+\end{verbatim}
+\item
+打开命名管道
+
+使用open系统调用
+\begin{itemize}
+\item
+读
+
+使用read
+\item
+写
+
+使用write
+\end{itemize}
+\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{创建命名管道并写数据}
+\begin{block}{13-fifoWrt.c}
+\begin{verbatim}
+int main(){
+ mkfifo("/tmp/myfifo",0777);
+ int fd = open("/tmp/myfifo",O_WRONLY);
+ int i=0; char c = 'a';
+ for(i=0;i<20;i++){
+  write(fd,&c,1);
+  c++;
+  sleep(1);
+ }
+ close(fd);
+ exit(0);
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{通过命名管道读数据}
+\begin{block}{13-fifoRd.c}
+\begin{verbatim}
+int main(){
+ int fd = open("/tmp/myfifo",O_RDONLY);
+ char buf;
+ int len=read(fd,&buf,1);
+ while(len>0){
+  printf("the fifo content is:%c\n",buf);
+  len=read(fd,&buf,1);
+ }
+ close(fd);
+ exit(0);		
+}
+\end{verbatim}
+\end{block}
+\end{frame}
 %------------------------------------------------
 %\section{Signal}
 %\begin{frame}
@@ -255,22 +378,12 @@ int main(){
 %------------------------------------------------
 %------------------------------------------------
 \begin{frame}{作业}
-编写一个socket程序，要求：
+编写一个客户端和一个服务端程序，要求：
 \begin{enumerate}
 \item
-使用TCP协议实现
+实现双向通信
 \item
-客户端可以和服务器端进行通信
-\item
-当用户输入end时，本客户端退出结束
-\item
-进阶要求：
-\begin{enumerate}
-\item
-多个客户端可以同时分别和服务端通信
-\item
-实现一个类似聊天室的功能
-\end{enumerate}
+使用命名管道技术
 
 \end{enumerate}
 \end{frame}
@@ -323,3 +436,4 @@ The manual is generally split into eight numbered sections, organized as follows
 \end{frame}
 
 \end{document} 
+
