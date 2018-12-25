@@ -1,0 +1,10 @@
+\frametitle{closedir函数}
+closedir函数关闭一个目录流，并释放与之关联的资源。其执行成功返回0, 否则返回-1.
+\begin{example}[closedir函数原型]
+\begin{verbatim}
+#include <sys/types.h>
+#include <dirent.h>
+
+int closedir(DIR *dirp);
+\end{verbatim}
+\end{example}

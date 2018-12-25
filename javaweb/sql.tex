@@ -241,8 +241,8 @@ jsp连接数据库的一般流程如下：
     Class.forName("com.mysql.jdbc.Driver");
     
     Connection conn = DriverManager.getConnection(
-        "jdbc:mysql://localhost","root","password");
-  
+        "jdbc:mysql://localhost??useUnicode=true&
+        characterEncoding=UTF-8","root","password");
   }catch(Exception e){
     System.out.println("出现错误，具体内容如下：");
     e.printStackTrace();

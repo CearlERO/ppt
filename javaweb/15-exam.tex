@@ -84,17 +84,16 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{tikz}
-\usepackage{multirow}
-\lstset{numbers=left,xleftmargin=10pt,xrightmargin=10pt}
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Spring]{Spring} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[期末测验]{期末测验} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{张海宁} % Your name
-\institute[Guizhou University] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\institute[贵大计算机] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
 贵州大学 \\ % Your institution for the title page
 \medskip
@@ -109,8 +108,13 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview} % Table of contents slide, comment this block out to remove it
-\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\frametitle{期末测验题目} % Table of contents slide, comment this block out to remove it
+\begin{enumerate}
+\item
+请简述MVC模式，并指出MVC各层与jsp, servlet和javaBean之间的对应关系。（50分）
+\item
+请简述Cookie和Session分别是什么，以及如何配合使用。（50分）
+\end{enumerate}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -118,52 +122,14 @@
 %----------------------------------------------------------------------------------------
 
 %------------------------------------------------
-\section{jsp servlet database} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+
 %------------------------------------------------
-\begin{frame}{jsp servlet database}
-\begin{tikzpicture}
-\node (j) [draw,rectangle] at (0,5) {jsp};
-\node (s) [draw,rectangle] at (5,5) {servlet};
-\node (d) [draw,rectangle] at (10,5) {database operation};
-\draw [thick,->,above] (j) to[out=45,in=135]  node{1} (s);
-\draw [thick,->,above,dashed,red] (s) to[out=225,in=315]  node{4} (j);
-\draw [thick,->,above] (s) to[out=45,in=135]  node{2} (d);
-\draw [thick,->,above,dashed,red] (d) to[out=225,in=315]  node{3} (s);
-\end{tikzpicture}
-\end{frame}
 
-
-%---------------------------------------
 \begin{frame}
 \Huge{\centerline{The End}}
 \end{frame}
+
 %---------------------------------------
-\section{Appendix}
-
-\begin{frame}
-\Huge{\centerline{Appendix}}
-\end{frame}
-
-\subsection{相关资源}
-\begin{frame}
-\begin{block}{ppt、项目源代码及实验指导书的地址}
-\begin{enumerate}
-\item
-ppt
-
-\url{https://github.com/gmsft/ppt/tree/master/javaweb}
-\item
-lab-java项目
-
-\url{https://github.com/gmsft/javaweb}
-
-\item
-实验指导书
-
-放在ppt的仓库里
-\end{enumerate}
-\end{block}
-\end{frame}
 
 
 

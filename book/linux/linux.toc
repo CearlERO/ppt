@@ -1,0 +1,74 @@
+\contentsline {chapter}{\numberline {1}Basic Opertation}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}目的}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}目标}{1}{section.1.2}
+\contentsline {section}{\numberline {1.3}实验过程}{1}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}常用命令的使用}{1}{subsection.1.3.1}
+\contentsline {subsubsection}{pwd}{1}{section*.2}
+\contentsline {subsubsection}{cd}{1}{section*.3}
+\contentsline {subsubsection}{ls}{2}{section*.4}
+\contentsline {subsubsection}{cat}{3}{section*.5}
+\contentsline {subsubsection}{cp}{3}{section*.6}
+\contentsline {subsubsection}{mv}{3}{section*.7}
+\contentsline {subsubsection}{rm}{4}{section*.8}
+\contentsline {subsubsection}{head}{4}{section*.9}
+\contentsline {subsubsection}{tail}{5}{section*.10}
+\contentsline {subsubsection}{find}{5}{section*.11}
+\contentsline {subsubsection}{man}{5}{section*.12}
+\contentsline {subsection}{\numberline {1.3.2}vim的使用}{5}{subsection.1.3.2}
+\contentsline {subsubsection}{打开或新建文件}{5}{section*.13}
+\contentsline {subsubsection}{插入文本}{5}{section*.14}
+\contentsline {subsubsection}{删除文本和移动光标}{7}{section*.15}
+\contentsline {subsubsection}{保存文件和退出vim}{7}{section*.16}
+\contentsline {subsection}{\numberline {1.3.3}重定向和管道}{7}{subsection.1.3.3}
+\contentsline {chapter}{\numberline {2}ShellScript}{9}{chapter.2}
+\contentsline {section}{\numberline {2.1}目的}{9}{section.2.1}
+\contentsline {section}{\numberline {2.2}目标}{9}{section.2.2}
+\contentsline {section}{\numberline {2.3}实验过程}{9}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}计算生日}{9}{subsection.2.3.1}
+\contentsline {subsubsection}{分析}{9}{section*.17}
+\contentsline {subsubsection}{难点}{9}{section*.18}
+\contentsline {subsubsection}{解决方法}{9}{section*.19}
+\contentsline {subsubsection}{代码}{10}{section*.20}
+\contentsline {subsection}{\numberline {2.3.2}输出系统中的用户}{10}{subsection.2.3.2}
+\contentsline {subsubsection}{分析}{10}{section*.21}
+\contentsline {subsubsection}{难点}{10}{section*.22}
+\contentsline {subsubsection}{解决方法}{10}{section*.23}
+\contentsline {subsubsection}{代码}{10}{section*.24}
+\contentsline {chapter}{\numberline {3}Makefile}{13}{chapter.3}
+\contentsline {section}{\numberline {3.1}目的}{13}{section.3.1}
+\contentsline {section}{\numberline {3.2}目标}{13}{section.3.2}
+\contentsline {section}{\numberline {3.3}实验过程}{13}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}定义头文件}{13}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}实现头文件}{13}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}编写主程序}{13}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}编写makefile文件}{15}{subsection.3.3.4}
+\contentsline {chapter}{\numberline {4}File}{17}{chapter.4}
+\contentsline {section}{\numberline {4.1}目的}{17}{section.4.1}
+\contentsline {section}{\numberline {4.2}目标}{17}{section.4.2}
+\contentsline {section}{\numberline {4.3}实验过程}{17}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}准备知识}{17}{subsection.4.3.1}
+\contentsline {subsubsection}{用户程序、库函数、系统调用与内核之间的关系}{17}{section*.25}
+\contentsline {subsubsection}{相关的系统调用}{17}{section*.26}
+\contentsline {subsubsection}{相关的库函数}{19}{section*.27}
+\contentsline {subsection}{\numberline {4.3.2}使用系统调用实现文件拷贝}{22}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}使用标准I/O库实现文件拷贝}{23}{subsection.4.3.3}
+\contentsline {subsubsection}{使用fread和fwrite函数实现}{23}{section*.28}
+\contentsline {subsubsection}{使用getc和putc函数实现}{23}{section*.29}
+\contentsline {chapter}{\numberline {5}Curses}{25}{chapter.5}
+\contentsline {section}{\numberline {5.1}目的}{25}{section.5.1}
+\contentsline {section}{\numberline {5.2}目标}{25}{section.5.2}
+\contentsline {section}{\numberline {5.3}实验过程}{25}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}准备知识}{25}{subsection.5.3.1}
+\contentsline {subsubsection}{相关的函数}{25}{section*.30}
+\contentsline {subsection}{\numberline {5.3.2}实现}{25}{subsection.5.3.2}
+\contentsline {subsubsection}{构造主界面}{25}{section*.31}
+\contentsline {subsubsection}{判断用户按键并作出相应的操作}{26}{section*.32}
+\contentsline {subsubsection}{函数---读取指定的文件并显示到父窗口}{26}{section*.33}
+\contentsline {chapter}{\numberline {6}Process}{29}{chapter.6}
+\contentsline {section}{\numberline {6.1}目的}{29}{section.6.1}
+\contentsline {section}{\numberline {6.2}目标}{29}{section.6.2}
+\contentsline {section}{\numberline {6.3}实验过程}{29}{section.6.3}
+\contentsline {subsection}{\numberline {6.3.1}准备知识}{29}{subsection.6.3.1}
+\contentsline {subsubsection}{创建子进程的方式}{29}{section*.34}
+\contentsline {subsection}{\numberline {6.3.2}使用fork的方式完成本实验}{29}{subsection.6.3.2}
+\contentsline {subsection}{\numberline {6.3.3}DEBUG}{29}{subsection.6.3.3}
