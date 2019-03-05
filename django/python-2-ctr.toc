@@ -1,0 +1,7 @@
+\beamer@sectionintoc {1}{关系和逻辑运算符}{3}{0}{1}
+\beamer@sectionintoc {2}{判断结构}{5}{0}{2}
+\beamer@sectionintoc {3}{循环结构}{5}{0}{3}
+\beamer@subsectionintoc {3}{1}{while循环}{5}{0}{3}
+\beamer@subsectionintoc {3}{2}{for循环}{5}{0}{3}
+\beamer@sectionintoc {4}{homework}{6}{0}{4}
+\beamer@sectionintoc {5}{Q\&A}{7}{0}{5}

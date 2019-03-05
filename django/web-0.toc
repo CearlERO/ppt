@@ -1,0 +1,7 @@
+\beamer@sectionintoc {1}{网站概述}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{网站和网络}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{主流开发语言}{4}{0}{1}
+\beamer@subsectionintoc {1}{3}{python framework}{5}{0}{1}
+\beamer@sectionintoc {2}{课程概述}{6}{0}{2}
+\beamer@subsectionintoc {2}{1}{课程定位}{6}{0}{2}
+\beamer@subsectionintoc {2}{2}{考核方式}{7}{0}{2}
