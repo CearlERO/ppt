@@ -25,11 +25,19 @@
 \headcommand {\slideentry {2}{1}{1}{6/6}{课程定位}{0}}
 \headcommand {\beamer@framepages {6}{6}}
 \headcommand {\beamer@subsectionpages {6}{6}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{7}{考核方式}}
-\headcommand {\slideentry {2}{2}{1}{7/7}{考核方式}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{7}{课程所涉及到的内容}}
+\headcommand {\slideentry {2}{2}{1}{7/7}{课程所涉及到的内容}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\beamer@partpages {1}{7}}
 \headcommand {\beamer@subsectionpages {7}{7}}
-\headcommand {\beamer@sectionpages {6}{7}}
-\headcommand {\beamer@documentpages {7}}
-\headcommand {\gdef \inserttotalframenumber {7}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{8}{考核方式}}
+\headcommand {\slideentry {2}{3}{1}{8/8}{考核方式}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@subsectionpages {8}{8}}
+\headcommand {\beamer@subsectionentry {0}{2}{4}{9}{ppt下载地址}}
+\headcommand {\slideentry {2}{4}{1}{9/9}{ppt下载地址}{0}}
+\headcommand {\beamer@framepages {9}{9}}
+\headcommand {\beamer@partpages {1}{9}}
+\headcommand {\beamer@subsectionpages {9}{9}}
+\headcommand {\beamer@sectionpages {6}{9}}
+\headcommand {\beamer@documentpages {9}}
+\headcommand {\gdef \inserttotalframenumber {9}}
