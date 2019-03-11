@@ -509,7 +509,7 @@ split和join是作用相反的一对非常有用的方法。
 \item[split]
 将一个字符串切分成其子串组成的列表
 \item[join] 
-将一个字符串所组成的列表变成一个字符串
+将一个字符串列表变成一个字符串
 \end{description}
 
 \begin{block}{}
@@ -527,6 +527,45 @@ split和join是作用相反的一对非常有用的方法。
 \end{Verbatim}
 \end{block}
 \end{frame}
+
+\begin{frame}[fragile]{split}
+
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+>>> help(str.split)
+Help on method_descriptor:
+
+split(self, /, sep=None, maxsplit=-1)
+    Return a list of the words in the string, 
+    using sep as the delimiter string.
+    
+    sep
+      The delimiter according which to split the string.
+      None (the default value) means split 
+      according to any whitespace,
+      and discard empty strings from the result.
+    maxsplit
+      Maximum number of splits to do.
+      -1 (the default value) means no limit.
+\end{Verbatim}
+\end{frame}
+\begin{frame}[fragile]{join}
+
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+>>> help(str.join)
+Help on method_descriptor:
+
+join(self, iterable, /)
+    Concatenate any number of strings.
+    
+    The string whose method is called 
+    is inserted in between each given string.
+    The result is returned as a new string.
+    
+    Example: '.'.join(['ab', 'pq', 'rs']) -> 'ab.pq.rs'
+\end{Verbatim}
+\end{frame}
+
+
 
 \begin{frame}[fragile]{tuple}
 tuple与list类似，不同之处在于\textcolor{red}{不能直接修改tuple中的元素}，即不能使用del、insert方法。使用括号将元素包括起来即可创建一个tuple, 不使用括号也可以。
