@@ -189,26 +189,26 @@ let n = 4,
 判断结构（也称为分支结构）允许程序根据特定条件的真假来决定一系列的动作。
 \begin{block}{if的形式\footnote{if可以嵌套，此处没有展示。}}
 \begin{columns}
-\column{2.8cm}
+\column{2.8cm}{if}
 \begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if condition:
     code…
 \end{Verbatim}
-\column{2.8cm}
+\column{2.8cm}{if-else}
 \begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if condition:
     code…
 else:
     code…
 \end{Verbatim}
-\column{3.1cm}
+\column{3.1cm}{if-elif}
 \begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if condition:
     code…
 elif condition:
     code…
 \end{Verbatim}
-\column{3.1cm}
+\column{3.1cm}{if-elif-else}
 \begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if condition:
     code…
@@ -222,20 +222,24 @@ else:
 \end{block}
 \end{frame}
 \begin{frame}[fragile]{if 示例代码}
-\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 a,b = 2,3
 \end{Verbatim}
-\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+\begin{columns}
+\column{3.5cm}{if}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if a<b:
     print("a<b")
     \end{Verbatim}
-    \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+\column{3.5cm}{if-else}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if a<b:
     print("a<b")
 else:
     print("a>=b")
-    \end{Verbatim}
-    \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+\end{Verbatim}
+\column{3.5cm}{if-elif-else}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
 if a<b:
     print("a<b")
 elif a>b:
@@ -243,7 +247,7 @@ elif a>b:
 else:
     print("a=b")
 \end{Verbatim}
-
+\end{columns}
 \end{frame}
 \begin{frame}[fragile]{if练习题}
 从终端输入两个字符，判断其是否为数值。
@@ -297,96 +301,144 @@ while condition:
 \end{frame}
 \begin{frame}[fragile]{while小练习}
 使用while循环，求出式子\begin{equation*}
-1+2+3+…+100
+2+4+6+…+100
 \end{equation*}的值。
 \end{frame}
 \subsection{for循环}
 \begin{frame}[fragile]{for}
+\begin{block}{特点}
+\textit{python}中的\textit{for}循环用来迭代(遍历)一系列的值，比如等差数列、字符串、列表、元组等序列中的元素。
+\end{block}
+\begin{block}{语法}
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
 for var in sequence:
     code…
 \end{Verbatim}
+\end{block}
 \end{frame}
+
+\begin{frame}[fragile]{使用\textit{for}遍历—字符串、列表、元组}
+
+\begin{columns}
+\column{3.2cm}{字符串}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+s = 'gzu'
+for e in s:
+    print(c)
+g
+z
+u  
+\end{Verbatim}
+
+\column{4cm}{列表}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+mList = ['g','u',5]
+for e in mList:
+    print(e)
+g
+u
+5
+\end{Verbatim}
+\column{4.2cm}{元组}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+mTuple = ('g','z',5)
+for e in mTuple:
+    print(e)
+g
+z
+5
+\end{Verbatim}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{使用\textit{for}遍历—等差数列}
+与\textit{c、java}等语言不同，\textit{python}里的\textit{for}循环，在处理类似下列代码所示情形时，需要通过遍历一个等差数列来实现。
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+int i, sum=0;
+for(i=0; i<100; i++){
+    sum += i;
+}
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{如何产生等差数列}
+在\textit{python}中，可以使用\textit{range()}函数\footnote{range类的构造方法}来产生等差数列，从而供\textit{for}循环使用，控制循环体。
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+>>> help(range)
+Help on class range in module builtins:
+class range(object)
+   range(stop) -> range object
+   range(start, stop[, step]) -> range object
+   
+Return an object that produces a sequence of integers
+ from start (inclusive) to stop (exclusive) by step.  
+Start defaults to 0, and stop is omitted!  
+range(4) produces 0, 1, 2, 3.
+When step is given, 
+it specifies the increment (or decrement).
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{使用\textit{for}遍历—等差数列\textit{range()}}
+
+\begin{columns}
+\column{3.2cm}{\textit{range(stop)}}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+l = range(3)
+for e in l:
+    print(e)
+0
+1
+2
+\end{Verbatim}
+
+\column{4cm}{\textit{range(start, stop)}}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+ll = range(2,5)
+for e in ll:
+    print(e)
+2
+3
+4
+\end{Verbatim}
+\column{4.2cm}{\textit{range(start, stop, step)}}
+\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+lll = range(2,10,5)
+for e in lll:
+    print(e)
+2
+7
+\end{Verbatim}
+\end{columns}
+\end{frame}
+
 \begin{frame}[fragile]{for小练习}
 使用for循环，求出式子\begin{equation*}
-1+2+3+…+100
+1+3+5+…+99
 \end{equation*}的值。
 \end{frame}
-\subsection{无限循环和跳出循环}
+\subsection{跳出循环和无限循环}
 
+\begin{frame}{\textit{break、continue}\footnote{通常出现在if语句里面。}}
+\begin{columns}
+\column{4cm}{\textit{break}}
 
-\begin{frame}[fragile]{不可变和可变对象内存示意}
-\begin{columns}[c]  %开始进入分栏环境，居中设置
-\column{3.2cm}  %第一栏（左栏）宽度为8cm
-\begin{block}{}
+在循环体中使用\textit{break}关键字，会使程序\textcolor{red}{停止执行循环体}，并跳转到循环体外，执行后续代码。
+\column{4cm}{\textit{continue}}
+
+在循环体中使用\textit{continue}关键字，\textcolor{red}{会终止本轮循环}，程序跳转到循环的头部。
+\end{columns}
+\end{frame}
+\begin{frame}[fragile]{无限循环}
+某些特殊的情况下，会使用到无限循环。在使用无限循环的时候，要注意在适当的情况下，结束循环。
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
->>> l=[1,2]
->>> i=3
->>> s="python"
->>> t=(4,5)
->>> l.append(3)
->>> i+=1
->>> s=s.upper()
->>> t=t[1:]
+i = 0
+while True:
+    i += 1
+    if i > 100:
+        print("termination.")
+        break
 \end{Verbatim}
-\end{block}
-\column{3cm}  %第二栏（右栏)宽度为3cm
-\begin{tikzpicture}
-%\draw [thick,red,dashed,above] (0,0) rectangle (3,5) node{host A};
-\node [draw,rectangle] (l) at(0,4.5){l};
-\node [draw,rectangle] (lv) at(2,4.5){[1,2]};
-
-\node [draw,rectangle] (i) at(0,3){i};
-\node [draw,rectangle] (iv) at(2,3){3};
-
-\node [draw,rectangle] (s) at(0,1.5){s};
-\node [draw,rectangle] (sv) at(2,1.5){python};
-
-\node [draw,rectangle] (t) at(0,0){t};
-\node [draw,rectangle] (tv) at(2,0){(4,5)};
-%\node [draw,rectangle] (o) at(4,0){output};
-%\draw [thick,blue,dashed,above] (5,0) rectangle (8,5)node{host B};
-%\node [draw,rectangle] (pb1) at(6.5,3){process B1};
-%\node [draw,rectangle] (pb2) at(6.5,2){...};
-\draw[thick,->](l) to[out=0,in=180] (lv);
-\draw[thick,->](i) to[out=0,in=180] (iv);
-\draw[thick,->](s) to[out=0,in=180] (sv);
-\draw[thick,->](t) to[out=0,in=180] (tv);
-%\draw[thick,->](p) to[out=0,in=180] (o);
-
-
-\end{tikzpicture}
-
-\column{3cm}  %第二栏（右栏)宽度为3cm
-\begin{tikzpicture}
-%\draw [thick,red,dashed,above] (0,0) rectangle (3,5) node{host A};
-
-\node [draw,rectangle] (l) at(0,4.5){l};
-\node [draw,rectangle] (lv) at(2,4.5){[1,2,3]};
-
-\node [draw,rectangle] (i) at(0,3){i};
-\node [draw,rectangle] (ivv) at(2,3.7){3};
-\node [draw,rectangle] (iv) at(2,2.9){4};
-
-\node [draw,rectangle] (s) at(0,1.5){s};
-\node [draw,rectangle] (svv) at(2,2.2){python};
-\node [draw,rectangle] (sv) at(2,1.48){PYTHON};
-
-\node [draw,rectangle] (t) at(0,0){t};
-\node [draw,rectangle] (tvv) at(2,0.74){(4,5)};
-\node [draw,rectangle] (tv) at(2,0.05){(5)};
-%\node [draw,rectangle] (o) at(4,0){output};
-%\draw [thick,blue,dashed,above] (5,0) rectangle (8,5)node{host B};
-%\node [draw,rectangle] (pb1) at(6.5,3){process B1};
-%\node [draw,rectangle] (pb2) at(6.5,2){...};
-\draw[thick,->](l) to[out=0,in=180] (lv);
-\draw[thick,->](i) to[out=0,in=180] (iv);
-\draw[thick,->](s) to[out=0,in=180] (sv);
-\draw[thick,->](t) to[out=0,in=180] (tv);
-\end{tikzpicture}
-\end{columns}  %分栏环境结束
-
-
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -396,7 +448,9 @@ for var in sequence:
 \begin{frame}{Homework}
 \begin{enumerate}
 \item
-计算$x^{y}$.(x, y的值使用input获取)
+求出前10个素数\footnote{质数（prime number）又称素数，有无限个。质数定义为在大于1的自然数中，除了1和它本身以外不再有其他因数。}。
+\item
+使用辗转相除法\footnote{用较大数除以较小数，再用出现的余数（第一余数）去除除数，再用出现的余数（第二余数）去除第一余数，如此反复，直到最后余数是0为止。如果是求两个数的最大公约数，那么最后的除数就是这两个数的最大公约数。}求任意两个数的最大公约数。
 %\item
 %找零钱。输入收费金额和客户所付的钱，给出需要怎么找零。要求找零的钱币张数最少。（即需要多少1元的，多少2元的，多少5元的等）
 \end{enumerate}

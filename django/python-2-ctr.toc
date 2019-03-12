@@ -3,6 +3,6 @@
 \beamer@sectionintoc {3}{循环结构}{12}{0}{3}
 \beamer@subsectionintoc {3}{1}{while循环}{13}{0}{3}
 \beamer@subsectionintoc {3}{2}{for循环}{15}{0}{3}
-\beamer@subsectionintoc {3}{3}{无限循环和跳出循环}{17}{0}{3}
-\beamer@sectionintoc {4}{homework}{18}{0}{4}
-\beamer@sectionintoc {5}{Q\&A}{19}{0}{5}
+\beamer@subsectionintoc {3}{3}{跳出循环和无限循环}{21}{0}{3}
+\beamer@sectionintoc {4}{homework}{23}{0}{4}
+\beamer@sectionintoc {5}{Q\&A}{24}{0}{5}
