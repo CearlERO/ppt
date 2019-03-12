@@ -1,0 +1,5 @@
+\beamer@sectionintoc {1}{Sockets}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{What is a Socket}{4}{0}{1}
+\beamer@sectionintoc {2}{Create a Socket}{10}{0}{2}
+\beamer@sectionintoc {3}{数据报}{30}{0}{3}
+\beamer@sectionintoc {4}{Appendix}{38}{0}{4}

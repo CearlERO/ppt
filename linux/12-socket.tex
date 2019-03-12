@@ -24,7 +24,7 @@
 % which change the colors and layouts of slides. Below this is a list
 % of all the themes, uncomment each in turn to see what they look like.
 
-%\usetheme{default}
+\usetheme{default}
 %\usetheme{AnnArbor}
 %\usetheme{Antibes}
 %\usetheme{Bergen}
@@ -41,7 +41,7 @@
 %\usetheme{Ilmenau}
 %\usetheme{JuanLesPins}
 %\usetheme{Luebeck}
-\usetheme{Madrid}
+%\usetheme{Madrid}
 %\usetheme{Malmoe}
 %\usetheme{Marburg}
 %\usetheme{Montpellier}
@@ -581,8 +581,8 @@ exit(0);
 \draw [->,thick] (sbd) -- (srec);
 \draw [->,thick] (srec) -- (ssd);
 \draw [->,thick] (ssd) -- (sclo);
-\draw[->,dashed,thick,above] (sd) to[out=0,in=180] node{request} (srec);
-\draw[->,dashed,thick,above] (ssd) to[out=180,in=0] node{response} (rec);
+\draw[->,dashed,thick,above] (sd) to[out=0,in=180] node{} (srec);
+\draw[->,dashed,thick,above] (ssd) to[out=180,in=0] node{} (rec);
 %\draw[thick,->](pa1) to[out=0,in=360] (pa2);
 %\draw[thick,->](pa2) to[out=0,in=360] (pa1);
 %\draw[thick,->,green](pa3) to[out=0,in=180] (pb1);
@@ -594,7 +594,54 @@ exit(0);
 %\end{block}
 \end{frame}
 
+\begin{frame}{数据报通信过程}
 
+%\begin{block}{Socket通信过程}
+\center{
+\begin{tikzpicture}
+\draw [thick,red,dashed,above] (0,2.5) rectangle (3,8) node{Client};
+\node [draw,rectangle] (skt) at(1.5,7){socket()};
+\node [draw,rectangle] (conn) at(1.5,6){connect()};
+\node [draw,rectangle] (wtsd) at(1.5,5){write()/send()};
+\node [draw,rectangle] (rdrc) at(1.5,4){read()/recv()};
+\node [draw,rectangle] (clo) at(1.5,3){close()};
+
+\draw [thick,blue,dashed,above] (6,2.5) rectangle (9,10)node{Server};
+\node [draw,rectangle] (sskt) at(7.5,9){socket()};
+\node [draw,rectangle] (sbd) at(7.5,8){bind()};
+\node [draw,rectangle] (slisten) at(7.5,7){listen()};
+\node [draw,rectangle] (saccept) at(7.5,6){accept()};
+\node [draw,rectangle] (srdrc) at(7.5,5){read()/recv()};
+\node [draw,rectangle] (swtsd) at(7.5,4){write()/send()};
+\node [draw,rectangle] (sclo) at(7.5,3){close()};
+\draw [->,thick] (skt) -- (conn);
+\draw [->,thick] (conn) -- (wtsd);
+\draw [->,thick] (wtsd) -- (rdrc);
+\draw [->,thick] (rdrc) -- (clo);
+
+\draw [->,thick] (sskt) -- (sbd);
+\draw [->,thick] (sbd) -- (slisten);
+\draw [->,thick] (slisten) -- (saccept);
+\draw [->,thick] (saccept) -- (srdrc);
+\draw [->,thick] (srdrc) -- (swtsd);
+\draw [->,thick] (swtsd) -- (sclo);
+
+\draw[->,dashed,thick,above] (conn) to[out=15,in=165] node{request} (saccept);
+\draw[->,dashed,thick,above] (saccept) to[out=195,in=345] node{response} (conn);
+
+\draw[->,dashed,thick,above] (wtsd) to[out=0,in=180] node{send} (srdrc);
+\draw[->,dashed,thick,above] (swtsd) to[out=180,in=0] node{send} (rdrc);
+%\draw[->,dashed,thick,above] (ssd) to[out=180,in=0] node{response} (rec);
+%\draw[thick,->](pa1) to[out=0,in=360] (pa2);
+%\draw[thick,->](pa2) to[out=0,in=360] (pa1);
+%\draw[thick,->,green](pa3) to[out=0,in=180] (pb1);
+%\draw[thick,->,green](pa4) to[out=0,in=270] (pb1);
+%\draw[thick,->,green](pb1) to[out=180,in=360] (pa3);
+%\draw[thick,->,green](pb1) to[out=270,in=360] (pa4);
+\end{tikzpicture}
+}
+%\end{block}
+\end{frame}
 
 \begin{frame}[fragile]{数据报例子-客户端}
 \begin{block}{clientUDP.c}

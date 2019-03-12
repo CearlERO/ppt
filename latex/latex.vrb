@@ -1,0 +1,17 @@
+\frametitle{列表}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\begin{enumerate}
+\item
+an item
+\item
+another item
+\end{enumerate}
+\begin{column}{.5\textwidth}
+\begin{itemize}
+\item
+an item
+\item
+another item
+\end{itemize}
+\end{columns}
