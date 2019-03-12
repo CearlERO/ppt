@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017) (preloaded format=xelatex 2018.4.2)  12 MAR 2019 17:21
+This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017) (preloaded format=xelatex 2018.4.2)  12 MAR 2019 19:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2084,11 +2084,11 @@ LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <7> not available
 \tf@snm=\write9
 \openout9 = `python-2-ctr.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 474.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 474.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 476.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 476.
  (./python-2-ctr.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 474.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 474.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 476.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 476.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.

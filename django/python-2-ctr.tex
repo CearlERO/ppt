@@ -174,9 +174,9 @@ let a=4,b=3,c='hello':
 
 \begin{block}{}
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
-let n = 4,
+let n = 4:
     (2 < n) or (n < 0)
-    (n ==4) and (n > 5)
+    (n == 4) and (n > 5)
     (2 < n) and (n < 0)
     not (n >2)
 \end{Verbatim}
@@ -186,7 +186,7 @@ let n = 4,
 
 \section{判断结构}
 \begin{frame}[fragile]{判断结构}
-判断结构（也称为分支结构）允许程序根据特定条件的真假来决定一系列的动作。
+判断结构（也称为分支结构）允许程序根据特定条件的真假来决定执行哪些语句。
 \begin{block}{if的形式\footnote{if可以嵌套，此处没有展示。}}
 \begin{columns}
 \column{2.8cm}{if}
@@ -291,10 +291,12 @@ else:
 \subsection{while循环}
 
 \begin{frame}[fragile]{while}
+\begin{block}{语法}
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
 while condition:
     code…
 \end{Verbatim}
+\end{block}
 第1行代码称为循环头，\textit{code…}部分称为循环体。
 
 当碰到\textit{while}代码时，首先判断\textit{condition}是否成立，若成立，则执行循环体，每执行完一次循环体后都会再次判断\textit{condition}是否成立。
