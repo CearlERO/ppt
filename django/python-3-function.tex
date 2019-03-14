@@ -1,0 +1,242 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
+\usepackage{color}
+\usepackage{listings}
+\lstset{numbers=left}
+\usepackage{fancyvrb}%use Verbatim-the extended verbatim
+\usepackage{tikz}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Django]{python} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{function}
+\author{} % Your name
+\institute[计算机科学与技术学院] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+\begin{frame}{Overview}
+\tableofcontents
+\end{frame}
+%\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+
+%\end{Verbatim}
+
+
+
+%\begin{columns}
+%\column{2.8cm}{if}
+%\column{2.8cm}{if-else}
+%\column{3.1cm}{if-elif}
+%\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+%\column{3.1cm}{if-elif-else}
+%\end{columns}
+\section{introduce of function}
+\begin{frame}{introduce of function}
+函数（方法）具有以下特点：
+\begin{itemize}
+\item 是一段代码
+\item 能完成特定功能
+\item 可以在其他地方被调用
+\item 可以接收参数或不接收参数
+\item 可以有返回值或没有返回值
+\end{itemize}
+函数用于将一个\textcolor{red}{复杂}的问题\textcolor{red}{分解}为若干个\textcolor{red}{简单}的子问题。
+\end{frame}
+\begin{frame}{函数的类别}
+\begin{description}
+\item[ 内建函数 ]  int()、chr()、ord()、round()等
+\item[ 自定义函数 ] 
+\end{description}
+
+\end{frame}
+\section{define a function}
+\begin{frame}[fragile]{How to define a function}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+def functionName(parameter1, parameter2, …):
+    functionBlock
+    return aValue
+\end{Verbatim}
+\begin{description}
+\item[ def ] 定义函数的关键字
+\item[ functionName ] 函数名
+\item[ parameter1…] 参数\footnote{函数可以不需要参数}
+\item[ functionBlock ] 函数体
+\item[ return ] 表明此函数是有返回值的\footnote{函数可以不返回任何值}
+\item[ aValue ] 函数的返回值 
+\end{description}
+
+\end{frame}
+
+\begin{frame}[fragile]{Function example - return nothing}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+def myGCD(a,b):
+    c,d=a,b
+    while a%b !=0:
+        a,b = b,a%b
+    print(c,'和',d,'的最大公约数是：',b)
+
+a = int(input("a:"))
+b = int(input("b:"))
+myGCD(a,b)
+print(math.gcd(a,b))
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Function example - return nothing and have no parametes}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+def print_squre():
+    print(' ----')
+    print('|    |')
+    print('|    |')
+    print(' ----')
+
+print_squre()
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Function example - return a list}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+def is_prime(first_n):
+    prime_list = [2]
+    i = 3
+    while True:
+        for d in range(2, i):
+            if i % d == 0:
+                break
+            elif (i % d != 0) and (d == (i-1)):
+                prime_list.append(i)
+        if len(prime_list) == first_n:
+            break
+        i += 1
+    return prime_list
+
+n = int(input("n:"))
+print(is_prime(n))
+\end{Verbatim}
+\end{frame}
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+\section{homework}
+\begin{frame}{Homework}
+\begin{enumerate}
+\item
+求出前10个素数\footnote{质数（prime number）又称素数，有无限个。质数定义为在大于1的自然数中，除了1和它本身以外不再有其他因数。}。
+\item
+使用辗转相除法\footnote{用较大数除以较小数，再用出现的余数（第一余数）去除除数，再用出现的余数（第二余数）去除第一余数，如此反复，直到最后余数是0为止。如果是求两个数的最大公约数，那么最后的除数就是这两个数的最大公约数。}求任意两个数的最大公约数。
+%\item
+%找零钱。输入收费金额和客户所付的钱，给出需要怎么找零。要求找零的钱币张数最少。（即需要多少1元的，多少2元的，多少5元的等）
+\end{enumerate}
+\end{frame}
+\section{Q\&A}
+\begin{frame}
+\center{\Huge{Q\&A}}
+\end{frame}
+
+
+%How do I uninstall?
+%
+%	1.	Remove /Applications/Wireshark.app
+%	2.	Remove /Library/Application Support/Wireshark
+%	3.	Remove the wrapper scripts from /usr/local/bin
+%	4.	Unload the org.wireshark.ChmodBPF.plist launchd job
+%	5.	Remove /Library/LaunchDaemons/org.wireshark.ChmodBPF.plist
+%	6.	Remove the access_bpf group.
+%	7.	Remove /etc/paths.d/Wireshark
+%	8.	Remove /etc/manpaths.d/Wireshark
+\end{document} 
+
