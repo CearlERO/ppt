@@ -1,3 +1,0 @@
-\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
-\beamer@sectionintoc {2}{write the app: blog}{14}{0}{2}
-\beamer@sectionintoc {3}{Q\&A}{15}{0}{3}

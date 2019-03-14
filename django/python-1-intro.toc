@@ -1,7 +1,0 @@
-\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
-\beamer@sectionintoc {2}{basic}{7}{0}{2}
-\beamer@subsectionintoc {2}{1}{数据类型}{8}{0}{2}
-\beamer@subsectionintoc {2}{2}{输入和输出}{15}{0}{2}
-\beamer@sectionintoc {3}{list and tuple}{23}{0}{3}
-\beamer@sectionintoc {4}{homework}{32}{0}{4}
-\beamer@sectionintoc {5}{Q\&A}{33}{0}{5}
