@@ -94,7 +94,7 @@
 
 \title[Django]{python} % The short title appears at the bottom of every slide, the full title is only on the title page
 \subtitle{function}
-\author{} % Your name
+\author{张海宁} % Your name
 \institute[计算机科学与技术学院] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
 贵州大学 \\ % Your institution for the title page
@@ -136,12 +136,86 @@
 \end{itemize}
 函数用于将一个\textcolor{red}{复杂}的问题\textcolor{red}{分解}为若干个\textcolor{red}{简单}的子问题。
 \end{frame}
-\begin{frame}{函数的类别}
+\begin{frame}{函数的类型}
+\begin{table}
+\caption{函数的类型}
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+类型&说明&使用方式\\
+\midrule
+内建函数 &  print()、input()等&直接调用\\
+标准库函数&如math库里的函数等&先导入，再调用\\
+自定义函数&用户自己按需编写的函数&先定义，再调用\\
+第三方库函数&其他人编写的函数&先导入，再调用\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{table}
+\end{frame}
+\begin{frame}{内建函数}
+内建函数是指定义在builtins模块中的函数，这里面的函数都可以直接使用。
+\end{frame}
+\begin{frame}{标准库函数}
+标准库函数是python语言中自带的一些模块中的函数，这里面的函数都可以先通过import语句导入模块，然后再通过<库名>.<函数名>的形式来使用。以下列出几个标准库，更多的标准库请参阅官方文档：\url{https://docs.python.org/3/library/index.html}。
 \begin{description}
-\item[ 内建函数 ]  int()、chr()、ord()、round()等
-\item[ 自定义函数 ] 
+\item[ math ] 提供数学计算功能。'ceil', 'cos', 'degrees', 'e', 'exp', 'floor', 'gcd', 'log', 'log10', 'log2', 'pi', 'pow', 'radians', 'remainder', 'sqrt'
+\item[ os ] 系统交互功能。'getcwd', 'open', 'read', 'write'
+\item[ random ] 提供生成随机数功能。'randint', 'random', 'randrange', 'sample', 'seed'
+\item[ io ] 提供输入输出相关的功能，如读写文件。
 \end{description}
 
+\end{frame}
+
+\begin{frame}[fragile]{使用标准库函数}
+\begin{columns}
+\column{.5\textwidth}{import}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+import random
+
+r = random.randint(1, 38)
+print(r)
+\end{Verbatim}
+\column{.5\textwidth}{from… import…}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+from random import randint
+
+r = randint(1, 38)
+print(r)
+\end{Verbatim}
+\end{columns}
+\end{frame}
+
+\begin{frame}{自定义函数}
+自定义函数是用户根据自己的实际需求而编写的函数。
+
+\end{frame}
+
+
+\begin{frame}{第三方库函数}
+python拥有大量的第三方库函数，第三方库函数是python的特色之一。这里面的函数都可以先通过import语句导入，然后再通过<库名>.<函数名>的形式来使用。
+\begin{table}
+\caption{著名的第三方库}
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+类型&说明\\
+\midrule
+
+Django&    开源Web开发框架\\
+Tornado&    一个轻量级的Web框架\\
+Matplotlib&    主要用来绘制高质量的二维数学图形。\\
+SciPy&   基于Python的matlab实现。\\
+NumPy&    基于Python的科学计算第三方库。\\
+PyGtk&    基于Python的GUI程序开发GTK+库。\\
+PyQt&   用于Python的QT开发库。\\
+BeautifulSoup&    基于Python的HTML/XML解析器。\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{table}
 \end{frame}
 \section{define a function}
 \begin{frame}[fragile]{函数的定义}
@@ -528,9 +602,68 @@ l: [2, 3, 4]
 \begin{frame}{lamda}
 \end{frame}
 \section{module}
-\begin{frame}{模块}
+\begin{frame}[fragile]{模块}
+模块，就是一个特殊的\textit{python}文件，其特殊在：
+\begin{itemize}
+\item 包含了若干函数
+\item 这些函数可供其他\textit{python}程序调用
+\item 没有全局代码
+\end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]{自定义模块}
+\begin{block}{toolbox.py}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+import math
+import random
+import sys
+
+def my_gcd(a, b):
+    return math.gcd(a, b)
+def my_rand():
+    return random.randint(1, 9)
+def main():
+    print('gcd(',sys.argv[1],',',sys.argv[2],')=',
+          my_gcd(int(sys.argv[1]), int(sys.argv[2])))
+    for i in range(3):
+        print(my_rand())
+if __name__ == '__main__':
+    main()
+\end{Verbatim}
+\end{block}
 \end{frame}
 
+\begin{frame}[fragile]{引用自定义模块}
+\begin{block}{test.py}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+import toolbox
+
+print(toolbox.my_rand())
+\end{Verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{API}
+API, 应用程序编程接口，描述了模块所实现的具体功能。\textcolor{red}{API保证了代码的重用性}，使得其他用户不用查看模块的具体定义就可以直接使用其实现的功能（函数）。
+用户自定义的模块也应给出相应的API以供参考。
+
+toolbox模块的API如下表所示：
+\begin{table}[htp]
+\caption{toolbox模块的API}
+\begin{center}
+\begin{tabular}{c|c}
+\toprule
+\textbf{函数调用}&\textbf{功能描述}\\
+\midrule
+my\_gcd(a, b)&返回a, b两个数的最大公约数\\
+my\_rand()&返回一个[1, 9]之间的随机整数\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{table}%
+
+\end{frame}
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
@@ -538,7 +671,7 @@ l: [2, 3, 4]
 \begin{frame}{Homework}
 \begin{enumerate}
 \item
-求出前10个素数\footnote{质数（prime number）又称素数，有无限个。质数定义为在大于1的自然数中，除了1和它本身以外不再有其他因数。}。
+定义一个函数\textit{fact(n)}，用以求一个正整数\textit{n}的阶乘。
 \item
 使用辗转相除法\footnote{用较大数除以较小数，再用出现的余数（第一余数）去除除数，再用出现的余数（第二余数）去除第一余数，如此反复，直到最后余数是0为止。如果是求两个数的最大公约数，那么最后的除数就是这两个数的最大公约数。}求任意两个数的最大公约数。
 %\item
