@@ -125,7 +125,7 @@
 %\column{3.1cm}{if-elif-else}
 %\end{columns}
 \section{introduce of function}
-\begin{frame}{introduce of function}
+\begin{frame}{函数的特点}
 函数（方法）具有以下特点：
 \begin{itemize}
 \item 是一段代码
@@ -144,8 +144,8 @@
 \toprule
 类型&说明&使用方式\\
 \midrule
-内建函数 &  print()、input()等&直接调用\\
-标准库函数&如math库里的函数等&先导入，再调用\\
+内建函数 &  \textit{print()、input()}等&直接调用\\
+标准库\footnote{库，是一组具有相关功能的模块的组合。\textit{python3}标准库，可以参考\url{http://www.runoob.com/python3/python3-stdlib.html}}函数&如\textit{math}库里的函数等&先导入，再调用\\
 自定义函数&用户自己按需编写的函数&先定义，再调用\\
 第三方库函数&其他人编写的函数&先导入，再调用\\
 \bottomrule
@@ -393,11 +393,11 @@ def double(l):
     print('after:: l=',l,'id(l)=',id(l))
 
 x = 5
-print('x=',x,'id(x)=:', id(x))
+print('x=',x,'id(x)=', id(x))
 double(x)
 print('x=',x)
 
-x= 5 id(x)=: 4385389696
+x= 5 id(x)= 4385389696
 before:: l= 5 id(l)= 4385389696
 after:: l= 10 id(l)= 4385389856
 x= 5
@@ -447,11 +447,11 @@ def double(f):
     print('after:: f=',f,'id(f)=',id(f))
 
 l = [2, 3, 4]
-print('l=',l,'id(l)=:', id(l))
+print('l=',l,'id(l)=', id(l))
 double(l)
 print('l:', l)
 
-l= [2, 3, 4] id(l)=: 4386889608
+l= [2, 3, 4] id(l)= 4386889608
 before:: f= [2, 3, 4] id(f)= 4386889608
 after:: f= [2, 3, 4, 2, 3, 4] 
 id(f)= 4388025352
@@ -599,11 +599,11 @@ l: [2, 3, 4]
 
 \end{columns}
 \end{frame}
-\begin{frame}{lamda}
-\end{frame}
+%\begin{frame}{lamda}
+%\end{frame}
 \section{module}
 \begin{frame}[fragile]{模块}
-模块，就是一个特殊的\textit{python}文件，其特殊在：
+模块，就是一个特殊的\textit{python}文件\footnote{以\textit{math}为例，物理上的组织形式，即在磁盘上的形式就是一个文件，比如：\textit{math.py}；逻辑上的组织形式，即在\textit{python}语言内部的形式就是模块，比如：\textit{math}。}，其特殊在：
 \begin{itemize}
 \item 包含了若干函数
 \item 这些函数可供其他\textit{python}程序调用
@@ -611,6 +611,20 @@ l: [2, 3, 4]
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}[fragile]{引用模块}
+可以在一条\textit{import}语句中导入多个模块；也可以导入某个模块中指定的函数或变量，导入某个具体函数或变量的时候可以在代码中直接引用该函数或变量。
+
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+import os, random
+from math import pi
+
+print(pi)
+print(random.randint(1,9))
+\end{Verbatim}
+
+\end{frame}
+
 \begin{frame}[fragile]{自定义模块}
 \begin{block}{toolbox.py}
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
@@ -671,9 +685,9 @@ my\_rand()&返回一个[1, 9]之间的随机整数\\
 \begin{frame}{Homework}
 \begin{enumerate}
 \item
-定义一个函数\textit{fact(n)}，用以求一个正整数\textit{n}的阶乘。
+定义一个函数\textit{fib()}求斐波那契数列，要求能输出斐波那契数列的前\textit{n}个数，默认情况下输出前10个。
 \item
-使用辗转相除法\footnote{用较大数除以较小数，再用出现的余数（第一余数）去除除数，再用出现的余数（第二余数）去除第一余数，如此反复，直到最后余数是0为止。如果是求两个数的最大公约数，那么最后的除数就是这两个数的最大公约数。}求任意两个数的最大公约数。
+在一个文件中定义一个函数\textit{fact(n)}求一个正整数的阶乘，在另外一个文件中引用函数\textit{fact(n)}用以求解一个正整数\textit{n}的阶乘。
 %\item
 %找零钱。输入收费金额和客户所付的钱，给出需要怎么找零。要求找零的钱币张数最少。（即需要多少1元的，多少2元的，多少5元的等）
 \end{enumerate}
