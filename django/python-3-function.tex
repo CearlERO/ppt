@@ -678,14 +678,87 @@ my\_rand()&返回一个[1, 9]之间的随机整数\\
 \end{table}%
 
 \end{frame}
+
+\section{recursion}
+\begin{frame}{递归}
+函数\textcolor{red}{调用自身}的现象就是递归。
+\begin{block}{递归程序的特点}
+\begin{columns}
+\column{.5\textwidth}{优点}
+\begin{itemize}
+\item
+更加简洁 
+\item
+更容易理解
+\end{itemize}
+\column{.5\textwidth}{缺点}
+\begin{itemize}
+\item
+过量的内存需求
+\item
+过量的重复计算
+\end{itemize}
+\end{columns}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{递归函数的定义}
+递归函数是由分支结构（if语句）和函数体构成。
+\begin{columns}
+\column{.5\textwidth}{递归函数包含两个要素}
+
+\begin{enumerate}
+\item 结束条件
+
+也叫基本情况，基例
+\item 递归步骤
+
+也叫归约步骤，递归链条
+\end{enumerate}
+
+\column{.5\textwidth}{递归函数示例}
+
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+def rec_gcd(a, b):
+    if b == 0:
+        return a
+    return rec_gcd(b, a%b)
+\end{Verbatim}
+
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{递归和循环迭代}
+\begin{columns}
+\column{.5\textwidth}{替代性}
+\begin{itemize}
+\item
+所有的循环结构都可以替代为递归函数
+\item
+所有的递归函数都可以替代为对应的循环迭代结构
+\end{itemize}
+\column{.5\textwidth}{注意事项}
+\begin{itemize}
+\item
+递归代码会导致大量空间消耗和大量的重复计算
+\item
+通常来说循环的效率会更高                        
+
+\end{itemize}
+\end{columns}
+\end{frame}
+
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 \section{homework}
 \begin{frame}{Homework}
+以下程序均有递归和循环两种形式来实现，请全部写出。
 \begin{enumerate}
 \item
-定义一个函数\textit{fib()}求斐波那契数列，要求能输出斐波那契数列的前\textit{n}个数，默认情况下输出前10个。
+定义一个函数\textit{fib()}求斐波那契数列，要求能输出斐波那契数列的第\textit{n}项，默认情况下输出第10项。
 \item
 在一个文件中定义一个函数\textit{fact(n)}求一个正整数的阶乘，在另外一个文件中引用函数\textit{fact(n)}用以求解一个正整数\textit{n}的阶乘。
 %\item
