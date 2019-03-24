@@ -1,0 +1,354 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSerif-Regular}
+\usepackage{color}
+\usepackage{listings}
+\lstset{numbers=left}
+\usepackage{fancyvrb}%use Verbatim-the extended verbatim
+\usepackage{tikz}
+\usepackage{amsmath}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Django]{python} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{data process}
+\author{张海宁} % Your name
+\institute[计算机科学与技术学院] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+贵州大学 \\ % Your institution for the title page
+\medskip
+\textit{hnzhang1@gzu.edu.cn} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+\begin{frame}{Overview}
+\tableofcontents
+\end{frame}
+%\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+
+%\end{Verbatim}
+
+
+
+%\begin{columns}
+%\column{2.8cm}{if}
+%\column{2.8cm}{if-else}
+%\column{3.1cm}{if-elif}
+%\begin{Verbatim}[numbers=none,frame=single,rulecolor=\color{red}]
+%\column{3.1cm}{if-elif-else}
+%\end{columns}
+\section{dictionary、set}
+\begin{frame}{映射}
+两个非空集合$A$与$B$间存在着对应关系$f$，而且对于$A$中的每一个元素$x$，$B$中总有有唯一的一个元素$y$与它对应，就这种对应为从$A$到$B$的\textcolor{red}{映射}，记作$f: A→B$。其中，$b$称为元素$a$在映射f下的象，记作：$b=f(a)$。$a$称为$b$关于映射f的原象。集合$A$中所有元素的象的集合称为映射f的值域，记作$f(A)$。
+\end{frame}
+\begin{frame}[fragile]{字典}
+$Python$中用来处理\textcolor{red}{映射关系}的数据结构叫做\textcolor{red}{字典}$(dictionary)$。
+\begin{itemize}
+\item
+在字典中，涉及两个集合，一个是\textcolor{red}{键}$(key)$的集合，一个是\textcolor{red}{值}$(value)$的集合。
+\item
+在字典中，元素是以“键：值”对的方式存储的。
+\end{itemize}
+\begin{block}{定义一个包含3个元素的字典}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+pac = {'0851':'贵阳', '023':'重庆', '028':'成都'}
+\end{Verbatim}
+\end{block}
+\begin{block}{注意事项}
+\begin{itemize}
+\item 键必须是不可变对象
+\item 值可以是任何类型的数据
+\item 键是唯一的，值不必唯一
+\item 字典中的元素是无序的
+\end{itemize}
+
+\end{block}
+\end{frame}
+\begin{frame}
+\tiny{
+\begin{table}[htp]
+\caption{字典常用操作}
+\begin{center}
+\begin{tabular}{cp{11em}cp{11em}}
+\toprule
+\textbf{操作}&\textbf{描述}&\textbf{操作}&\textbf{描述}\\
+\midrule
+len(pac)&求元素个数&pac[key]&返回key对应的值\\
+x in pac&x是否是pac的一个键&x:y not in pac&x:y这个元素是否不在pac中\\
+pac[k1]=v1&if k1 in pac: 更新k1对应的值；否则将k1:v1这个元素添加到pac中&del pac[k1]&删除键为k1的元素\\
+pac[k1,dft]&if k1 in pac: return pac[k1] else: return dft&d.clear()&移除字典中所有的元素\\
+list(pac.keys())&返回pac中的所有键组成的列表&list(pac.values())&返回pac中的所有值组成的列表\\
+list(pac.items())&返回(key,value)形式的二元组组成的列表&pac.update(c)&将字典c中所有元素合并入pac，若拥有相同的键，则使用c中的值替换pac中的值\\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{dict}
+\end{table}%
+}
+\end{frame}
+\begin{frame}[fragile]{集合}
+集合也是$python$中用来存储一系列元素的一种数据结构，其有以下特点：
+\begin{itemize}
+\item 其中的元素是无序的
+\item 不允许重复元素
+\item 可以包含数值、字符串、元组和布尔变量，不可以容纳列表或集合
+\end{itemize}
+\begin{block}{定义一个包含6个元素的集合}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+ns = {1,2,3,'贵阳','重庆',True}
+\end{Verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}
+%\tiny{
+\begin{table}[htp]
+\caption{集合常用操作}
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+\textbf{操作}&\textbf{描述}\\
+\midrule
+len(ns)&求集合ns中的元素个数\\
+ns.add(e)&向集合ns中添加元素e\\
+ns.clear()&移除集合ns中的所有元素\\
+e in ns&元素e是否在集合ns中\\
+set1.union(set2)&$set1\cup set2=\{x|x\in set1,or\ x\in set2\}$\\
+set1.intersection(set2)&$set1\cap set2=\{x|x\in set1,and\  x\in set2\}$\\
+set1.difference(set2)&$set1-set2=\{x|x\in set1,and\  x\notin set2\}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{dict}
+\end{table}%
+%}
+\end{frame}
+\begin{frame}[fragile]{遍历字典和集合中的元素}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+pac={'0851':'贵阳','023':'重庆','028':'成都'}
+for i in pac.keys():
+    print(i,"::",pac[i])
+    
+ns={1,2,3,'r'}
+for i in ns:
+    print(i)
+
+1
+2
+3
+r
+0851 :: 贵阳
+023 :: 重庆
+028 :: 成都
+\end{Verbatim}
+\end{frame}
+
+\section{read and write file}
+\begin{frame}{文件}
+截至目前，程序的运行结果显示在屏幕上，并最终随着关闭程序或系统，结果会消失。在实际应用中，通常希望能够\textcolor{red}{将程序运行结果长久地保存在磁盘的文件中},以供以后使用。
+\end{frame}
+\begin{frame}[fragile]{open函数}
+$open()$函数可以用来打开或创建一个文件。
+\small{
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+open(file, mode='r', encoding=None)
+===== ============================================
+Character Meaning
+----- --------------------------------------------
+'r'   open for reading (default)
+'w'   open for writing, truncating the file first
+'x'   create a new file and open it for writing
+'a'   open for writing, appending to the end of the file
+       if it exists
+'b'   binary mode
+'t'   text mode (default)
+===== ==========================================
+\end{Verbatim}
+}
+\end{frame}
+
+\begin{frame}[fragile]{读取文件}
+
+\begin{columns}
+\column{.7\textwidth}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+f = open('./toolbox.py')
+line_number = 1
+for line in f:
+    print(line_number, ':', line)
+    line_number += 1
+f.close()
+\end{Verbatim}
+\column{.3\textwidth}
+\tiny{
+\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
+line1 使用open()函数打开文本文件
+
+line3 使用for循环遍历文件的每一行
+
+  
+line6 使用close()函数关闭文件
+\end{Verbatim}
+}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{写文件}
+
+\begin{columns}
+\column{.7\textwidth}
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+out = open('./open4Writing.py','w')
+out.write("test line 1\n")
+out.close()
+out1 = open('./open4Writing.py','w')
+out1.write("test line 2\n")
+out.close()
+
+out2 = open('appendFile.txt','a')
+out2.write('first\n')
+out2.close()
+out3 = open('appendFile.txt','a')
+out3.write('second\n')
+out3.close()
+\end{Verbatim}
+\column{.3\textwidth}
+\tiny{
+\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
+line1 使用open()函数打开文本文件
+注意使用'w'模式
+即open a file for writing
+
+line234 使用write()函数写入字符串
+注意\n的使用，是为了换行
+  
+line5 使用close()函数关闭文件
+
+在电脑上进行写文件的测试：
+比较'w'和'a'两种模式有何异同。
+\end{Verbatim}
+}
+\end{columns}
+\end{frame}
+\begin{frame}{分析数据}
+\end{frame}
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+\section{homework}
+\begin{frame}{Homework}
+
+\begin{enumerate}
+\item
+从一个英文文本文档中统计词频。（不统计标点符号，不考虑有单词换行的情况。）
+\item
+在一个文件中定义一个函数\textit{fact(n)}求一个正整数的阶乘，在另外一个文件中引用函数\textit{fact(n)}用以求解一个正整数\textit{n}的阶乘。
+%\item
+%找零钱。输入收费金额和客户所付的钱，给出需要怎么找零。要求找零的钱币张数最少。（即需要多少1元的，多少2元的，多少5元的等）
+\end{enumerate}
+\end{frame}
+\section{Q\&A}
+\begin{frame}
+\center{\Huge{Q\&A}}
+\end{frame}
+
+
+%How do I uninstall?
+%
+%	1.	Remove /Applications/Wireshark.app
+%	2.	Remove /Library/Application Support/Wireshark
+%	3.	Remove the wrapper scripts from /usr/local/bin
+%	4.	Unload the org.wireshark.ChmodBPF.plist launchd job
+%	5.	Remove /Library/LaunchDaemons/org.wireshark.ChmodBPF.plist
+%	6.	Remove the access_bpf group.
+%	7.	Remove /etc/paths.d/Wireshark
+%	8.	Remove /etc/manpaths.d/Wireshark
+\end{document} 
+
