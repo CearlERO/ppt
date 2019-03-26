@@ -317,19 +317,66 @@ line5 使用close()函数关闭文件
 }
 \end{columns}
 \end{frame}
-\begin{frame}{分析数据}
+\section{Regular expression operations}
+
+\begin{frame}{正则表达式}
+\begin{block}{概念}
+正则表达式是一个\textcolor{red}{特殊的字符序列}，是一个\textcolor{red}{模式字符串}，可以检测一个字符串是否与这个特殊的字符序列的\textcolor{red}{模式}相\textcolor{red}{匹配}。
+\end{block}
+\begin{block}{$re$}
+$Python$中，$re$模块提供了正则表达式的功能。
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{模式字符串\footnote{正则表达式}}
+\small{
+\begin{columns}
+\column{.5\textwidth}
+\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
+h[ea]llo     匹配hello或hallo
+[a-z]        匹配任一小写字母
+[A-Z]        匹配任一大写字母
+[0-9]        匹配任一数字
+[a-z0-9A-Z]  匹配任一数字或字母
+[^abc]       匹配abc以外的字符
+[^0-9]       匹配数字以外的字符
+\end{Verbatim}
+
+\column{.5\textwidth}
+\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
+\W  匹配任一非单词字符
+\s  匹配任一空白字符
+\S  匹配任一非空白字符
+\d  匹配任一数字
+\w  匹配任一数字、字母、下划线
+.   匹配\n以外的字符
+\D  匹配数字以外的字符
+\end{Verbatim}
+\end{columns}
+}
+\end{frame}
+\begin{frame}{匹配}
 \end{frame}
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 \section{homework}
-\begin{frame}{Homework}
+\begin{frame}[fragile]{Homework}
 
 \begin{enumerate}
 \item
-从一个英文文本文档中统计词频。（不统计标点符号，不考虑有单词换行的情况。）
+统计一个给定文档$aboutUN.txt$的词频，并将结果写入到$wordsFrequence.txt$中。\footnote{不统计标点符号，不考虑有单词换行的情况。}样式如下所示：
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+UN    5
+China    6
+…
+\end{Verbatim}
 \item
-在一个文件中定义一个函数\textit{fact(n)}求一个正整数的阶乘，在另外一个文件中引用函数\textit{fact(n)}用以求解一个正整数\textit{n}的阶乘。
+通过$UN.txt$文件，获取目前联合国的193个会员国名字，并将其写入$UNmembers.txt$中。样式如下所示：
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+China
+America
+…
+\end{Verbatim}
 %\item
 %找零钱。输入收费金额和客户所付的钱，给出需要怎么找零。要求找零的钱币张数最少。（即需要多少1元的，多少2元的，多少5元的等）
 \end{enumerate}
