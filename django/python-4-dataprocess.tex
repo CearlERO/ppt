@@ -354,6 +354,36 @@ h[ea]llo     匹配hello或hallo
 \end{columns}
 }
 \end{frame}
+
+\begin{frame}[fragile]{模式字符串\footnote{正则表达式}}
+\small{
+\begin{columns}
+\column{.5\textwidth}
+\begin{table}
+\begin{tabular}{cccc}
+\toprule
+\textbf{}&\textbf{}&\textbf{}&\textbf{}\\
+\midrule
+^&&$&\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\column{.5\textwidth}
+\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
+\W  匹配任一非单词字符
+\s  匹配任一空白字符
+\S  匹配任一非空白字符
+\d  匹配任一数字
+\w  匹配任一数字、字母、下划线
+.   匹配\n以外的字符
+\D  匹配数字以外的字符
+\end{Verbatim}
+\end{columns}
+}
+\end{frame}
+
 \begin{frame}{匹配}
 \end{frame}
 %----------------------------------------------------------------------------------------
