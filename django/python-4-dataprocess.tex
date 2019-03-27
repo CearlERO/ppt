@@ -211,10 +211,13 @@ set1.difference(set2)&$set1-set2=\{x|x\in set1,and\  x\notin set2\}$\\
 %}
 \end{frame}
 \begin{frame}[fragile]{遍历字典和集合中的元素}
+\small{
 \begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
 pac={'0851':'贵阳','023':'重庆','028':'成都'}
 for i in pac.keys():
     print(i,"::",pac[i])
+for k,v in pac.items():
+    print(k,':',v)
     
 ns={1,2,3,'r'}
 for i in ns:
@@ -228,6 +231,7 @@ r
 023 :: 重庆
 028 :: 成都
 \end{Verbatim}
+}
 \end{frame}
 
 \section{read and write file}
@@ -317,7 +321,7 @@ line5 使用close()函数关闭文件
 }
 \end{columns}
 \end{frame}
-\section{Regular expression operations}
+\section{regular expression operations}
 
 \begin{frame}{正则表达式}
 \begin{block}{概念}
@@ -357,34 +361,75 @@ h[ea]llo     匹配hello或hallo
 
 \begin{frame}[fragile]{模式字符串\footnote{正则表达式}}
 \small{
-\begin{columns}
-\column{.5\textwidth}
 \begin{table}
-\begin{tabular}{cccc}
+\begin{tabular}{cp{10em}cp{10em}}
 \toprule
-\textbf{}&\textbf{}&\textbf{}&\textbf{}\\
+\textbf{符号}&\textbf{意义}&\textbf{符号}&\textbf{意义}\\
 \midrule
-^&&$&\\
+\^&匹配字符串的开头&\$&匹配字符串的结尾\\
+*&匹配0个或多个表达式&+&匹配1个或多个表达式\\
+?&使用非贪婪模式，即匹配到合适的就结束&()&匹配括号内的表达式，也表示一个组\\
+\{m\}&匹配m个表达式&\{m,n\}&匹配m到n个表达式\\
+
 \bottomrule
 \end{tabular}
 \end{table}
-
-
-\column{.5\textwidth}
-\begin{Verbatim}[numbers=none,frame=none,rulecolor=\color{red}]
-\W  匹配任一非单词字符
-\s  匹配任一空白字符
-\S  匹配任一非空白字符
-\d  匹配任一数字
-\w  匹配任一数字、字母、下划线
-.   匹配\n以外的字符
-\D  匹配数字以外的字符
-\end{Verbatim}
-\end{columns}
 }
 \end{frame}
 
-\begin{frame}{匹配}
+\begin{frame}[fragile]{匹配}
+在实际应用中，首先要\textcolor{red}{构造一个模式字符串}($re.compile(patternString)$)，然后使用这个\textcolor{red}{模式去匹配}给定字符串中的内容。
+
+匹配的函数有：$re.match(), re.search(), re.findall()$:
+\small{
+\begin{Verbatim}[numbers=left,frame=none,rulecolor=\color{red}]
+match(pattern, string, flags=0)
+    Try to apply the pattern at the start of the string, 
+    returning a Match object, or None if no match was found.
+search(pattern, string, flags=0)
+    Scan through string looking for a match to the pattern, 
+    returning a Match object, or None if no match was found.
+findall(pattern, string, flags=0)
+    Return a list of all non-overlapping matches in the string.
+\end{Verbatim}
+}
+\end{frame}
+
+
+\begin{frame}[fragile]{$Match Objects\footnote{相对地，有一个Regular Expression Objects, 支持Pattern.match(), Pattern.search(), Pattern.findall()等方法。}$}
+$Match Objects$支持以下方法：
+\begin{description}
+\item[ Match.group()] 默认返回整个匹配的字符串
+\item[ Match.span()] 默认返回一个二元组，这个二元组的第一个和第二个元素分别是匹配字符串在原字符串中的索引起始值
+\end{description}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]{匹配示例}
+\small{
+\begin{Verbatim}[numbers=left,frame=single,rulecolor=\color{red}]
+import re
+obj = 'ython, We are learn python language.' \
+      ' Python is very useful.'
+pattern = re.compile('[pP]ython')
+match1 = re.match(pattern,obj)
+print('re.match():',match1)
+match2 = re.search(pattern,obj)
+print('re.search():',match2)
+print('Match.group():',match2.group())
+print('Match.span():',match2.span())
+match3 = re.findall(pattern,obj)
+print('re.findall():',match3)
+
+re.match(): None
+re.search(): <re.Match object; span=(20, 26), match='python'>
+Match.group(): python
+Match.span(): (20, 26)
+re.findall(): ['python', 'Python']
+\end{Verbatim}
+}
 \end{frame}
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
