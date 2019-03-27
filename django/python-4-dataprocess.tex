@@ -163,7 +163,7 @@ pac = {'0851':'贵阳', '023':'重庆', '028':'成都'}
 len(pac)&求元素个数&pac[key]&返回key对应的值\\
 x in pac&x是否是pac的一个键&x:y not in pac&x:y这个元素是否不在pac中\\
 pac[k1]=v1&if k1 in pac: 更新k1对应的值；否则将k1:v1这个元素添加到pac中&del pac[k1]&删除键为k1的元素\\
-pac[k1,dft]&if k1 in pac: return pac[k1] else: return dft&d.clear()&移除字典中所有的元素\\
+pac[k1,dft]&if k1 in pac: return pac[k1] else: return dft&pac.clear()&移除字典中所有的元素\\
 list(pac.keys())&返回pac中的所有键组成的列表&list(pac.values())&返回pac中的所有值组成的列表\\
 list(pac.items())&返回(key,value)形式的二元组组成的列表&pac.update(c)&将字典c中所有元素合并入pac，若拥有相同的键，则使用c中的值替换pac中的值\\
 \bottomrule
@@ -459,6 +459,7 @@ America
 \section{Q\&A}
 \begin{frame}
 \center{\Huge{Q\&A}}
+\url{https://github.com/gmsft/ppt/tree/master/django}
 \end{frame}
 
 
