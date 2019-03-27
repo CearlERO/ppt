@@ -1,8 +1,0 @@
-\frametitle{JSP写中文到MySQL的乱码问题}
-\begin{lstlisting}
-conn = DriverManager.getConnection(
-    "jdbc:mysql://localhost/lab?
-    useUnicode=true&characterEncoding=UTF-8",
-    "root","password");
-\end{lstlisting}
-在连接数据库时，指定编码格式。

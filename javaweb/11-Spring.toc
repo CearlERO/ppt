@@ -1,5 +1,0 @@
-\beamer@sectionintoc {1}{选课}{3}{0}{1}
-\beamer@sectionintoc {2}{第二课堂}{8}{0}{2}
-\beamer@sectionintoc {3}{毕业要求}{11}{0}{3}
-\beamer@sectionintoc {4}{授学位条件}{13}{0}{4}
-\beamer@sectionintoc {5}{Q&A}{16}{0}{5}

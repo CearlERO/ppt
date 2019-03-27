@@ -1,8 +1,0 @@
-\beamer@sectionintoc {1}{背景}{3}{0}{1}
-\beamer@sectionintoc {2}{文档元素}{14}{0}{2}
-\beamer@subsectionintoc {2}{1}{章节和目录}{16}{0}{2}
-\beamer@sectionintoc {3}{数学公式}{20}{0}{3}
-\beamer@sectionintoc {4}{样式设定}{21}{0}{4}
-\beamer@sectionintoc {5}{其他功能}{22}{0}{5}
-\beamer@subsectionintoc {5}{1}{文献、索引}{23}{0}{5}
-\beamer@subsectionintoc {5}{2}{超链接}{23}{0}{5}

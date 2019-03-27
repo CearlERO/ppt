@@ -1,8 +1,0 @@
-\frametitle{ssl-poodle}
-SSL 3.0中的POODLE漏洞\footnote{CVE-2014-3566, 谷歌团队发现。}可以被攻击者利用来窃取SSL 3.0加密通信过程中的通信内容。Nmap中的ssl-poodle脚本可以用来检测目标服务器上是否存在POODLE漏洞。
-\begin{block}{使用ssl-poodle脚本进行审计}
-\begin{verbatim}
-$ nmap -sV --version-all --script ssl-poodle -p443 xxx
-
-\end{verbatim}
-\end{block}

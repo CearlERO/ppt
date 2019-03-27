@@ -1,9 +1,0 @@
-\BOOKMARK [2][]{Outline0.1}{文件结构}{}% 1
-\BOOKMARK [2][]{Outline0.2}{底层文件访问}{}% 2
-\BOOKMARK [3][]{Outline0.2.1.23}{使用系统调用拷贝文件}{Outline0.2}% 3
-\BOOKMARK [2][]{Outline0.3}{标准I/O库}{}% 4
-\BOOKMARK [3][]{Outline0.3.1.37}{使用标准I/O库函数拷贝文件}{Outline0.3}% 5
-\BOOKMARK [2][]{Outline0.4}{文件和目录的维护}{}% 6
-\BOOKMARK [3][]{Outline0.4.1.52}{目录列表功能}{Outline0.4}% 7
-\BOOKMARK [2][]{Outline0.5}{/proc文件系统}{}% 8
-\BOOKMARK [2][]{Outline0.6}{附录}{}% 9

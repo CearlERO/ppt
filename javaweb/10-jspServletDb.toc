@@ -1,3 +1,0 @@
-\beamer@sectionintoc {1}{jsp servlet database}{3}{0}{1}
-\beamer@sectionintoc {2}{Appendix}{5}{0}{2}
-\beamer@subsectionintoc {2}{1}{相关资源}{6}{0}{2}

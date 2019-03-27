@@ -1,9 +1,0 @@
-\beamer@sectionintoc {1}{文件结构}{3}{0}{1}
-\beamer@sectionintoc {2}{底层文件访问}{7}{0}{2}
-\beamer@subsectionintoc {2}{1}{使用系统调用拷贝文件}{23}{0}{2}
-\beamer@sectionintoc {3}{标准I/O库}{25}{0}{3}
-\beamer@subsectionintoc {3}{1}{使用标准I/O库函数拷贝文件}{37}{0}{3}
-\beamer@sectionintoc {4}{文件和目录的维护}{40}{0}{4}
-\beamer@subsectionintoc {4}{1}{目录列表功能}{52}{0}{4}
-\beamer@sectionintoc {5}{/proc文件系统}{53}{0}{5}
-\beamer@sectionintoc {6}{附录}{56}{0}{6}
